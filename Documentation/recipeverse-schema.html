@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>RecipeVerse — Database Schema</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8f6f2; color: #1a1a1a; line-height: 1.7; font-size: 15px; }
+.page { max-width: 960px; margin: 0 auto; padding: 48px 32px; }
+
+/* Cover */
+.cover { background: linear-gradient(135deg, #e8430a 0%, #f97316 55%, #fbbf24 100%); border-radius: 20px; padding: 48px; color: #fff; margin-bottom: 48px; }
+.cover-tag { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.75; margin-bottom: 12px; }
+.cover h1 { font-size: 38px; font-weight: 800; margin-bottom: 8px; }
+.cover-sub { font-size: 16px; opacity: 0.88; max-width: 560px; margin-bottom: 24px; line-height: 1.6; }
+.cover-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+.cover-pill { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 4px 14px; font-size: 12px; }
+.cover-meta { display: flex; flex-wrap: wrap; gap: 20px; font-size: 12px; opacity: 0.7; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 20px; }
+
+/* Legend */
+.legend { background: #fff; border: 1px solid #ede8e0; border-radius: 16px; padding: 24px 28px; margin-bottom: 40px; }
+.legend-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #aaa; margin-bottom: 14px; }
+.legend-items { display: flex; flex-wrap: wrap; gap: 14px; }
+.legend-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #555; }
+.badge { display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 6px; white-space: nowrap; }
+.b-pk { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+.b-fk { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+.b-req { background: #fce7f3; color: #9d174d; border: 1px solid #fbcfe8; }
+.b-opt { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+.b-uni { background: #f5f3ff; color: #5b21b6; border: 1px solid #ddd6fe; }
+.b-idx { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
+
+/* TOC */
+.toc { background: #fff; border: 1px solid #ede8e0; border-radius: 16px; padding: 24px 28px; margin-bottom: 40px; }
+.toc-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #aaa; margin-bottom: 14px; }
+.toc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 6px; }
+.toc-item { font-size: 13px; color: #e8430a; display: flex; align-items: center; gap: 8px; padding: 3px 0; cursor: pointer; }
+.toc-num { font-size: 11px; color: #ccc; font-weight: 700; min-width: 20px; }
+
+/* Section */
+.section { margin-bottom: 56px; }
+h2 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #aaa; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #f0ebe2; }
+
+/* Table block */
+.table-block { background: #fff; border: 1px solid #ede8e0; border-radius: 16px; overflow: hidden; margin-bottom: 28px; }
+.table-header { padding: 20px 24px; border-bottom: 1px solid #f0ebe2; display: flex; align-items: flex-start; gap: 16px; }
+.table-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+.ti-orange { background: #fff0e6; }
+.ti-blue { background: #eff6ff; }
+.ti-green { background: #f0fdf4; }
+.ti-purple { background: #f5f3ff; }
+.ti-teal { background: #f0fdfa; }
+.ti-pink { background: #fdf2f8; }
+.ti-amber { background: #fffbeb; }
+.ti-gray { background: #f9fafb; }
+.table-meta { flex: 1; }
+.table-name { font-size: 17px; font-weight: 800; font-family: 'SF Mono', 'Fira Code', monospace; color: #1a1a1a; margin-bottom: 4px; }
+.table-desc { font-size: 13px; color: #666; line-height: 1.6; }
+.table-note { font-size: 12px; color: #999; margin-top: 6px; font-style: italic; }
+.table-rels { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.rel-pill { font-size: 11px; background: #f5f1eb; color: #555; border-radius: 20px; padding: 2px 10px; font-family: 'SF Mono', monospace; }
+
+/* Column table */
+.col-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.col-table thead tr { background: #faf8f5; }
+.col-table th { text-align: left; padding: 10px 16px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: #bbb; font-weight: 700; border-bottom: 1px solid #f0ebe2; }
+.col-table td { padding: 10px 16px; border-bottom: 1px solid #f8f4ef; vertical-align: middle; }
+.col-table tr:last-child td { border-bottom: none; }
+.col-table tr:hover td { background: #fdfcfa; }
+.col-name { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; font-weight: 600; color: #e8430a; }
+.col-type { font-family: 'SF Mono', monospace; font-size: 11px; color: #888; }
+.col-desc { color: #555; font-size: 13px; line-height: 1.5; }
+.badges { display: flex; gap: 4px; flex-wrap: wrap; }
+
+/* Relationship diagram section */
+.rel-section { background: #fff; border: 1px solid #ede8e0; border-radius: 16px; padding: 24px 28px; margin-bottom: 28px; }
+.rel-title { font-size: 14px; font-weight: 700; margin-bottom: 16px; }
+.rel-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #f5f1eb; font-size: 13px; flex-wrap: wrap; }
+.rel-row:last-child { border-bottom: none; }
+.rel-table { font-family: 'SF Mono', monospace; font-size: 12px; font-weight: 700; color: #e8430a; background: #fff0e6; padding: 3px 10px; border-radius: 6px; }
+.rel-type { font-size: 12px; color: #888; background: #f5f1eb; padding: 3px 10px; border-radius: 6px; white-space: nowrap; }
+.rel-desc { font-size: 13px; color: #555; }
+.rel-arrow { color: #ccc; font-size: 16px; }
+
+/* Callouts */
+.callout { border-left: 3px solid #e8430a; background: #fff8f5; border-radius: 0 10px 10px 0; padding: 14px 18px; margin: 16px 0; font-size: 13px; color: #555; line-height: 1.7; }
+.callout strong { color: #e8430a; }
+.callout-blue { border-left: 3px solid #3b82f6; background: #eff6ff; border-radius: 0 10px 10px 0; padding: 14px 18px; margin: 16px 0; font-size: 13px; color: #555; line-height: 1.7; }
+.callout-green { border-left: 3px solid #16a34a; background: #f0fdf4; border-radius: 0 10px 10px 0; padding: 14px 18px; margin: 16px 0; font-size: 13px; color: #555; line-height: 1.7; }
+
+/* Scale notes */
+.scale-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.scale-card { background: #fff; border: 1px solid #ede8e0; border-radius: 12px; padding: 16px 18px; }
+.scale-title { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+.scale-body { font-size: 12px; color: #666; line-height: 1.7; }
+
+/* Footer */
+.footer { margin-top: 56px; padding-top: 24px; border-top: 1px solid #ede8e0; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; font-size: 12px; color: #bbb; }
+
+@media (max-width: 640px) {
+  .page { padding: 24px 16px; }
+  .cover { padding: 32px 24px; }
+  .cover h1 { font-size: 28px; }
+  .table-header { flex-direction: column; }
+  .col-table th:nth-child(3), .col-table td:nth-child(3) { display: none; }
+}
+@media print { body { background: #fff; } .page { padding: 24px; } }
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-tag">Database Schema · RecipeVerse · March 2026</div>
+  <h1>Database Schema</h1>
+  <div class="cover-sub">A complete, beginner-friendly guide to every table, column, and relationship in the RecipeVerse database — explained in plain English.</div>
+  <div class="cover-pills">
+    <span class="cover-pill">14 tables</span>
+    <span class="cover-pill">PostgreSQL via Supabase</span>
+    <span class="cover-pill">Drizzle ORM</span>
+    <span class="cover-pill">Built to scale</span>
+  </div>
+  <div class="cover-meta">
+    <span>Version 1.0</span>
+    <span>Database: PostgreSQL</span>
+    <span>Beginner-friendly explanations</span>
+  </div>
+</div>
+
+<!-- LEGEND -->
+<div class="legend">
+  <div class="legend-title">How to read this document</div>
+  <div class="legend-items">
+    <div class="legend-item"><span class="badge b-pk">PK</span> Primary Key — the unique ID for each row</div>
+    <div class="legend-item"><span class="badge b-fk">FK</span> Foreign Key — links to another table</div>
+    <div class="legend-item"><span class="badge b-req">Required</span> Must have a value, cannot be empty</div>
+    <div class="legend-item"><span class="badge b-opt">Optional</span> Can be left empty (null)</div>
+    <div class="legend-item"><span class="badge b-uni">Unique</span> No two rows can have the same value</div>
+    <div class="legend-item"><span class="badge b-idx">Indexed</span> Optimized for fast searching</div>
+  </div>
+</div>
+
+<!-- TOC -->
+<div class="toc">
+  <div class="toc-title">14 tables in this schema</div>
+  <div class="toc-grid">
+    <div class="toc-item"><span class="toc-num">01</span> users</div>
+    <div class="toc-item"><span class="toc-num">02</span> profiles</div>
+    <div class="toc-item"><span class="toc-num">03</span> recipes</div>
+    <div class="toc-item"><span class="toc-num">04</span> ingredients</div>
+    <div class="toc-item"><span class="toc-num">05</span> recipe_steps</div>
+    <div class="toc-item"><span class="toc-num">06</span> recipe_media</div>
+    <div class="toc-item"><span class="toc-num">07</span> followers</div>
+    <div class="toc-item"><span class="toc-num">08</span> likes</div>
+    <div class="toc-item"><span class="toc-num">09</span> comments</div>
+    <div class="toc-item"><span class="toc-num">10</span> reviews</div>
+    <div class="toc-item"><span class="toc-num">11</span> saved_recipes</div>
+    <div class="toc-item"><span class="toc-num">12</span> tags</div>
+    <div class="toc-item"><span class="toc-num">13</span> recipe_tags</div>
+    <div class="toc-item"><span class="toc-num">14</span> notifications</div>
+  </div>
+</div>
+
+<div class="callout"><strong>Before you read:</strong> Think of a database like a giant Excel spreadsheet. Each table is one spreadsheet. Each row is one record (one user, one recipe, one comment). Each column is one piece of information about that record. Tables are connected to each other using IDs — like how a recipe row stores the ID of the user who created it.</div>
+
+<!-- SECTION: IDENTITY -->
+<div class="section">
+  <h2>Part 1 — Identity & accounts</h2>
+
+  <!-- users -->
+  <div class="table-block" id="users">
+    <div class="table-header">
+      <div class="table-icon ti-orange">👤</div>
+      <div class="table-meta">
+        <div class="table-name">users</div>
+        <div class="table-desc">Stores the core login information for every person who signs up. This is the most fundamental table — everything else connects back to it. Think of it as the master list of everyone on the platform.</div>
+        <div class="table-note">Why separate from profiles? Users holds private auth data (email, password hash). Profiles holds public-facing info (bio, avatar). Keeping them separate is safer and cleaner.</div>
+        <div class="table-rels">
+          <span class="rel-pill">→ profiles (1-to-1)</span>
+          <span class="rel-pill">→ recipes (1-to-many)</span>
+          <span class="rel-pill">→ followers (1-to-many)</span>
+          <span class="rel-pill">→ likes (1-to-many)</span>
+          <span class="rel-pill">→ comments (1-to-many)</span>
+        </div>
+      </div>
+    </div>
+    <table class="col-table">
+      <thead><tr><th>Column</th><th>Type</th><th>Description</th><th>Flags</th></tr></thead>
+      <tbody>
+        <tr><td class="col-name">id</td><td class="col-type">UUID</td><td class="col-desc">A unique ID automatically generated for every new user. This is how the whole system identifies one person.</td><td><div class="badges"><span class="badge b-pk">PK</span><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">email</td><td class="col-type">TEXT</td><td class="col-desc">The user's email address. Used for login and password reset emails.</td><td><div class="badges"><span class="badge b-req">Required</span><span class="badge b-uni">Unique</span><span class="badge b-idx">Indexed</span></div></td></tr>
+        <tr><td class="col-name">password_hash</td><td class="col-type">TEXT</td><td class="col-desc">The encrypted version of the user's password. We never store the real password — only this scrambled version.</td><td><div class="badges"><span class="badge b-opt">Optional</span></div></td></tr>
+        <tr><td class="col-name">auth_provider</td><td class="col-type">TEXT</td><td class="col-desc">How the user signed up: "email", "google". Null if email/password.</td><td><div class="badges"><span class="badge b-opt">Optional</span></div></td></tr>
+        <tr><td class="col-name">auth_provider_id</td><td class="col-type">TEXT</td><td class="col-desc">The unique ID Google gives us when a user signs in with Google.</td><td><div class="badges"><span class="badge b-opt">Optional</span></div></td></tr>
+        <tr><td class="col-name">email_verified</td><td class="col-type">BOOLEAN</td><td class="col-desc">True once the user clicks the verification link in their email. Unverified users can browse but not post.</td><td><div class="badges"><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">role</td><td class="col-type">TEXT</td><td class="col-desc">Either "user" or "admin". Admins can remove content and manage reports.</td><td><div class="badges"><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">created_at</td><td class="col-type">TIMESTAMP</td><td class="col-desc">The exact date and time when the account was created. Auto-filled by the database.</td><td><div class="badges"><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">updated_at</td><td class="col-type">TIMESTAMP</td><td class="col-desc">The last time any detail on this account was changed. Auto-updates whenever a change is saved.</td><td><div class="badges"><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">deleted_at</td><td class="col-type">TIMESTAMP</td><td class="col-desc">If a user deletes their account, we record the time here instead of actually erasing the row. This is called "soft delete" — safer for data integrity.</td><td><div class="badges"><span class="badge b-opt">Optional</span></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- profiles -->
+  <div class="table-block" id="profiles">
+    <div class="table-header">
+      <div class="table-icon ti-orange">🪪</div>
+      <div class="table-meta">
+        <div class="table-name">profiles</div>
+        <div class="table-desc">Stores everything the public sees about a user — their username, photo, bio, and social counts. When you visit @amaracooks, this is the table that powers that page.</div>
+        <div class="table-note">Every user gets exactly one profile. Created automatically the moment someone signs up.</div>
+        <div class="table-rels">
+          <span class="rel-pill">← users (1-to-1)</span>
+        </div>
+      </div>
+    </div>
+    <table class="col-table">
+      <thead><tr><th>Column</th><th>Type</th><th>Description</th><th>Flags</th></tr></thead>
+      <tbody>
+        <tr><td class="col-name">id</td><td class="col-type">UUID</td><td class="col-desc">Unique ID for this profile row.</td><td><div class="badges"><span class="badge b-pk">PK</span><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">user_id</td><td class="col-type">UUID</td><td class="col-desc">Links this profile to the users table. One user = one profile.</td><td><div class="badges"><span class="badge b-fk">FK → users</span><span class="badge b-req">Required</span><span class="badge b-uni">Unique</span></div></td></tr>
+        <tr><td class="col-name">username</td><td class="col-type">TEXT</td><td class="col-desc">The user's public handle, like "@amaracooks". Must be unique — no two people can share the same username.</td><td><div class="badges"><span class="badge b-req">Required</span><span class="badge b-uni">Unique</span><span class="badge b-idx">Indexed</span></div></td></tr>
+        <tr><td class="col-name">display_name</td><td class="col-type">TEXT</td><td class="col-desc">The full name shown on their profile, like "Amara Osei". Can be different from their username.</td><td><div class="badges"><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">avatar_url</td><td class="col-type">TEXT</td><td class="col-desc">A URL link pointing to their profile photo, stored in our image cloud (Cloudinary or Uploadthing).</td><td><div class="badges"><span class="badge b-opt">Optional</span></div></td></tr>
+        <tr><td class="col-name">bio</td><td class="col-type">TEXT</td><td class="col-desc">A short description the user writes about themselves. Max 160 characters, like a Twitter bio.</td><td><div class="badges"><span class="badge b-opt">Optional</span></div></td></tr>
+        <tr><td class="col-name">location</td><td class="col-type">TEXT</td><td class="col-desc">Where the user is from. Free text — "Lagos, Nigeria" or "Texas, USA".</td><td><div class="badges"><span class="badge b-opt">Optional</span></div></td></tr>
+        <tr><td class="col-name">website_url</td><td class="col-type">TEXT</td><td class="col-desc">A link to their personal site, blog, or Instagram. Shown on their public profile.</td><td><div class="badges"><span class="badge b-opt">Optional</span></div></td></tr>
+        <tr><td class="col-name">follower_count</td><td class="col-type">INTEGER</td><td class="col-desc">How many people follow this user. Stored here for fast display — recalculated nightly from the followers table.</td><td><div class="badges"><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">following_count</td><td class="col-type">INTEGER</td><td class="col-desc">How many people this user follows.</td><td><div class="badges"><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">recipe_count</td><td class="col-type">INTEGER</td><td class="col-desc">How many published recipes this user has. Cached here to avoid counting every time the profile loads.</td><td><div class="badges"><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">is_verified</td><td class="col-type">BOOLEAN</td><td class="col-desc">True for notable creators who get a checkmark badge. Manually granted by admins.</td><td><div class="badges"><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">updated_at</td><td class="col-type">TIMESTAMP</td><td class="col-desc">Last time the profile was edited.</td><td><div class="badges"><span class="badge b-req">Required</span></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- SECTION: RECIPES -->
+<div class="section">
+  <h2>Part 2 — Recipes & content</h2>
+
+  <!-- recipes -->
+  <div class="table-block" id="recipes">
+    <div class="table-header">
+      <div class="table-icon ti-blue">🍳</div>
+      <div class="table-meta">
+        <div class="table-name">recipes</div>
+        <div class="table-desc">The heart of the entire platform. Every recipe anyone publishes lives here. This table stores the core info about a recipe — but not the ingredients or steps (those have their own tables to stay organised and flexible).</div>
+        <div class="table-note">Ingredients and steps are in separate tables because a recipe can have 2 ingredients or 20. Storing them in a separate table lets us handle any number cleanly.</div>
+        <div class="table-rels">
+          <span class="rel-pill">← users (many-to-1)</span>
+          <span class="rel-pill">→ ingredients (1-to-many)</span>
+          <span class="rel-pill">→ recipe_steps (1-to-many)</span>
+          <span class="rel-pill">→ recipe_media (1-to-many)</span>
+          <span class="rel-pill">→ likes (1-to-many)</span>
+          <span class="rel-pill">→ comments (1-to-many)</span>
+          <span class="rel-pill">→ saved_recipes (1-to-many)</span>
+        </div>
+      </div>
+    </div>
+    <table class="col-table">
+      <thead><tr><th>Column</th><th>Type</th><th>Description</th><th>Flags</th></tr></thead>
+      <tbody>
+        <tr><td class="col-name">id</td><td class="col-type">UUID</td><td class="col-desc">Unique ID for this recipe. Used in the URL: recipeverse.com/recipe/[id]</td><td><div class="badges"><span class="badge b-pk">PK</span><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">user_id</td><td class="col-type">UUID</td><td class="col-desc">The ID of the user who created this recipe. Links back to the users table.</td><td><div class="badges"><span class="badge b-fk">FK → users</span><span class="badge b-req">Required</span><span class="badge b-idx">Indexed</span></div></td></tr>
+        <tr><td class="col-name">title</td><td class="col-type">TEXT</td><td class="col-desc">The name of the recipe. Example: "Spicy Jollof Rice with Grilled Chicken".</td><td><div class="badges"><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">slug</td><td class="col-type">TEXT</td><td class="col-desc">A URL-friendly version of the title. Example: "spicy-jollof-rice-with-grilled-chicken". Used for SEO-friendly URLs.</td><td><div class="badges"><span class="badge b-req">Required</span><span class="badge b-uni">Unique</span><span class="badge b-idx">Indexed</span></div></td></tr>
+        <tr><td class="col-name">description</td><td class="col-type">TEXT</td><td class="col-desc">A short intro paragraph about the recipe — the story behind it, what makes it special.</td><td><div class="badges"><span class="badge b-opt">Optional</span></div></td></tr>
+        <tr><td class="col-name">cuisine</td><td class="col-type">TEXT</td><td class="col-desc">The cuisine type. Example: "Nigerian", "Italian", "Korean". Used for filtering on the explore page.</td><td><div class="badges"><span class="badge b-opt">Optional</span><span class="badge b-idx">Indexed</span></div></td></tr>
+        <tr><td class="col-name">difficulty</td><td class="col-type">TEXT</td><td class="col-desc">How hard the recipe is to make. One of: "easy", "medium", "hard".</td><td><div class="badges"><span class="badge b-opt">Optional</span></div></td></tr>
+        <tr><td class="col-name">prep_time_mins</td><td class="col-type">INTEGER</td><td class="col-desc">How many minutes it takes to prepare before cooking starts.</td><td><div class="badges"><span class="badge b-opt">Optional</span></div></td></tr>
+        <tr><td class="col-name">cook_time_mins</td><td class="col-type">INTEGER</td><td class="col-desc">How many minutes the actual cooking takes.</td><td><div class="badges"><span class="badge b-opt">Optional</span></div></td></tr>
+        <tr><td class="col-name">servings</td><td class="col-type">INTEGER</td><td class="col-desc">How many people this recipe feeds.</td><td><div class="badges"><span class="badge b-opt">Optional</span></div></td></tr>
+        <tr><td class="col-name">notes</td><td class="col-type">TEXT</td><td class="col-desc">Any extra tips, substitutions, or personal notes from the creator. Example: "You can use basmati rice instead."</td><td><div class="badges"><span class="badge b-opt">Optional</span></div></td></tr>
+        <tr><td class="col-name">status</td><td class="col-type">TEXT</td><td class="col-desc">The current state of this recipe. One of: "draft" (only creator can see), "published" (visible to all), "archived" (hidden).</td><td><div class="badges"><span class="badge b-req">Required</span><span class="badge b-idx">Indexed</span></div></td></tr>
+        <tr><td class="col-name">source_url</td><td class="col-type">TEXT</td><td class="col-desc">If the recipe was imported from Instagram or YouTube, this stores the original link for proper credit.</td><td><div class="badges"><span class="badge b-opt">Optional</span></div></td></tr>
+        <tr><td class="col-name">source_platform</td><td class="col-type">TEXT</td><td class="col-desc">Which platform it was imported from: "instagram", "youtube", "facebook", or null if original.</td><td><div class="badges"><span class="badge b-opt">Optional</span></div></td></tr>
+        <tr><td class="col-name">voice_transcript</td><td class="col-type">TEXT</td><td class="col-desc">If the recipe was created via voice, this stores the raw transcript from Whisper. Useful for debugging AI errors.</td><td><div class="badges"><span class="badge b-opt">Optional</span></div></td></tr>
+        <tr><td class="col-name">avg_rating</td><td class="col-type">DECIMAL</td><td class="col-desc">The average star rating (1.0 to 5.0), cached here for fast display. Recalculated when a new review is added.</td><td><div class="badges"><span class="badge b-opt">Optional</span></div></td></tr>
+        <tr><td class="col-name">like_count</td><td class="col-type">INTEGER</td><td class="col-desc">Total number of likes, cached here so the feed loads fast without counting every time.</td><td><div class="badges"><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">save_count</td><td class="col-type">INTEGER</td><td class="col-desc">Total times this recipe has been saved to a collection.</td><td><div class="badges"><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">view_count</td><td class="col-type">INTEGER</td><td class="col-desc">How many times the recipe detail page has been opened.</td><td><div class="badges"><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">published_at</td><td class="col-type">TIMESTAMP</td><td class="col-desc">When the recipe was first published. Used for "New this week" sorting.</td><td><div class="badges"><span class="badge b-opt">Optional</span><span class="badge b-idx">Indexed</span></div></td></tr>
+        <tr><td class="col-name">created_at</td><td class="col-type">TIMESTAMP</td><td class="col-desc">When the recipe was first created (could be a draft).</td><td><div class="badges"><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">updated_at</td><td class="col-type">TIMESTAMP</td><td class="col-desc">Last time the recipe was edited.</td><td><div class="badges"><span class="badge b-req">Required</span></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ingredients -->
+  <div class="table-block" id="ingredients">
+    <div class="table-header">
+      <div class="table-icon ti-green">🥕</div>
+      <div class="table-meta">
+        <div class="table-name">ingredients</div>
+        <div class="table-desc">Every ingredient for every recipe lives here. Each row is one ingredient in one recipe. A recipe with 8 ingredients = 8 rows in this table, all pointing to the same recipe.</div>
+        <div class="table-note">Why not store ingredients as one big text field inside recipes? Because storing them separately lets users search by ingredient ("show me all recipes with chicken"), and lets us build features like shopping lists later.</div>
+        <div class="table-rels">
+          <span class="rel-pill">← recipes (many-to-1)</span>
+        </div>
+      </div>
+    </div>
+    <table class="col-table">
+      <thead><tr><th>Column</th><th>Type</th><th>Description</th><th>Flags</th></tr></thead>
+      <tbody>
+        <tr><td class="col-name">id</td><td class="col-type">UUID</td><td class="col-desc">Unique ID for this ingredient row.</td><td><div class="badges"><span class="badge b-pk">PK</span><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">recipe_id</td><td class="col-type">UUID</td><td class="col-desc">Which recipe this ingredient belongs to.</td><td><div class="badges"><span class="badge b-fk">FK → recipes</span><span class="badge b-req">Required</span><span class="badge b-idx">Indexed</span></div></td></tr>
+        <tr><td class="col-name">name</td><td class="col-type">TEXT</td><td class="col-desc">The ingredient name. Example: "long grain rice", "chicken breast", "olive oil".</td><td><div class="badges"><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">quantity</td><td class="col-type">TEXT</td><td class="col-desc">How much of this ingredient is needed. Example: "2", "1.5", "a handful of". Stored as text to handle fractions and words.</td><td><div class="badges"><span class="badge b-opt">Optional</span></div></td></tr>
+        <tr><td class="col-name">unit</td><td class="col-type">TEXT</td><td class="col-desc">The measurement unit. Example: "cups", "grams", "tbsp", "pieces". Can be empty for "2 eggs".</td><td><div class="badges"><span class="badge b-opt">Optional</span></div></td></tr>
+        <tr><td class="col-name">notes</td><td class="col-type">TEXT</td><td class="col-desc">Any notes about this specific ingredient. Example: "finely chopped", "room temperature", "optional".</td><td><div class="badges"><span class="badge b-opt">Optional</span></div></td></tr>
+        <tr><td class="col-name">order_index</td><td class="col-type">INTEGER</td><td class="col-desc">The position of this ingredient in the list. 1 = first, 2 = second, etc. Controls the display order.</td><td><div class="badges"><span class="badge b-req">Required</span></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- recipe_steps -->
+  <div class="table-block" id="recipe_steps">
+    <div class="table-header">
+      <div class="table-icon ti-green">📋</div>
+      <div class="table-meta">
+        <div class="table-name">recipe_steps</div>
+        <div class="table-desc">Each row is one step in a recipe's instructions. A recipe with 6 steps = 6 rows here. Storing steps separately means each step can have its own photo, and steps can be reordered easily.</div>
+        <div class="table-note">Think of this like a numbered list. step_number 1 is "Heat the pan", step_number 2 is "Add the oil", and so on.</div>
+        <div class="table-rels">
+          <span class="rel-pill">← recipes (many-to-1)</span>
+        </div>
+      </div>
+    </div>
+    <table class="col-table">
+      <thead><tr><th>Column</th><th>Type</th><th>Description</th><th>Flags</th></tr></thead>
+      <tbody>
+        <tr><td class="col-name">id</td><td class="col-type">UUID</td><td class="col-desc">Unique ID for this step.</td><td><div class="badges"><span class="badge b-pk">PK</span><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">recipe_id</td><td class="col-type">UUID</td><td class="col-desc">Which recipe this step belongs to.</td><td><div class="badges"><span class="badge b-fk">FK → recipes</span><span class="badge b-req">Required</span><span class="badge b-idx">Indexed</span></div></td></tr>
+        <tr><td class="col-name">step_number</td><td class="col-type">INTEGER</td><td class="col-desc">The order of this step. 1 = first step, 2 = second, etc.</td><td><div class="badges"><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">instruction</td><td class="col-type">TEXT</td><td class="col-desc">The full text of this step. Example: "Add the tomatoes and fry on medium heat for 10 minutes, stirring occasionally."</td><td><div class="badges"><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">duration_mins</td><td class="col-type">INTEGER</td><td class="col-desc">Optional time for this step. Example: step 3 takes 10 minutes. Could be used for a cooking timer feature later.</td><td><div class="badges"><span class="badge b-opt">Optional</span></div></td></tr>
+        <tr><td class="col-name">image_url</td><td class="col-type">TEXT</td><td class="col-desc">An optional photo showing what this step should look like. Example: "this is the right colour for the sauce at this stage."</td><td><div class="badges"><span class="badge b-opt">Optional</span></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- recipe_media -->
+  <div class="table-block" id="recipe_media">
+    <div class="table-header">
+      <div class="table-icon ti-purple">📸</div>
+      <div class="table-meta">
+        <div class="table-name">recipe_media</div>
+        <div class="table-desc">Stores all photos and videos attached to a recipe — the cover image, the gallery photos, and the video. Each file is one row. A recipe can have many media files.</div>
+        <div class="table-note">Files are not stored in the database itself — they live on Cloudinary or Uploadthing (image hosting services). This table stores the URL link to where each file lives.</div>
+        <div class="table-rels">
+          <span class="rel-pill">← recipes (many-to-1)</span>
+        </div>
+      </div>
+    </div>
+    <table class="col-table">
+      <thead><tr><th>Column</th><th>Type</th><th>Description</th><th>Flags</th></tr></thead>
+      <tbody>
+        <tr><td class="col-name">id</td><td class="col-type">UUID</td><td class="col-desc">Unique ID for this media file.</td><td><div class="badges"><span class="badge b-pk">PK</span><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">recipe_id</td><td class="col-type">UUID</td><td class="col-desc">Which recipe this file belongs to.</td><td><div class="badges"><span class="badge b-fk">FK → recipes</span><span class="badge b-req">Required</span><span class="badge b-idx">Indexed</span></div></td></tr>
+        <tr><td class="col-name">url</td><td class="col-type">TEXT</td><td class="col-desc">The web link to the actual file in cloud storage. Example: "https://cdn.recipeverse.com/images/abc123.jpg"</td><td><div class="badges"><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">media_type</td><td class="col-type">TEXT</td><td class="col-desc">What kind of file this is: "image" or "video".</td><td><div class="badges"><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">role</td><td class="col-type">TEXT</td><td class="col-desc">What this file is used for: "cover" (the main recipe photo), "gallery" (extra photos), or "video" (the cooking video).</td><td><div class="badges"><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">size_bytes</td><td class="col-type">INTEGER</td><td class="col-desc">The file size in bytes. Useful for storage tracking and enforcing upload size limits.</td><td><div class="badges"><span class="badge b-opt">Optional</span></div></td></tr>
+        <tr><td class="col-name">width</td><td class="col-type">INTEGER</td><td class="col-desc">Width of the image in pixels. Used for responsive image display.</td><td><div class="badges"><span class="badge b-opt">Optional</span></div></td></tr>
+        <tr><td class="col-name">height</td><td class="col-type">INTEGER</td><td class="col-desc">Height of the image in pixels.</td><td><div class="badges"><span class="badge b-opt">Optional</span></div></td></tr>
+        <tr><td class="col-name">order_index</td><td class="col-type">INTEGER</td><td class="col-desc">The display order for gallery images.</td><td><div class="badges"><span class="badge b-opt">Optional</span></div></td></tr>
+        <tr><td class="col-name">created_at</td><td class="col-type">TIMESTAMP</td><td class="col-desc">When this file was uploaded.</td><td><div class="badges"><span class="badge b-req">Required</span></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- SECTION: SOCIAL -->
+<div class="section">
+  <h2>Part 3 — Social interactions</h2>
+
+  <!-- followers -->
+  <div class="table-block" id="followers">
+    <div class="table-header">
+      <div class="table-icon ti-teal">👥</div>
+      <div class="table-meta">
+        <div class="table-name">followers</div>
+        <div class="table-desc">Records every follow relationship between two users. When Ji-Yeon follows Marco, one row is added here. When she unfollows him, that row is deleted. Simple and elegant.</div>
+        <div class="table-note">The combination of follower_id + following_id must always be unique — you can't follow the same person twice. A user also can't follow themselves (enforced in code).</div>
+        <div class="table-rels">
+          <span class="rel-pill">← users as follower (many-to-1)</span>
+          <span class="rel-pill">← users as following (many-to-1)</span>
+        </div>
+      </div>
+    </div>
+    <table class="col-table">
+      <thead><tr><th>Column</th><th>Type</th><th>Description</th><th>Flags</th></tr></thead>
+      <tbody>
+        <tr><td class="col-name">follower_id</td><td class="col-type">UUID</td><td class="col-desc">The user who is doing the following. In "Ji-Yeon follows Marco" — this is Ji-Yeon's ID.</td><td><div class="badges"><span class="badge b-fk">FK → users</span><span class="badge b-req">Required</span><span class="badge b-idx">Indexed</span></div></td></tr>
+        <tr><td class="col-name">following_id</td><td class="col-type">UUID</td><td class="col-desc">The user being followed. In "Ji-Yeon follows Marco" — this is Marco's ID.</td><td><div class="badges"><span class="badge b-fk">FK → users</span><span class="badge b-req">Required</span><span class="badge b-idx">Indexed</span></div></td></tr>
+        <tr><td class="col-name">created_at</td><td class="col-type">TIMESTAMP</td><td class="col-desc">When the follow happened. Together, follower_id + following_id form the Primary Key — no duplicates allowed.</td><td><div class="badges"><span class="badge b-pk">PK (composite)</span><span class="badge b-req">Required</span></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- likes -->
+  <div class="table-block" id="likes">
+    <div class="table-header">
+      <div class="table-icon ti-pink">❤️</div>
+      <div class="table-meta">
+        <div class="table-name">likes</div>
+        <div class="table-desc">Records every time a user likes a recipe. One row = one like. When a user taps the heart on a recipe, a row is added. When they un-like it, the row is removed.</div>
+        <div class="table-note">A user can only like the same recipe once — enforced by making user_id + recipe_id a unique combination.</div>
+        <div class="table-rels">
+          <span class="rel-pill">← users (many-to-1)</span>
+          <span class="rel-pill">← recipes (many-to-1)</span>
+        </div>
+      </div>
+    </div>
+    <table class="col-table">
+      <thead><tr><th>Column</th><th>Type</th><th>Description</th><th>Flags</th></tr></thead>
+      <tbody>
+        <tr><td class="col-name">user_id</td><td class="col-type">UUID</td><td class="col-desc">The user who liked the recipe.</td><td><div class="badges"><span class="badge b-fk">FK → users</span><span class="badge b-pk">PK (composite)</span><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">recipe_id</td><td class="col-type">UUID</td><td class="col-desc">The recipe that was liked.</td><td><div class="badges"><span class="badge b-fk">FK → recipes</span><span class="badge b-pk">PK (composite)</span><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">created_at</td><td class="col-type">TIMESTAMP</td><td class="col-desc">When the like happened.</td><td><div class="badges"><span class="badge b-req">Required</span></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- comments -->
+  <div class="table-block" id="comments">
+    <div class="table-header">
+      <div class="table-icon ti-blue">💬</div>
+      <div class="table-meta">
+        <div class="table-name">comments</div>
+        <div class="table-desc">Every comment on every recipe lives here. This table also supports replies — a comment can have a parent_comment_id pointing to another comment, creating a thread.</div>
+        <div class="table-note">parent_comment_id is the clever trick for replies. If it's null, the comment is top-level. If it has a value, it's a reply to that parent comment. We support 2 levels deep (comment → reply).</div>
+        <div class="table-rels">
+          <span class="rel-pill">← users (many-to-1)</span>
+          <span class="rel-pill">← recipes (many-to-1)</span>
+          <span class="rel-pill">← comments self-reference (reply to)</span>
+        </div>
+      </div>
+    </div>
+    <table class="col-table">
+      <thead><tr><th>Column</th><th>Type</th><th>Description</th><th>Flags</th></tr></thead>
+      <tbody>
+        <tr><td class="col-name">id</td><td class="col-type">UUID</td><td class="col-desc">Unique ID for this comment.</td><td><div class="badges"><span class="badge b-pk">PK</span><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">user_id</td><td class="col-type">UUID</td><td class="col-desc">Who wrote this comment.</td><td><div class="badges"><span class="badge b-fk">FK → users</span><span class="badge b-req">Required</span><span class="badge b-idx">Indexed</span></div></td></tr>
+        <tr><td class="col-name">recipe_id</td><td class="col-type">UUID</td><td class="col-desc">Which recipe this comment is on.</td><td><div class="badges"><span class="badge b-fk">FK → recipes</span><span class="badge b-req">Required</span><span class="badge b-idx">Indexed</span></div></td></tr>
+        <tr><td class="col-name">parent_comment_id</td><td class="col-type">UUID</td><td class="col-desc">If this is a reply, this points to the original comment. If null, it's a top-level comment.</td><td><div class="badges"><span class="badge b-fk">FK → comments</span><span class="badge b-opt">Optional</span></div></td></tr>
+        <tr><td class="col-name">body</td><td class="col-type">TEXT</td><td class="col-desc">The actual text of the comment. Example: "I made this last night and it was amazing!"</td><td><div class="badges"><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">is_edited</td><td class="col-type">BOOLEAN</td><td class="col-desc">True if the user has edited their comment after posting. Shows an "edited" label in the UI.</td><td><div class="badges"><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">is_deleted</td><td class="col-type">BOOLEAN</td><td class="col-desc">Soft delete — instead of erasing the row, we mark it as deleted. This preserves the reply thread structure.</td><td><div class="badges"><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">created_at</td><td class="col-type">TIMESTAMP</td><td class="col-desc">When the comment was posted.</td><td><div class="badges"><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">updated_at</td><td class="col-type">TIMESTAMP</td><td class="col-desc">Last time the comment was edited.</td><td><div class="badges"><span class="badge b-req">Required</span></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- reviews -->
+  <div class="table-block" id="reviews">
+    <div class="table-header">
+      <div class="table-icon ti-amber">⭐</div>
+      <div class="table-meta">
+        <div class="table-name">reviews</div>
+        <div class="table-desc">Stores star ratings and written reviews for recipes. Separate from comments because a review has a score (1–5 stars) and a user can only leave one review per recipe, while they can leave many comments.</div>
+        <div class="table-note">Why separate from comments? Because reviews have a star rating and we enforce one-per-user. Comments are unlimited and have no score. Mixing them would make the data messy.</div>
+        <div class="table-rels">
+          <span class="rel-pill">← users (many-to-1)</span>
+          <span class="rel-pill">← recipes (many-to-1)</span>
+        </div>
+      </div>
+    </div>
+    <table class="col-table">
+      <thead><tr><th>Column</th><th>Type</th><th>Description</th><th>Flags</th></tr></thead>
+      <tbody>
+        <tr><td class="col-name">id</td><td class="col-type">UUID</td><td class="col-desc">Unique ID for this review.</td><td><div class="badges"><span class="badge b-pk">PK</span><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">user_id</td><td class="col-type">UUID</td><td class="col-desc">Who wrote this review.</td><td><div class="badges"><span class="badge b-fk">FK → users</span><span class="badge b-req">Required</span><span class="badge b-idx">Indexed</span></div></td></tr>
+        <tr><td class="col-name">recipe_id</td><td class="col-type">UUID</td><td class="col-desc">Which recipe is being reviewed.</td><td><div class="badges"><span class="badge b-fk">FK → recipes</span><span class="badge b-req">Required</span><span class="badge b-idx">Indexed</span></div></td></tr>
+        <tr><td class="col-name">rating</td><td class="col-type">INTEGER</td><td class="col-desc">The star score from 1 to 5. Database enforces: must be between 1 and 5, nothing else allowed.</td><td><div class="badges"><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">body</td><td class="col-type">TEXT</td><td class="col-desc">The written part of the review. Optional — some users just leave stars with no text.</td><td><div class="badges"><span class="badge b-opt">Optional</span></div></td></tr>
+        <tr><td class="col-name">created_at</td><td class="col-type">TIMESTAMP</td><td class="col-desc">When the review was submitted.</td><td><div class="badges"><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">updated_at</td><td class="col-type">TIMESTAMP</td><td class="col-desc">If the user updates their review, this records when.</td><td><div class="badges"><span class="badge b-req">Required</span></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- saved_recipes -->
+  <div class="table-block" id="saved_recipes">
+    <div class="table-header">
+      <div class="table-icon ti-teal">🔖</div>
+      <div class="table-meta">
+        <div class="table-name">saved_recipes</div>
+        <div class="table-desc">Records every recipe a user has saved to their collection. Each row is one saved recipe in one named collection. Example: Ji-Yeon saves Marco's carbonara to her "Italian Classics" collection.</div>
+        <div class="table-note">collection_name lets users organise saves into folders like "Quick dinners", "Baking", "Dad's favourites". A user can save the same recipe to multiple collections.</div>
+        <div class="table-rels">
+          <span class="rel-pill">← users (many-to-1)</span>
+          <span class="rel-pill">← recipes (many-to-1)</span>
+        </div>
+      </div>
+    </div>
+    <table class="col-table">
+      <thead><tr><th>Column</th><th>Type</th><th>Description</th><th>Flags</th></tr></thead>
+      <tbody>
+        <tr><td class="col-name">id</td><td class="col-type">UUID</td><td class="col-desc">Unique ID for this saved entry.</td><td><div class="badges"><span class="badge b-pk">PK</span><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">user_id</td><td class="col-type">UUID</td><td class="col-desc">Who saved the recipe.</td><td><div class="badges"><span class="badge b-fk">FK → users</span><span class="badge b-req">Required</span><span class="badge b-idx">Indexed</span></div></td></tr>
+        <tr><td class="col-name">recipe_id</td><td class="col-type">UUID</td><td class="col-desc">Which recipe was saved.</td><td><div class="badges"><span class="badge b-fk">FK → recipes</span><span class="badge b-req">Required</span><span class="badge b-idx">Indexed</span></div></td></tr>
+        <tr><td class="col-name">collection_name</td><td class="col-type">TEXT</td><td class="col-desc">The name of the collection this recipe was saved to. Default is "All Saved". User can rename or create new collections.</td><td><div class="badges"><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">saved_at</td><td class="col-type">TIMESTAMP</td><td class="col-desc">When the recipe was saved.</td><td><div class="badges"><span class="badge b-req">Required</span></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- SECTION: TAGS -->
+<div class="section">
+  <h2>Part 4 — Tags, categories & notifications</h2>
+
+  <!-- tags -->
+  <div class="table-block" id="tags">
+    <div class="table-header">
+      <div class="table-icon ti-gray">🏷️</div>
+      <div class="table-meta">
+        <div class="table-name">tags</div>
+        <div class="table-desc">The master list of all tags on the platform. Examples: "vegan", "gluten-free", "30-minute meals", "comfort food", "street food". Each tag is created once and can be attached to many recipes.</div>
+        <div class="table-note">Tags live in their own table so we never spell "vegetarian" differently across 1000 recipes. One tag row, many recipes use it.</div>
+        <div class="table-rels">
+          <span class="rel-pill">→ recipe_tags (1-to-many)</span>
+        </div>
+      </div>
+    </div>
+    <table class="col-table">
+      <thead><tr><th>Column</th><th>Type</th><th>Description</th><th>Flags</th></tr></thead>
+      <tbody>
+        <tr><td class="col-name">id</td><td class="col-type">UUID</td><td class="col-desc">Unique ID for this tag.</td><td><div class="badges"><span class="badge b-pk">PK</span><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">name</td><td class="col-type">TEXT</td><td class="col-desc">The tag label. Example: "vegan", "quick meals", "dessert". Always lowercase, stored consistently.</td><td><div class="badges"><span class="badge b-req">Required</span><span class="badge b-uni">Unique</span><span class="badge b-idx">Indexed</span></div></td></tr>
+        <tr><td class="col-name">slug</td><td class="col-type">TEXT</td><td class="col-desc">URL-friendly version. Example: "quick-meals". Used for tag pages like recipeverse.com/tag/quick-meals.</td><td><div class="badges"><span class="badge b-req">Required</span><span class="badge b-uni">Unique</span></div></td></tr>
+        <tr><td class="col-name">category</td><td class="col-type">TEXT</td><td class="col-desc">Groups tags into types. Example: "dietary" (vegan, gluten-free), "meal-type" (breakfast, dinner), "technique" (baking, grilling).</td><td><div class="badges"><span class="badge b-opt">Optional</span></div></td></tr>
+        <tr><td class="col-name">usage_count</td><td class="col-type">INTEGER</td><td class="col-desc">How many recipes use this tag. Cached for fast sorting of popular tags.</td><td><div class="badges"><span class="badge b-req">Required</span></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- recipe_tags -->
+  <div class="table-block" id="recipe_tags">
+    <div class="table-header">
+      <div class="table-icon ti-gray">🔗</div>
+      <div class="table-meta">
+        <div class="table-name">recipe_tags</div>
+        <div class="table-desc">This is called a "junction table" or "join table". It connects recipes and tags. One recipe can have many tags. One tag can be on many recipes. This table makes that many-to-many relationship possible.</div>
+        <div class="table-note">Example: Marco's carbonara has tags "Italian", "pasta", "comfort food", "quick meals". That's 4 rows in this table, all with the same recipe_id but different tag_ids.</div>
+        <div class="table-rels">
+          <span class="rel-pill">← recipes (many-to-1)</span>
+          <span class="rel-pill">← tags (many-to-1)</span>
+        </div>
+      </div>
+    </div>
+    <table class="col-table">
+      <thead><tr><th>Column</th><th>Type</th><th>Description</th><th>Flags</th></tr></thead>
+      <tbody>
+        <tr><td class="col-name">recipe_id</td><td class="col-type">UUID</td><td class="col-desc">The recipe being tagged.</td><td><div class="badges"><span class="badge b-fk">FK → recipes</span><span class="badge b-pk">PK (composite)</span><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">tag_id</td><td class="col-type">UUID</td><td class="col-desc">The tag being applied. Together with recipe_id, they form the primary key — the same tag can't be applied to the same recipe twice.</td><td><div class="badges"><span class="badge b-fk">FK → tags</span><span class="badge b-pk">PK (composite)</span><span class="badge b-req">Required</span></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- notifications -->
+  <div class="table-block" id="notifications">
+    <div class="table-header">
+      <div class="table-icon ti-purple">🔔</div>
+      <div class="table-meta">
+        <div class="table-name">notifications</div>
+        <div class="table-desc">Every in-app notification sent to every user. When Amara gets a new follower, a row is added here. When she opens the notification bell, all her unread notifications are fetched from this table.</div>
+        <div class="table-note">The actor_id and entity fields make this table flexible. "actor liked your recipe" — actor_id is the liker, entity_type is "recipe", entity_id is the recipe ID. Works for any notification type.</div>
+        <div class="table-rels">
+          <span class="rel-pill">← users as recipient (many-to-1)</span>
+          <span class="rel-pill">← users as actor (many-to-1)</span>
+        </div>
+      </div>
+    </div>
+    <table class="col-table">
+      <thead><tr><th>Column</th><th>Type</th><th>Description</th><th>Flags</th></tr></thead>
+      <tbody>
+        <tr><td class="col-name">id</td><td class="col-type">UUID</td><td class="col-desc">Unique ID for this notification.</td><td><div class="badges"><span class="badge b-pk">PK</span><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">recipient_id</td><td class="col-type">UUID</td><td class="col-desc">The user who receives this notification — Amara in "Ji-Yeon followed Amara".</td><td><div class="badges"><span class="badge b-fk">FK → users</span><span class="badge b-req">Required</span><span class="badge b-idx">Indexed</span></div></td></tr>
+        <tr><td class="col-name">actor_id</td><td class="col-type">UUID</td><td class="col-desc">The user who triggered this notification — Ji-Yeon in the example above.</td><td><div class="badges"><span class="badge b-fk">FK → users</span><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">type</td><td class="col-type">TEXT</td><td class="col-desc">What kind of notification this is. One of: "new_follower", "recipe_like", "recipe_comment", "comment_reply", "new_recipe_from_following".</td><td><div class="badges"><span class="badge b-req">Required</span><span class="badge b-idx">Indexed</span></div></td></tr>
+        <tr><td class="col-name">entity_type</td><td class="col-type">TEXT</td><td class="col-desc">What object the notification is about: "recipe", "comment", "user".</td><td><div class="badges"><span class="badge b-opt">Optional</span></div></td></tr>
+        <tr><td class="col-name">entity_id</td><td class="col-type">UUID</td><td class="col-desc">The ID of the specific object. If entity_type is "recipe", this is the recipe's ID. Clicking the notification navigates here.</td><td><div class="badges"><span class="badge b-opt">Optional</span></div></td></tr>
+        <tr><td class="col-name">message</td><td class="col-type">TEXT</td><td class="col-desc">The human-readable notification text. Example: "Ji-Yeon started following you."</td><td><div class="badges"><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">is_read</td><td class="col-type">BOOLEAN</td><td class="col-desc">False until the user opens their notification panel. The unread badge count is the number of rows where is_read = false for that user.</td><td><div class="badges"><span class="badge b-req">Required</span></div></td></tr>
+        <tr><td class="col-name">created_at</td><td class="col-type">TIMESTAMP</td><td class="col-desc">When the notification was generated.</td><td><div class="badges"><span class="badge b-req">Required</span><span class="badge b-idx">Indexed</span></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- RELATIONSHIPS SUMMARY -->
+<div class="section">
+  <h2>Relationships between tables — plain English</h2>
+  <div class="rel-section">
+    <div class="rel-title">How the tables connect to each other</div>
+    <div class="rel-row"><span class="rel-table">users</span><span class="rel-arrow">→</span><span class="rel-table">profiles</span><span class="rel-type">One-to-one</span><div class="rel-desc">Every user has exactly one profile. Created automatically at sign-up.</div></div>
+    <div class="rel-row"><span class="rel-table">users</span><span class="rel-arrow">→</span><span class="rel-table">recipes</span><span class="rel-type">One-to-many</span><div class="rel-desc">One user can publish many recipes. Every recipe belongs to one user.</div></div>
+    <div class="rel-row"><span class="rel-table">recipes</span><span class="rel-arrow">→</span><span class="rel-table">ingredients</span><span class="rel-type">One-to-many</span><div class="rel-desc">One recipe has many ingredients. Each ingredient belongs to one recipe.</div></div>
+    <div class="rel-row"><span class="rel-table">recipes</span><span class="rel-arrow">→</span><span class="rel-table">recipe_steps</span><span class="rel-type">One-to-many</span><div class="rel-desc">One recipe has many steps. Each step belongs to one recipe.</div></div>
+    <div class="rel-row"><span class="rel-table">recipes</span><span class="rel-arrow">→</span><span class="rel-table">recipe_media</span><span class="rel-type">One-to-many</span><div class="rel-desc">One recipe can have many photos and videos.</div></div>
+    <div class="rel-row"><span class="rel-table">users</span><span class="rel-arrow">↔</span><span class="rel-table">users</span><span class="rel-type">Many-to-many (via followers)</span><div class="rel-desc">Users follow other users. The followers table holds every follow relationship.</div></div>
+    <div class="rel-row"><span class="rel-table">users</span><span class="rel-arrow">↔</span><span class="rel-table">recipes</span><span class="rel-type">Many-to-many (via likes)</span><div class="rel-desc">Many users can like many recipes. The likes table records each like.</div></div>
+    <div class="rel-row"><span class="rel-table">users</span><span class="rel-arrow">→</span><span class="rel-table">comments</span><span class="rel-type">One-to-many</span><div class="rel-desc">One user can write many comments across any number of recipes.</div></div>
+    <div class="rel-row"><span class="rel-table">comments</span><span class="rel-arrow">→</span><span class="rel-table">comments</span><span class="rel-type">Self-reference (replies)</span><div class="rel-desc">A comment can be a reply to another comment via parent_comment_id.</div></div>
+    <div class="rel-row"><span class="rel-table">users</span><span class="rel-arrow">→</span><span class="rel-table">reviews</span><span class="rel-type">One-to-one per recipe</span><div class="rel-desc">A user can only leave one review per recipe but can review many recipes.</div></div>
+    <div class="rel-row"><span class="rel-table">users</span><span class="rel-arrow">↔</span><span class="rel-table">recipes</span><span class="rel-type">Many-to-many (via saved_recipes)</span><div class="rel-desc">Many users can save many recipes into named collections.</div></div>
+    <div class="rel-row"><span class="rel-table">recipes</span><span class="rel-arrow">↔</span><span class="rel-table">tags</span><span class="rel-type">Many-to-many (via recipe_tags)</span><div class="rel-desc">One recipe can have many tags. One tag can be on many recipes.</div></div>
+    <div class="rel-row"><span class="rel-table">users</span><span class="rel-arrow">→</span><span class="rel-table">notifications</span><span class="rel-type">One-to-many</span><div class="rel-desc">Every action on the platform can generate a notification for the relevant user.</div></div>
+  </div>
+</div>
+
+<!-- SCALE NOTES -->
+<div class="section">
+  <h2>Scalability notes — what to add as you grow</h2>
+  <div class="scale-grid">
+    <div class="scale-card">
+      <div class="scale-title">Add database indexes early</div>
+      <div class="scale-body">Every column marked <span class="badge b-idx">Indexed</span> in this document needs an index created in PostgreSQL. Indexes are like a book's index — they make lookups 100x faster. Add them before you have 10,000+ rows, not after.</div>
+    </div>
+    <div class="scale-card">
+      <div class="scale-title">Cache counts in profile rows</div>
+      <div class="scale-body">follower_count, recipe_count, like_count — these are stored directly on the row so you never have to count millions of rows just to show a number. Recalculate them in a background job every 5 minutes.</div>
+    </div>
+    <div class="scale-card">
+      <div class="scale-title">Soft deletes everywhere</div>
+      <div class="scale-body">Notice deleted_at and is_deleted fields instead of actually removing rows. This protects you — you can recover accidentally deleted content, and it keeps reply threads intact even if a parent comment is removed.</div>
+    </div>
+    <div class="scale-card">
+      <div class="scale-title">UUIDs instead of numbers</div>
+      <div class="scale-body">All IDs are UUIDs (random unique strings) not sequential numbers (1, 2, 3…). This means no one can guess IDs, you can merge databases without conflicts, and it scales across multiple servers.</div>
+    </div>
+    <div class="scale-card">
+      <div class="scale-title">Full-text search index</div>
+      <div class="scale-body">PostgreSQL has built-in full-text search. Add a search index on recipes.title and ingredients.name to power the search bar without needing a separate search service at MVP stage.</div>
+    </div>
+    <div class="scale-card">
+      <div class="scale-title">Future tables to add</div>
+      <div class="scale-body">When you reach Phase 2, you'll add: <strong>transactions</strong> (tips/payments), <strong>subscriptions</strong> (creator memberships), <strong>collections</strong> (user-named recipe folders as their own table), and <strong>reports</strong> (flagged content queue).</div>
+    </div>
+  </div>
+
+  <div class="callout-green"><strong>The golden rule of databases:</strong> Store each piece of information in exactly one place. If you find yourself copying the same data into multiple tables, something is wrong with the design. One source of truth — that's what makes a database clean and scalable.</div>
+</div>
+
+<div class="footer">
+  <span>RecipeVerse — Database Schema v1.0</span>
+  <span>Confidential · March 2026</span>
+</div>
+
+</div>
+</body>
+</html>

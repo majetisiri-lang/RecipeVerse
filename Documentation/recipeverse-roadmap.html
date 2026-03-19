@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>RecipeVerse — Roadmap</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8f6f2; color: #1a1a1a; line-height: 1.7; font-size: 15px; }
+.page { max-width: 960px; margin: 0 auto; padding: 48px 32px; }
+
+.cover { background: linear-gradient(135deg, #e8430a 0%, #f97316 55%, #fbbf24 100%); border-radius: 20px; padding: 48px; color: #fff; margin-bottom: 40px; }
+.cover h1 { font-size: 36px; font-weight: 800; margin-bottom: 8px; }
+.cover p { font-size: 15px; opacity: 0.88; max-width: 540px; line-height: 1.6; margin-bottom: 20px; }
+.cover-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.cover-pill { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 4px 14px; font-size: 12px; }
+
+/* Timeline overview */
+.timeline-overview { background: #fff; border: 1px solid #ede8e0; border-radius: 16px; padding: 28px; margin-bottom: 40px; }
+.tl-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #aaa; margin-bottom: 20px; }
+.tl-bar { display: flex; border-radius: 10px; overflow: hidden; height: 48px; margin-bottom: 14px; }
+.tl-seg { display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #fff; }
+.tl-p1 { background: #1a1a1a; flex: 2; }
+.tl-p2 { background: #5035b0; flex: 3; }
+.tl-p3 { background: #e8430a; flex: 4; }
+.tl-labels { display: flex; }
+.tl-label { font-size: 12px; color: #888; }
+.tl-label.p1 { flex: 2; } .tl-label.p2 { flex: 3; } .tl-label.p3 { flex: 4; }
+.tl-phases { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 20px; }
+.tl-phase { border-radius: 12px; padding: 16px 18px; }
+.tl-p1-card { background: #f5f5f5; border: 1px solid #e0e0e0; }
+.tl-p2-card { background: #f0eeff; border: 1px solid #ddd6fe; }
+.tl-p3-card { background: #fff0e6; border: 1px solid #fdd9c8; }
+.tl-phase-name { font-size: 14px; font-weight: 800; margin-bottom: 4px; }
+.tl-phase-period { font-size: 12px; color: #888; margin-bottom: 8px; }
+.tl-phase-goal { font-size: 13px; color: #555; line-height: 1.5; }
+
+/* Section */
+.phase-section { margin-bottom: 56px; }
+.phase-header { border-radius: 16px; padding: 28px 32px; margin-bottom: 28px; color: #fff; }
+.ph1-header { background: #1a1a1a; }
+.ph2-header { background: linear-gradient(135deg, #5035b0, #7c3aed); }
+.ph3-header { background: linear-gradient(135deg, #e8430a, #f97316); }
+.phase-header-top { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
+.phase-label { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.6; margin-bottom: 6px; }
+.phase-name { font-size: 26px; font-weight: 800; }
+.phase-tagline { font-size: 14px; opacity: 0.8; margin-top: 4px; }
+.phase-meta { text-align: right; }
+.phase-period { font-size: 22px; font-weight: 800; }
+.phase-duration { font-size: 12px; opacity: 0.65; margin-top: 2px; }
+.phase-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; margin-top: 16px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 16px; }
+.phase-stat { text-align: center; }
+.phase-stat-val { font-size: 22px; font-weight: 800; }
+.phase-stat-label { font-size: 11px; opacity: 0.65; }
+
+/* Sub-sections */
+.subsec { background: #fff; border: 1px solid #ede8e0; border-radius: 14px; overflow: hidden; margin-bottom: 16px; }
+.subsec-head { padding: 14px 20px; border-bottom: 1px solid #f0ebe2; display: flex; align-items: center; gap: 10px; }
+.subsec-icon { width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.subsec-title { font-size: 15px; font-weight: 700; }
+.subsec-body { padding: 18px 20px; }
+
+/* Feature list */
+.feat-list { list-style: none; }
+.feat-item { padding: 10px 0; border-bottom: 1px solid #f8f4ef; display: flex; gap: 12px; align-items: flex-start; }
+.feat-item:last-child { border-bottom: none; }
+.feat-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 7px; }
+.fd-core { background: #e8430a; }
+.fd-social { background: #5035b0; }
+.fd-ai { background: #0891b2; }
+.fd-growth { background: #16a34a; }
+.fd-money { background: #d97706; }
+.feat-content { flex: 1; }
+.feat-name { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+.feat-why { font-size: 12px; color: #666; line-height: 1.5; }
+.feat-tag { display: inline-block; font-size: 10px; font-weight: 700; padding: 1px 7px; border-radius: 8px; margin-left: 6px; vertical-align: middle; }
+.ft-must { background: #fee2e2; color: #991b1b; }
+.ft-important { background: #fef9c3; color: #854d0e; }
+.ft-nice { background: #dcfce7; color: #166534; }
+
+/* Dependency + Risk grids */
+.dep-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.dep-card { background: #faf8f5; border-radius: 10px; padding: 14px 16px; }
+.dep-title { font-size: 12px; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+.dep-items { font-size: 12px; color: #666; line-height: 1.8; }
+.dep-items span { display: block; padding-left: 10px; position: relative; }
+.dep-items span::before { content: "→"; position: absolute; left: 0; color: #bbb; font-size: 10px; }
+
+.risk-list { list-style: none; }
+.risk-item { padding: 10px 14px; border-radius: 8px; margin-bottom: 8px; display: flex; gap: 12px; align-items: flex-start; }
+.risk-item:last-child { margin-bottom: 0; }
+.risk-h { background: #fef2f2; border: 1px solid #fecaca; }
+.risk-m { background: #fffbeb; border: 1px solid #fde68a; }
+.risk-l { background: #f0fdf4; border: 1px solid #bbf7d0; }
+.risk-badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; white-space: nowrap; flex-shrink: 0; margin-top: 1px; }
+.rb-h { background: #fee2e2; color: #991b1b; }
+.rb-m { background: #fef9c3; color: #854d0e; }
+.rb-l { background: #dcfce7; color: #166534; }
+.risk-text { flex: 1; }
+.risk-name { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+.risk-fix { font-size: 12px; color: #666; line-height: 1.5; }
+
+/* Team */
+.team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+.team-card { background: #faf8f5; border-radius: 10px; padding: 14px 16px; }
+.team-role { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+.team-type { font-size: 10px; font-weight: 700; padding: 1px 7px; border-radius: 10px; margin-bottom: 6px; display: inline-block; }
+.tt-founder { background: #e8430a; color: #fff; }
+.tt-hire { background: #5035b0; color: #fff; }
+.tt-contract { background: #0891b2; color: #fff; }
+.tt-part { background: #16a34a; color: #fff; }
+.team-desc { font-size: 12px; color: #666; line-height: 1.6; }
+.team-cost { font-size: 11px; color: #aaa; margin-top: 6px; font-family: monospace; }
+
+/* Success metrics */
+.metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+.metric { background: #faf8f5; border-radius: 10px; padding: 14px 12px; text-align: center; }
+.metric-val { font-size: 22px; font-weight: 800; }
+.mv-p1 { color: #1a1a1a; }
+.mv-p2 { color: #5035b0; }
+.mv-p3 { color: #e8430a; }
+.metric-label { font-size: 11px; color: #888; margin-top: 3px; line-height: 1.4; }
+
+/* Callouts */
+.callout { border-left: 3px solid #e8430a; background: #fff8f5; border-radius: 0 10px 10px 0; padding: 13px 17px; margin: 14px 0; font-size: 13px; color: #555; line-height: 1.7; }
+.callout strong { color: #e8430a; }
+.callout-blue { border-left: 3px solid #3b82f6; background: #eff6ff; border-radius: 0 10px 10px 0; padding: 13px 17px; margin: 14px 0; font-size: 13px; color: #555; }
+.callout-green { border-left: 3px solid #16a34a; background: #f0fdf4; border-radius: 0 10px 10px 0; padding: 13px 17px; margin: 14px 0; font-size: 13px; color: #555; }
+.callout-purple { border-left: 3px solid #7c3aed; background: #f5f3ff; border-radius: 0 10px 10px 0; padding: 13px 17px; margin: 14px 0; font-size: 13px; color: #555; }
+
+.footer { margin-top: 56px; padding-top: 24px; border-top: 1px solid #ede8e0; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; font-size: 12px; color: #bbb; }
+@media (max-width: 640px) {
+  .page { padding: 24px 16px; }
+  .cover { padding: 32px 22px; } .cover h1 { font-size: 26px; }
+  .phase-header { padding: 22px; }
+  .phase-name { font-size: 20px; }
+}
+@media print { body { background: #fff; } }
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- COVER -->
+<div class="cover">
+  <h1>RecipeVerse — Product Roadmap</h1>
+  <p>Three focused phases from MVP launch to monetized scale. Every feature placed in the right phase for the right reason. Realistic for a small startup team.</p>
+  <div class="cover-pills">
+    <span class="cover-pill">3 phases</span>
+    <span class="cover-pill">20 weeks to Phase 2</span>
+    <span class="cover-pill">Startup-realistic</span>
+    <span class="cover-pill">Founder-friendly</span>
+  </div>
+</div>
+
+<!-- TIMELINE OVERVIEW -->
+<div class="timeline-overview">
+  <div class="tl-title">At a glance — all three phases on one timeline</div>
+  <div class="tl-bar">
+    <div class="tl-seg tl-p1">Phase 1</div>
+    <div class="tl-seg tl-p2">Phase 2</div>
+    <div class="tl-seg tl-p3">Phase 3</div>
+  </div>
+  <div class="tl-labels">
+    <div class="tl-label p1">Weeks 1–8</div>
+    <div class="tl-label p2">Weeks 9–20</div>
+    <div class="tl-label p3">Month 6 onwards</div>
+  </div>
+  <div class="tl-phases">
+    <div class="tl-phase tl-p1-card">
+      <div class="tl-phase-name" style="color:#1a1a1a;">Phase 1 — MVP</div>
+      <div class="tl-phase-period">Weeks 1–8</div>
+      <div class="tl-phase-goal">Build the core product. Prove people want it. Get the first 1,000 users creating and sharing recipes.</div>
+    </div>
+    <div class="tl-phase tl-p2-card">
+      <div class="tl-phase-name" style="color:#5035b0;">Phase 2 — Growth</div>
+      <div class="tl-phase-period">Weeks 9–20</div>
+      <div class="tl-phase-goal">Make the platform social and sticky. Launch the mobile app. Give creators tools to grow their audience.</div>
+    </div>
+    <div class="tl-phase tl-p3-card">
+      <div class="tl-phase-name" style="color:#e8430a;">Phase 3 — Monetization</div>
+      <div class="tl-phase-period">Month 6+</div>
+      <div class="tl-phase-goal">Turn the platform into a business. Let creators earn. Build the brand marketplace. Scale to 100k+ users.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<!-- PHASE 1 -->
+<!-- ══════════════════════════════════════ -->
+<div class="phase-section">
+  <div class="phase-header ph1-header">
+    <div class="phase-header-top">
+      <div>
+        <div class="phase-label">Phase 1</div>
+        <div class="phase-name">MVP — Build & Validate</div>
+        <div class="phase-tagline">"Does anyone actually want this?" — answer that question first.</div>
+      </div>
+      <div class="phase-meta">
+        <div class="phase-period">Weeks 1–8</div>
+        <div class="phase-duration">2 months · Web only</div>
+      </div>
+    </div>
+    <div class="phase-summary">
+      <div class="phase-stat"><div class="phase-stat-val">14</div><div class="phase-stat-label">Core features</div></div>
+      <div class="phase-stat"><div class="phase-stat-val">$30</div><div class="phase-stat-label">Monthly cost</div></div>
+      <div class="phase-stat"><div class="phase-stat-val">1–3</div><div class="phase-stat-label">Team size</div></div>
+      <div class="phase-stat"><div class="phase-stat-val">1,000</div><div class="phase-stat-label">User target</div></div>
+    </div>
+  </div>
+
+  <div class="callout"><strong>The Phase 1 mindset:</strong> Build only what is absolutely necessary to answer one question — "Will food creators share recipes here and will other people come back to read them?" Everything else waits. Resist scope creep with everything you have.</div>
+
+  <!-- Features -->
+  <div class="subsec">
+    <div class="subsec-head">
+      <div class="subsec-icon" style="background:#f5f5f5;">📋</div>
+      <div class="subsec-title">Features — what gets built in Phase 1</div>
+    </div>
+    <div class="subsec-body">
+      <ul class="feat-list">
+        <li class="feat-item"><div class="feat-dot fd-core"></div><div class="feat-content"><div class="feat-name">User sign up & login <span class="feat-tag ft-must">Must</span></div><div class="feat-why">The foundation. Without accounts there is no community, no feed, no follows. Google OAuth + email. Powered by Clerk — takes 1 day to build.</div></div></li>
+        <li class="feat-item"><div class="feat-dot fd-core"></div><div class="feat-content"><div class="feat-name">User profiles <span class="feat-tag ft-must">Must</span></div><div class="feat-why">Every creator needs a public page showing their name, bio, avatar, and recipe list. This is their identity on the platform.</div></div></li>
+        <li class="feat-item"><div class="feat-dot fd-core"></div><div class="feat-content"><div class="feat-name">Recipe creation — typed form <span class="feat-tag ft-must">Must</span></div><div class="feat-why">The baseline creation method. Title, ingredients, steps, cook time, servings. Every other creation method (voice, import) is built on top of this form.</div></div></li>
+        <li class="feat-item"><div class="feat-dot fd-ai"></div><div class="feat-content"><div class="feat-name">Voice-to-recipe AI <span class="feat-tag ft-must">Must</span></div><div class="feat-why">RecipeVerse's signature differentiator. Whisper transcribes audio, Claude structures it. No other platform has this. It must be in Phase 1 — it's the reason people will talk about the app.</div></div></li>
+        <li class="feat-item"><div class="feat-dot fd-ai"></div><div class="feat-content"><div class="feat-name">One-click social import (Instagram, YouTube, Facebook) <span class="feat-tag ft-must">Must</span></div><div class="feat-why">Lowers the barrier for creators who already have content. Paste a URL and AI extracts the recipe. Without this, asking creators to retype everything is a dealbreaker.</div></div></li>
+        <li class="feat-item"><div class="feat-dot fd-core"></div><div class="feat-content"><div class="feat-name">Photo & video upload <span class="feat-tag ft-must">Must</span></div><div class="feat-why">Food is visual. Recipes without photos get almost no engagement. Cover photo + per-step photos. Powered by Uploadthing.</div></div></li>
+        <li class="feat-item"><div class="feat-dot fd-core"></div><div class="feat-content"><div class="feat-name">Home feed <span class="feat-tag ft-must">Must</span></div><div class="feat-why">The daily habit screen. Shows recipes from followed creators. New users see trending recipes so the feed is never empty. This is what makes users return.</div></div></li>
+        <li class="feat-item"><div class="feat-dot fd-core"></div><div class="feat-content"><div class="feat-name">Explore / discover page <span class="feat-tag ft-must">Must</span></div><div class="feat-why">How new users discover content before they follow anyone. Trending, new this week, browse by cuisine. The growth engine — every shared recipe leads here.</div></div></li>
+        <li class="feat-item"><div class="feat-dot fd-social"></div><div class="feat-content"><div class="feat-name">Follow / unfollow <span class="feat-tag ft-must">Must</span></div><div class="feat-why">What transforms this from a recipe website into a social platform. Without follows there is no personalised feed and no creator-audience relationship.</div></div></li>
+        <li class="feat-item"><div class="feat-dot fd-social"></div><div class="feat-content"><div class="feat-name">Likes & saves to collections <span class="feat-tag ft-must">Must</span></div><div class="feat-why">Likes give creators instant feedback. Saves give users a personal recipe box. Both are the most frequent social actions and take one day to build.</div></div></li>
+        <li class="feat-item"><div class="feat-dot fd-social"></div><div class="feat-content"><div class="feat-name">Comments & star ratings <span class="feat-tag ft-must">Must</span></div><div class="feat-why">Comments build community — "I made this and it was amazing!" keeps creators motivated. Ratings help users trust recipes before cooking them.</div></div></li>
+        <li class="feat-item"><div class="feat-dot fd-core"></div><div class="feat-content"><div class="feat-name">Search with filters <span class="feat-tag ft-must">Must</span></div><div class="feat-why">Users arrive with intent — "I want a quick vegetarian pasta." Without search they leave. PostgreSQL full-text covers MVP needs at zero extra cost.</div></div></li>
+        <li class="feat-item"><div class="feat-dot fd-core"></div><div class="feat-content"><div class="feat-name">In-app notifications <span class="feat-tag ft-important">Important</span></div><div class="feat-why">Brings users back. "Ji-Yeon liked your recipe" is the loop that creates habit. Without notifications, retention collapses after week 1.</div></div></li>
+        <li class="feat-item"><div class="feat-dot fd-core"></div><div class="feat-content"><div class="feat-name">Content reporting / flagging <span class="feat-tag ft-important">Important</span></div><div class="feat-why">Every platform needs safety tools from day one. One spam recipe can damage trust with all users. Cheap to build, expensive not to have.</div></div></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Dependencies -->
+  <div class="subsec">
+    <div class="subsec-head">
+      <div class="subsec-icon" style="background:#eff6ff;">🔗</div>
+      <div class="subsec-title">Dependencies — what must be true before you can build</div>
+    </div>
+    <div class="subsec-body">
+      <div class="dep-grid">
+        <div class="dep-card">
+          <div class="dep-title">🛠️ Technical setup (Week 1)</div>
+          <div class="dep-items">
+            <span>Next.js + Supabase project created</span>
+            <span>Clerk auth configured</span>
+            <span>Drizzle schema migrated to DB</span>
+            <span>Uploadthing connected</span>
+            <span>Vercel deployment pipeline working</span>
+          </div>
+        </div>
+        <div class="dep-card">
+          <div class="dep-title">🤖 AI services (Week 3–4)</div>
+          <div class="dep-items">
+            <span>OpenAI API key obtained</span>
+            <span>Claude API key obtained</span>
+            <span>Voice recording tested on web + mobile browser</span>
+            <span>AI prompt tested and validated</span>
+          </div>
+        </div>
+        <div class="dep-card">
+          <div class="dep-title">📦 Content seeding (Before launch)</div>
+          <div class="dep-items">
+            <span>50–100 founding creators recruited</span>
+            <span>500+ quality recipes pre-loaded</span>
+            <span>Waitlist of 1,000+ signups built</span>
+            <span>Legal: Terms of Service + Privacy Policy live</span>
+          </div>
+        </div>
+        <div class="dep-card">
+          <div class="dep-title">🧪 Testing (Week 7–8)</div>
+          <div class="dep-items">
+            <span>200-person closed beta completed</span>
+            <span>Critical bugs fixed before public launch</span>
+            <span>Mobile-responsive layout verified</span>
+            <span>AI accuracy tested on diverse accents</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Risks -->
+  <div class="subsec">
+    <div class="subsec-head">
+      <div class="subsec-icon" style="background:#fef2f2;">⚠️</div>
+      <div class="subsec-title">Risks — what could go wrong and how to handle it</div>
+    </div>
+    <div class="subsec-body">
+      <ul class="risk-list">
+        <li class="risk-item risk-h"><span class="risk-badge rb-h">High</span><div class="risk-text"><div class="risk-name">Platform launches with no content ("empty restaurant problem")</div><div class="risk-fix">Mitigation: Recruit 50–100 food creators before launch day. Pre-seed 500+ quality recipes. Never show new users an empty feed — always fall back to trending.</div></div></li>
+        <li class="risk-item risk-h"><span class="risk-badge rb-h">High</span><div class="risk-text"><div class="risk-name">Voice AI misinterprets accents or unusual ingredient names</div><div class="risk-fix">Mitigation: Always show a full editable review screen. Highlight low-confidence fields in yellow. Provide a "type instead" fallback at every step. Monitor user edit rates to improve the prompt.</div></div></li>
+        <li class="risk-item risk-m"><span class="risk-badge rb-m">Medium</span><div class="risk-text"><div class="risk-name">Social import blocked by Instagram/Facebook API restrictions</div><div class="risk-fix">Mitigation: Use third-party scraping services (Apify) as the primary method. Build a fallback where users can paste the caption text manually if the URL fails.</div></div></li>
+        <li class="risk-item risk-m"><span class="risk-badge rb-m">Medium</span><div class="risk-text"><div class="risk-name">8-week timeline slips due to scope creep</div><div class="risk-fix">Mitigation: Ruthlessly cut anything not in the confirmed feature list. A shipped MVP with 12 features beats an unfinished one with 20. Assign a designated "scope guardian" — someone who says no.</div></div></li>
+        <li class="risk-item risk-l"><span class="risk-badge rb-l">Low</span><div class="risk-text"><div class="risk-name">Supabase free tier pauses the project (inactivity after 1 week)</div><div class="risk-fix">Mitigation: Set up a simple ping/cron job to keep the DB active. Upgrade to Supabase Pro ($25/mo) once the MVP launches.</div></div></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Team -->
+  <div class="subsec">
+    <div class="subsec-head">
+      <div class="subsec-icon" style="background:#f5f5f5;">👥</div>
+      <div class="subsec-title">Team needed for Phase 1</div>
+    </div>
+    <div class="subsec-body">
+      <div class="team-grid">
+        <div class="team-card">
+          <div class="team-role">Founder / Full-stack developer</div>
+          <div class="team-type tt-founder">Founder</div>
+          <div class="team-desc">Builds everything — Next.js frontend, tRPC backend, database, AI integration. Must be comfortable with TypeScript and React. This is the core builder.</div>
+          <div class="team-cost">Full time · equity only at start</div>
+        </div>
+        <div class="team-card">
+          <div class="team-role">Co-founder / Product & Growth</div>
+          <div class="team-type tt-founder">Co-founder</div>
+          <div class="team-desc">Handles product decisions, recruits founding creators, manages the waitlist, talks to early users, writes content. Not necessarily technical.</div>
+          <div class="team-cost">Full time · equity only at start</div>
+        </div>
+        <div class="team-card">
+          <div class="team-role">UI/UX Designer</div>
+          <div class="team-type tt-contract">Contract</div>
+          <div class="team-desc">Designs the key screens — feed, recipe detail, create flow, onboarding. Does not need to be full-time. 4–6 weeks of focused contract work is enough for MVP.</div>
+          <div class="team-cost">~$2,000–5,000 contract</div>
+        </div>
+        <div class="team-card">
+          <div class="team-role">Community manager</div>
+          <div class="team-type tt-part">Part-time</div>
+          <div class="team-desc">Recruits founding creators, manages Discord or WhatsApp group, collects feedback from beta users. Can be the co-founder in early stage.</div>
+          <div class="team-cost">Part-time · can be co-founder</div>
+        </div>
+      </div>
+      <div class="callout-blue" style="margin-top:14px;"><strong>Honest reality:</strong> Most successful startups begin with 1–2 technical founders doing everything. If you can build and you have a co-founder who can do growth and community, that's enough for Phase 1. Don't hire before you've validated the product.</div>
+    </div>
+  </div>
+
+  <!-- Success metrics -->
+  <div class="subsec">
+    <div class="subsec-head">
+      <div class="subsec-icon" style="background:#f5f5f5;">📊</div>
+      <div class="subsec-title">Success metrics — how you know Phase 1 worked</div>
+    </div>
+    <div class="subsec-body">
+      <div class="metrics-grid">
+        <div class="metric"><div class="metric-val mv-p1">1,000</div><div class="metric-label">Registered users by end of week 8</div></div>
+        <div class="metric"><div class="metric-val mv-p1">250</div><div class="metric-label">Published recipes</div></div>
+        <div class="metric"><div class="metric-val mv-p1">25%</div><div class="metric-label">Week-2 retention rate</div></div>
+        <div class="metric"><div class="metric-val mv-p1">30%</div><div class="metric-label">Voice feature adoption rate</div></div>
+        <div class="metric"><div class="metric-val mv-p1">40%</div><div class="metric-label">Users who follow at least 1 creator</div></div>
+        <div class="metric"><div class="metric-val mv-p1">10+</div><div class="metric-label">Creators with 5+ published recipes</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<!-- PHASE 2 -->
+<!-- ══════════════════════════════════════ -->
+<div class="phase-section">
+  <div class="phase-header ph2-header">
+    <div class="phase-header-top">
+      <div>
+        <div class="phase-label">Phase 2</div>
+        <div class="phase-name">Growth — Go Social & Mobile</div>
+        <div class="phase-tagline">"Make it a daily habit people can't imagine stopping."</div>
+      </div>
+      <div class="phase-meta">
+        <div class="phase-period">Weeks 9–20</div>
+        <div class="phase-duration">3 months · Web + Mobile</div>
+      </div>
+    </div>
+    <div class="phase-summary">
+      <div class="phase-stat"><div class="phase-stat-val">12</div><div class="phase-stat-label">New features</div></div>
+      <div class="phase-stat"><div class="phase-stat-val">~$200</div><div class="phase-stat-label">Monthly cost</div></div>
+      <div class="phase-stat"><div class="phase-stat-val">3–5</div><div class="phase-stat-label">Team size</div></div>
+      <div class="phase-stat"><div class="phase-stat-val">15,000</div><div class="phase-stat-label">User target</div></div>
+    </div>
+  </div>
+
+  <div class="callout-purple"><strong>The Phase 2 mindset:</strong> Phase 1 proved the concept. Phase 2 builds the habit. The goal is to make RecipeVerse something people open every day, on their phone, and something creators actively grow their audience on. Only build Phase 2 features once Phase 1 metrics are healthy.</div>
+
+  <div class="subsec">
+    <div class="subsec-head">
+      <div class="subsec-icon" style="background:#f0eeff;">📱</div>
+      <div class="subsec-title">Features — what gets built in Phase 2</div>
+    </div>
+    <div class="subsec-body">
+      <ul class="feat-list">
+        <li class="feat-item"><div class="feat-dot fd-social"></div><div class="feat-content"><div class="feat-name">Native mobile app (iOS + Android via Expo) <span class="feat-tag ft-must">Must</span></div><div class="feat-why">Food apps belong on mobile. Most cooking happens in the kitchen, away from a laptop. Once the web product is validated, native app is the biggest retention lever available. Expo shares code with the web app.</div></div></li>
+        <li class="feat-item"><div class="feat-dot fd-social"></div><div class="feat-content"><div class="feat-name">Push notifications <span class="feat-tag ft-must">Must</span></div><div class="feat-why">Requires the native app first. Push notifications bring users back when they're not already in the app — "Marco just posted a new recipe" is far more powerful than an in-app alert.</div></div></li>
+        <li class="feat-item"><div class="feat-dot fd-social"></div><div class="feat-content"><div class="feat-name">Activity feed (following creators' new posts) <span class="feat-tag ft-must">Must</span></div><div class="feat-why">Currently the feed is chronological. Phase 2 adds a real-time activity stream — see when followed creators post, like, and comment. Makes the platform feel alive.</div></div></li>
+        <li class="feat-item"><div class="feat-dot fd-social"></div><div class="feat-content"><div class="feat-name">Video reels / short cooking videos <span class="feat-tag ft-must">Must</span></div><div class="feat-why">Food content lives on video. TikTok and Reels proved this. Short cooking videos with an auto-attached recipe card is RecipeVerse's unique format — you watch the reel, the full recipe is one tap away.</div></div></li>
+        <li class="feat-item"><div class="feat-dot fd-social"></div><div class="feat-content"><div class="feat-name">"Made this!" feature with user photos <span class="feat-tag ft-must">Must</span></div><div class="feat-why">The most powerful social proof on a recipe platform. When users post photos of dishes they cooked, it shows the recipe works and motivates others to try it. Also keeps creators engaged — nothing motivates posting more than seeing fans cook your food.</div></div></li>
+        <li class="feat-item"><div class="feat-dot fd-growth"></div><div class="feat-content"><div class="feat-name">Digital cookbooks / collections (shareable) <span class="feat-tag ft-important">Important</span></div><div class="feat-why">Creators can organise recipes into themed cookbooks ("My 30-Minute Meals", "Christmas Recipes") and share them as a link. Each shared cookbook is a growth channel — every click is a potential new user.</div></div></li>
+        <li class="feat-item"><div class="feat-dot fd-growth"></div><div class="feat-content"><div class="feat-name">Creator analytics dashboard <span class="feat-tag ft-important">Important</span></div><div class="feat-why">Creators who can see their growth (views, saves, follower growth, top recipes) are 3x more likely to keep posting. Simple stats: weekly views, saves, new followers. Not complex — just useful.</div></div></li>
+        <li class="feat-item"><div class="feat-dot fd-ai"></div><div class="feat-content"><div class="feat-name">Real-time voice transcription (shows words as you speak) <span class="feat-tag ft-important">Important</span></div><div class="feat-why">Massive UX improvement to the voice feature. Instead of recording blindly, users see their words appear in real time. Increases trust and reduces re-records. Requires Deepgram or Google Speech streaming API.</div></div></li>
+        <li class="feat-item"><div class="feat-dot fd-ai"></div><div class="feat-content"><div class="feat-name">AI ingredient substitutions <span class="feat-tag ft-important">Important</span></div><div class="feat-why">"I don't have X — what can I use instead?" One of the most searched food questions on the internet. Having AI answer it inside RecipeVerse keeps users on the platform instead of going to Google.</div></div></li>
+        <li class="feat-item"><div class="feat-dot fd-social"></div><div class="feat-content"><div class="feat-name">Multi-language support (Spanish, French, Arabic) <span class="feat-tag ft-important">Important</span></div><div class="feat-why">After launch analytics will show where users are coming from. Localise the top 3 languages by user base. Whisper already handles 50+ languages for voice — the UI is the remaining work.</div></div></li>
+        <li class="feat-item"><div class="feat-dot fd-growth"></div><div class="feat-content"><div class="feat-name">Cooking mode (full-screen step view, keep screen awake) <span class="feat-tag ft-important">Important</span></div><div class="feat-why">The recipe detail page needs a dedicated "I'm cooking now" mode — large text, ingredient checkboxes, screen stays on, no distractions. This turns RecipeVerse into a kitchen companion, not just a website.</div></div></li>
+        <li class="feat-item"><div class="feat-dot fd-growth"></div><div class="feat-content"><div class="feat-name">Upgrade search to Algolia <span class="feat-tag ft-important">Important</span></div><div class="feat-why">Once the recipe library grows past 10,000 recipes, PostgreSQL full-text search starts showing its limits. Algolia adds typo-tolerance, instant results, and smarter relevance. Only migrate when users complain about search quality.</div></div></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="subsec">
+    <div class="subsec-head">
+      <div class="subsec-icon" style="background:#f0eeff;">🔗</div>
+      <div class="subsec-title">Dependencies — what Phase 2 requires</div>
+    </div>
+    <div class="subsec-body">
+      <div class="dep-grid">
+        <div class="dep-card">
+          <div class="dep-title">✅ Phase 1 must be complete</div>
+          <div class="dep-items">
+            <span>At least 1,000 active users</span>
+            <span>25%+ week-2 retention achieved</span>
+            <span>Core bugs resolved</span>
+            <span>AI voice feature working reliably</span>
+          </div>
+        </div>
+        <div class="dep-card">
+          <div class="dep-title">📱 Mobile prerequisites</div>
+          <div class="dep-items">
+            <span>Apple Developer account ($99/yr)</span>
+            <span>Google Play Console account ($25 one-time)</span>
+            <span>Expo EAS build configured</span>
+            <span>Push notification service (Expo Notifications)</span>
+          </div>
+        </div>
+        <div class="dep-card">
+          <div class="dep-title">💰 Budget / funding</div>
+          <div class="dep-items">
+            <span>$200–500/mo running costs</span>
+            <span>Developer salary or equity deal if hiring</span>
+            <span>Algolia subscription if upgrading search</span>
+            <span>Cloudinary for video hosting at scale</span>
+          </div>
+        </div>
+        <div class="dep-card">
+          <div class="dep-title">📊 Data insights needed</div>
+          <div class="dep-items">
+            <span>Top user languages known from Phase 1 analytics</span>
+            <span>Most-used features identified</span>
+            <span>Creator pain points collected via interviews</span>
+            <span>Top drop-off points in user journey identified</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subsec">
+    <div class="subsec-head">
+      <div class="subsec-icon" style="background:#fef2f2;">⚠️</div>
+      <div class="subsec-title">Risks</div>
+    </div>
+    <div class="subsec-body">
+      <ul class="risk-list">
+        <li class="risk-item risk-h"><span class="risk-badge rb-h">High</span><div class="risk-text"><div class="risk-name">Building Phase 2 features before Phase 1 is validated</div><div class="risk-fix">Mitigation: Hard gate — do not start Phase 2 until Phase 1 metrics are healthy. Building mobile for a product nobody uses is the most common startup mistake.</div></div></li>
+        <li class="risk-item risk-h"><span class="risk-badge rb-h">High</span><div class="risk-text"><div class="risk-name">Video hosting costs spiral with short cooking videos</div><div class="risk-fix">Mitigation: Cap video length at 60 seconds for MVP reels. Use Cloudinary video optimisation. Set storage limits per user on free tier. Budget for this explicitly.</div></div></li>
+        <li class="risk-item risk-m"><span class="risk-badge rb-m">Medium</span><div class="risk-text"><div class="risk-name">App store rejection delays mobile launch</div><div class="risk-fix">Mitigation: Submit early (Week 10) even before all features are complete. Apple reviews take 1–7 days and can reject for unexpected reasons. Leave 2 weeks buffer for re-submissions.</div></div></li>
+        <li class="risk-item risk-m"><span class="risk-badge rb-m">Medium</span><div class="risk-text"><div class="risk-name">Creators churn before analytics and growth tools exist</div><div class="risk-fix">Mitigation: Personally message every active creator at 30 days. Ask what they need. Even a basic spreadsheet showing their stats builds loyalty until the dashboard is built.</div></div></li>
+        <li class="risk-item risk-l"><span class="risk-badge rb-l">Low</span><div class="risk-text"><div class="risk-name">Algolia costs exceed budget after migration</div><div class="risk-fix">Mitigation: Only migrate when PostgreSQL search is clearly failing users. Algolia free tier covers 10k records — plenty for Phase 2 launch.</div></div></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="subsec">
+    <div class="subsec-head">
+      <div class="subsec-icon" style="background:#f0eeff;">👥</div>
+      <div class="subsec-title">Team needed for Phase 2</div>
+    </div>
+    <div class="subsec-body">
+      <div class="team-grid">
+        <div class="team-card">
+          <div class="team-role">Full-stack developer (web)</div>
+          <div class="team-type tt-founder">Founder or hire</div>
+          <div class="team-desc">Continues building web features — video reels, analytics, AI improvements, Algolia integration.</div>
+          <div class="team-cost">Full time</div>
+        </div>
+        <div class="team-card">
+          <div class="team-role">React Native developer</div>
+          <div class="team-type tt-hire">First hire</div>
+          <div class="team-desc">Builds and maintains the iOS and Android app. Expo knowledge essential. Can be a full-stack dev who knows React Native.</div>
+          <div class="team-cost">$60k–90k/yr or contract</div>
+        </div>
+        <div class="team-card">
+          <div class="team-role">Community & creator growth</div>
+          <div class="team-type tt-hire">Hire or co-founder</div>
+          <div class="team-desc">Runs creator programs, onboards new food influencers, collects feedback, manages social channels. The person who makes creators feel valued.</div>
+          <div class="team-cost">$40k–60k/yr</div>
+        </div>
+        <div class="team-card">
+          <div class="team-role">Part-time designer</div>
+          <div class="team-type tt-contract">Contract / part-time</div>
+          <div class="team-desc">Designs mobile app screens, video reel UI, analytics dashboard. Can be the same designer from Phase 1 on a retainer.</div>
+          <div class="team-cost">~$1,500–3,000/mo retainer</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subsec">
+    <div class="subsec-head">
+      <div class="subsec-icon" style="background:#f0eeff;">📊</div>
+      <div class="subsec-title">Success metrics for Phase 2</div>
+    </div>
+    <div class="subsec-body">
+      <div class="metrics-grid">
+        <div class="metric"><div class="metric-val mv-p2">15,000</div><div class="metric-label">Registered users by week 20</div></div>
+        <div class="metric"><div class="metric-val mv-p2">40%</div><div class="metric-label">Weekly retention rate</div></div>
+        <div class="metric"><div class="metric-val mv-p2">2,500</div><div class="metric-label">Published recipes</div></div>
+        <div class="metric"><div class="metric-val mv-p2">500</div><div class="metric-label">Mobile app downloads in first month</div></div>
+        <div class="metric"><div class="metric-val mv-p2">50</div><div class="metric-label">Power creators (10+ recipes)</div></div>
+        <div class="metric"><div class="metric-val mv-p2">20%</div><div class="metric-label">DAU/MAU ratio (daily active vs monthly)</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<!-- PHASE 3 -->
+<!-- ══════════════════════════════════════ -->
+<div class="phase-section">
+  <div class="phase-header ph3-header">
+    <div class="phase-header-top">
+      <div>
+        <div class="phase-label">Phase 3</div>
+        <div class="phase-name">Monetization & Scale</div>
+        <div class="phase-tagline">"Build a business, not just a product. Make creators money."</div>
+      </div>
+      <div class="phase-meta">
+        <div class="phase-period">Month 6+</div>
+        <div class="phase-duration">Ongoing · Full platform</div>
+      </div>
+    </div>
+    <div class="phase-summary">
+      <div class="phase-stat"><div class="phase-stat-val">10+</div><div class="phase-stat-label">Revenue features</div></div>
+      <div class="phase-stat"><div class="phase-stat-val">~$1k+</div><div class="phase-stat-label">Monthly cost</div></div>
+      <div class="phase-stat"><div class="phase-stat-val">6–10</div><div class="phase-stat-label">Team size</div></div>
+      <div class="phase-stat"><div class="phase-stat-val">100,000</div><div class="phase-stat-label">User target</div></div>
+    </div>
+  </div>
+
+  <div class="callout"><strong>The Phase 3 mindset:</strong> RecipeVerse earns money when creators earn money. The platform takes a small cut of creator revenue — this aligns success. Never introduce monetization until creators have an audience worth monetizing. A creator with 500 followers cannot sell subscriptions. One with 5,000 can.</div>
+
+  <div class="subsec">
+    <div class="subsec-head">
+      <div class="subsec-icon" style="background:#fff0e6;">💰</div>
+      <div class="subsec-title">Features — monetization and scale</div>
+    </div>
+    <div class="subsec-body">
+      <ul class="feat-list">
+        <li class="feat-item"><div class="feat-dot fd-money"></div><div class="feat-content"><div class="feat-name">Creator tips (one-tap payments) <span class="feat-tag ft-must">Must</span></div><div class="feat-why">The simplest monetization feature. After cooking a recipe, users can send the creator a $1–$10 tip. RecipeVerse takes 10%. Low friction, no subscription required. This is the feature that makes creators start treating RecipeVerse as a real income source.</div></div></li>
+        <li class="feat-item"><div class="feat-dot fd-money"></div><div class="feat-content"><div class="feat-name">Paid recipes (one-time purchase) <span class="feat-tag ft-must">Must</span></div><div class="feat-why">Creators can lock a recipe behind a small paywall ($1.99–$4.99). "My secret jerk chicken recipe — $2.99." RecipeVerse takes 10%. Creates a direct market for signature recipes and gives creators a reason to keep their best content on the platform.</div></div></li>
+        <li class="feat-item"><div class="feat-dot fd-money"></div><div class="feat-content"><div class="feat-name">Creator subscriptions (monthly access) <span class="feat-tag ft-must">Must</span></div><div class="feat-why">Creators offer a monthly subscription ($2.99–$9.99) for exclusive recipes, behind-the-scenes content, and early access to new posts. RecipeVerse takes 15%. The most sustainable revenue model — recurring income for creators and platform alike.</div></div></li>
+        <li class="feat-item"><div class="feat-dot fd-money"></div><div class="feat-content"><div class="feat-name">RecipeVerse Pro (user subscription) <span class="feat-tag ft-must">Must</span></div><div class="feat-why">Optional $4.99/month plan for power users — unlimited collections, no ads (when ads launch), advanced filters, cooking mode enhancements. Secondary revenue that doesn't compete with creator earnings.</div></div></li>
+        <li class="feat-item"><div class="feat-dot fd-growth"></div><div class="feat-content"><div class="feat-name">Meal planner with shopping list <span class="feat-tag ft-must">Must</span></div><div class="feat-why">Plan meals for the week from saved recipes. Auto-generate a shopping list. One of the most-requested features on any food platform. Drives daily active use — users open the app to check their meal plan, not just browse.</div></div></li>
+        <li class="feat-item"><div class="feat-dot fd-growth"></div><div class="feat-content"><div class="feat-name">Live cooking sessions <span class="feat-tag ft-important">Important</span></div><div class="feat-why">Creators go live while cooking. Viewers follow along in real time, ask questions, and tip during the session. High engagement and strong community signal. Requires WebRTC streaming infrastructure — significant engineering effort.</div></div></li>
+        <li class="feat-item"><div class="feat-dot fd-money"></div><div class="feat-content"><div class="feat-name">Brand marketplace (creator × food brands) <span class="feat-tag ft-important">Important</span></div><div class="feat-why">Food brands post paid collaboration briefs. Creators apply. RecipeVerse facilitates the deal and takes 20%. Needs 50,000+ MAU to attract meaningful brand interest. KitchenAid, Heinz, and Oatly all spend heavily on food creator partnerships.</div></div></li>
+        <li class="feat-item"><div class="feat-dot fd-ai"></div><div class="feat-content"><div class="feat-name">AI meal suggestions ("what can I cook with these ingredients?") <span class="feat-tag ft-important">Important</span></div><div class="feat-why">User enters what's in their fridge. AI suggests recipes from the RecipeVerse library that match. Keeps users on the platform instead of going to Google. Drives saves and follows of creators whose recipes are suggested.</div></div></li>
+        <li class="feat-item"><div class="feat-dot fd-growth"></div><div class="feat-content"><div class="feat-name">Verified creator program + badges <span class="feat-tag ft-important">Important</span></div><div class="feat-why">Notable creators get a checkmark and additional tools (priority support, featured placement, early monetization access). Creates aspiration — every creator wants to be verified. Drives posting volume.</div></div></li>
+        <li class="feat-item"><div class="feat-dot fd-growth"></div><div class="feat-content"><div class="feat-name">SEO-optimised recipe pages + sitemap <span class="feat-tag ft-must">Must</span></div><div class="feat-why">By Phase 3 you have thousands of recipes. Each one is a potential Google search result. Proper schema.org/Recipe markup, fast server-side rendering, and automatic sitemaps turn RecipeVerse into a free organic traffic machine.</div></div></li>
+        <li class="feat-item"><div class="feat-dot fd-growth"></div><div class="feat-content"><div class="feat-name">Infrastructure: Redis cache + background jobs + CDN for video <span class="feat-tag ft-important">Important</span></div><div class="feat-why">At 100k users, the feed must be cached (Redis), heavy tasks (email, notifications, AI processing) must run in background queues (Inngest), and videos must be served from a CDN. These are not features — they're the engineering upgrades that keep the platform fast at scale.</div></div></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="subsec">
+    <div class="subsec-head">
+      <div class="subsec-icon" style="background:#fff0e6;">🔗</div>
+      <div class="subsec-title">Dependencies — what Phase 3 requires</div>
+    </div>
+    <div class="subsec-body">
+      <div class="dep-grid">
+        <div class="dep-card">
+          <div class="dep-title">✅ Phase 2 must be healthy</div>
+          <div class="dep-items">
+            <span>15,000+ active users on platform</span>
+            <span>40%+ weekly retention proven</span>
+            <span>50+ creators with 500+ followers each</span>
+            <span>Mobile app live and stable</span>
+          </div>
+        </div>
+        <div class="dep-card">
+          <div class="dep-title">💳 Payments infrastructure</div>
+          <div class="dep-items">
+            <span>Stripe Connect set up for creator payouts</span>
+            <span>KYC / identity verification for creators</span>
+            <span>Tax documentation flow (1099 for US creators)</span>
+            <span>Multi-currency support for global creators</span>
+          </div>
+        </div>
+        <div class="dep-card">
+          <div class="dep-title">⚖️ Legal & compliance</div>
+          <div class="dep-items">
+            <span>Creator monetization terms drafted</span>
+            <span>Brand deal terms and liability covered</span>
+            <span>DMCA takedown process for recipe IP</span>
+            <span>VAT / sales tax handling for subscriptions</span>
+          </div>
+        </div>
+        <div class="dep-card">
+          <div class="dep-title">🏗️ Infrastructure upgrade</div>
+          <div class="dep-items">
+            <span>Redis instance provisioned</span>
+            <span>Background job queue configured (Inngest)</span>
+            <span>Supabase upgraded to Pro or dedicated DB</span>
+            <span>Video CDN (Cloudinary or Mux) configured</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subsec">
+    <div class="subsec-head">
+      <div class="subsec-icon" style="background:#fef2f2;">⚠️</div>
+      <div class="subsec-title">Risks</div>
+    </div>
+    <div class="subsec-body">
+      <ul class="risk-list">
+        <li class="risk-item risk-h"><span class="risk-badge rb-h">High</span><div class="risk-text"><div class="risk-name">Introducing monetization before creators have an audience</div><div class="risk-fix">Mitigation: Hard gate — only unlock monetization for creators with 500+ followers. A creator with 50 followers earning $0 is demoralising. One with 2,000 followers earning $50/month is a success story that markets the platform.</div></div></li>
+        <li class="risk-item risk-h"><span class="risk-badge rb-h">High</span><div class="risk-text"><div class="risk-name">Payment processing fraud or chargebacks</div><div class="risk-fix">Mitigation: Use Stripe Connect — it handles fraud detection, chargebacks, and compliance. Never build payment processing yourself. Add a 7-day hold on creator payouts before releasing funds.</div></div></li>
+        <li class="risk-item risk-m"><span class="risk-badge rb-m">Medium</span><div class="risk-text"><div class="risk-name">Live streaming infrastructure is complex and expensive to build</div><div class="risk-fix">Mitigation: Use a managed service like Mux or Livekit instead of building WebRTC from scratch. Budget $500–2,000/month for streaming infrastructure. Gate live behind a Pro subscription.</div></div></li>
+        <li class="risk-item risk-m"><span class="risk-badge rb-m">Medium</span><div class="risk-text"><div class="risk-name">Brand marketplace requires significant sales effort to attract brands</div><div class="risk-fix">Mitigation: Don't build the marketplace until you have 50k+ users. Then start with 5 direct brand partnerships manually before automating. Prove the concept with one KitchenAid campaign before building a full marketplace.</div></div></li>
+        <li class="risk-item risk-m"><span class="risk-badge rb-m">Medium</span><div class="risk-text"><div class="risk-name">Platform performance degrades at scale (slow feed, slow search)</div><div class="risk-fix">Mitigation: Add Redis caching for the feed before hitting 50k users, not after. Performance issues at scale are much harder to fix than preventing them. Budget 20% of Phase 3 engineering time for infrastructure work.</div></div></li>
+        <li class="risk-item risk-l"><span class="risk-badge rb-l">Low</span><div class="risk-text"><div class="risk-name">Tax and legal complexity for international creator payments</div><div class="risk-fix">Mitigation: Stripe handles most of this automatically. Consult a startup-focused accountant before launching paid features. Budget $2,000–5,000 for legal setup once — not ongoing.</div></div></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="subsec">
+    <div class="subsec-head">
+      <div class="subsec-icon" style="background:#fff0e6;">👥</div>
+      <div class="subsec-title">Team needed for Phase 3</div>
+    </div>
+    <div class="subsec-body">
+      <div class="team-grid">
+        <div class="team-card">
+          <div class="team-role">CTO / Lead engineer</div>
+          <div class="team-type tt-founder">Founder or hire</div>
+          <div class="team-desc">Owns technical architecture, infrastructure scaling, and hiring the engineering team. Must understand distributed systems and performance at scale.</div>
+          <div class="team-cost">Full time · equity or $120k+</div>
+        </div>
+        <div class="team-card">
+          <div class="team-role">Backend engineer</div>
+          <div class="team-type tt-hire">Hire</div>
+          <div class="team-desc">Owns the payments integration, background jobs, API performance, and infrastructure upgrades. Stripe Connect experience is a plus.</div>
+          <div class="team-cost">$80k–110k/yr</div>
+        </div>
+        <div class="team-card">
+          <div class="team-role">Mobile engineer</div>
+          <div class="team-type tt-hire">Hire</div>
+          <div class="team-desc">Full ownership of iOS and Android. Phase 3 mobile features (live streaming, payments) require deep native knowledge beyond what Expo provides.</div>
+          <div class="team-cost">$80k–110k/yr</div>
+        </div>
+        <div class="team-card">
+          <div class="team-role">Head of Creator Partnerships</div>
+          <div class="team-type tt-hire">Hire</div>
+          <div class="team-desc">Signs top food creators, manages the brand marketplace, develops the verified creator program. Think talent agent meets growth marketer.</div>
+          <div class="team-cost">$60k–80k + commission</div>
+        </div>
+        <div class="team-card">
+          <div class="team-role">Product designer (full-time)</div>
+          <div class="team-type tt-hire">Hire</div>
+          <div class="team-desc">Owns the full design system, mobile app UI, monetization flows, and brand marketplace. Phase 3 UX complexity requires full-time design ownership.</div>
+          <div class="team-cost">$70k–90k/yr</div>
+        </div>
+        <div class="team-card">
+          <div class="team-role">Marketing / growth</div>
+          <div class="team-type tt-hire">Hire</div>
+          <div class="team-desc">SEO, paid acquisition, social media, email campaigns. Owns the growth metrics and experiments that take you from 15k to 100k users.</div>
+          <div class="team-cost">$55k–75k/yr</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subsec">
+    <div class="subsec-head">
+      <div class="subsec-icon" style="background:#fff0e6;">📊</div>
+      <div class="subsec-title">Success metrics for Phase 3</div>
+    </div>
+    <div class="subsec-body">
+      <div class="metrics-grid">
+        <div class="metric"><div class="metric-val mv-p3">100,000</div><div class="metric-label">Registered users</div></div>
+        <div class="metric"><div class="metric-val mv-p3">$10k</div><div class="metric-label">Monthly platform revenue (MRR)</div></div>
+        <div class="metric"><div class="metric-val mv-p3">$50+</div><div class="metric-label">Avg monthly earnings for top 10% of creators</div></div>
+        <div class="metric"><div class="metric-val mv-p3">500+</div><div class="metric-label">Creators with paid content enabled</div></div>
+        <div class="metric"><div class="metric-val mv-p3">45%</div><div class="metric-label">Weekly retention rate</div></div>
+        <div class="metric"><div class="metric-val mv-p3">5</div><div class="metric-label">Brand partnerships active</div></div>
+      </div>
+      <div class="callout-green" style="margin-top:14px;"><strong>The Phase 3 north star:</strong> A creator with 2,000 followers on RecipeVerse earns at least $50/month from tips and paid recipes. When that story exists, it markets itself. Every food creator with an Instagram account will hear about it and want to join.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ONE RULE -->
+<div style="background:#1a1a1a; border-radius:16px; padding:28px 32px; color:#fff; margin-bottom:40px;">
+  <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.1em; opacity:0.5; margin-bottom:10px;">The one rule that overrides everything</div>
+  <div style="font-size:20px; font-weight:800; margin-bottom:10px; line-height:1.4;">Never start the next phase until the current one is working.</div>
+  <div style="font-size:14px; opacity:0.75; line-height:1.7; max-width:600px;">Phase 2 features built on a broken Phase 1 just accelerate the failure. Phase 3 monetization on a platform with no engaged users is burning money. The metrics gates exist for a reason — treat them as real gates, not suggestions. The best startups are disciplined about what they don't build.</div>
+</div>
+
+<div class="footer">
+  <span>RecipeVerse — Product Roadmap v1.0</span>
+  <span>Confidential · March 2026</span>
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>RecipeVerse — UX Design</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8f6f2; color: #1a1a1a; line-height: 1.7; font-size: 15px; }
+.page { max-width: 980px; margin: 0 auto; padding: 48px 32px; }
+
+/* Cover */
+.cover { background: linear-gradient(135deg, #e8430a 0%, #f97316 55%, #fbbf24 100%); border-radius: 20px; padding: 48px; color: #fff; margin-bottom: 40px; }
+.cover-tag { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.75; margin-bottom: 12px; }
+.cover h1 { font-size: 38px; font-weight: 800; margin-bottom: 8px; }
+.cover-sub { font-size: 16px; opacity: 0.88; max-width: 560px; margin-bottom: 24px; line-height: 1.6; }
+.cover-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+.cover-pill { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 4px 14px; font-size: 12px; }
+.cover-meta { display: flex; flex-wrap: wrap; gap: 20px; font-size: 12px; opacity: 0.7; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 20px; }
+
+/* TOC */
+.toc { background: #fff; border: 1px solid #ede8e0; border-radius: 16px; padding: 24px 28px; margin-bottom: 40px; }
+.toc-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #aaa; margin-bottom: 14px; }
+.toc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 5px; }
+.toc-item { font-size: 13px; color: #e8430a; display: flex; align-items: center; gap: 8px; padding: 3px 0; }
+.toc-num { font-size: 11px; color: #ccc; font-weight: 700; min-width: 22px; }
+
+/* Section label */
+.section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: #bbb; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #f0ebe2; margin-top: 52px; }
+.section-label:first-of-type { margin-top: 0; }
+
+/* Screen card */
+.screen-card { background: #fff; border: 1px solid #ede8e0; border-radius: 18px; overflow: hidden; margin-bottom: 28px; }
+.screen-header { display: flex; align-items: flex-start; gap: 18px; padding: 22px 26px; border-bottom: 1px solid #f5f1eb; flex-wrap: wrap; }
+.screen-icon-wrap { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+.si-orange { background: #fff0e6; }
+.si-blue { background: #eff6ff; }
+.si-green { background: #f0fdf4; }
+.si-purple { background: #f5f3ff; }
+.si-teal { background: #f0fdfa; }
+.si-pink { background: #fdf2f8; }
+.si-amber { background: #fffbeb; }
+.si-gray { background: #f9fafb; }
+.si-red { background: #fef2f2; }
+.screen-meta { flex: 1; min-width: 200px; }
+.screen-name { font-size: 19px; font-weight: 800; margin-bottom: 4px; }
+.screen-desc { font-size: 13px; color: #666; line-height: 1.6; margin-bottom: 8px; }
+.screen-url { font-family: 'SF Mono', monospace; font-size: 11px; color: #e8430a; background: #fff0e6; padding: 2px 10px; border-radius: 6px; display: inline-block; }
+.screen-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+.badge { display: inline-flex; align-items: center; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
+.b-primary { background: #ffeaea; color: #b91c1c; }
+.b-secondary { background: #fef4e0; color: #92400e; }
+.b-nav { background: #dbeafe; color: #1e40af; }
+.b-auth { background: #f5f3ff; color: #5b21b6; }
+.b-pub { background: #dcfce7; color: #166534; }
+
+.screen-body { display: grid; grid-template-columns: 1fr 1fr 1fr; }
+.screen-col { padding: 18px 22px; border-right: 1px solid #f8f4ef; }
+.screen-col:last-child { border-right: none; }
+.col-heading { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em; color: #bbb; margin-bottom: 12px; }
+
+/* Phone mockup */
+.phone-mockup { background: #1a1a2e; border-radius: 28px; padding: 12px; width: 160px; flex-shrink: 0; border: 3px solid #2d2d44; }
+.phone-screen { background: #0f0f1a; border-radius: 18px; overflow: hidden; min-height: 280px; }
+.phone-notch { width: 60px; height: 8px; background: #2d2d44; border-radius: 4px; margin: 6px auto 10px; }
+
+/* Content lists */
+.content-list { list-style: none; }
+.content-list li { font-size: 12px; color: #555; padding: 5px 0; border-bottom: 1px solid #faf8f5; display: flex; gap: 8px; line-height: 1.4; }
+.content-list li:last-child { border-bottom: none; }
+.content-list li::before { content: "·"; color: #e8430a; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+
+.action-list { list-style: none; }
+.action-list li { font-size: 12px; color: #555; padding: 5px 0; border-bottom: 1px solid #faf8f5; display: flex; gap: 8px; line-height: 1.4; align-items: flex-start; }
+.action-list li:last-child { border-bottom: none; }
+.action-pill { font-size: 10px; background: #f0ebe2; color: #555; padding: 1px 7px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; font-weight: 600; margin-top: 1px; }
+.action-tap { background: #fff0e6; color: #c44b0a; }
+.action-scroll { background: #eff6ff; color: #1e40af; }
+.action-swipe { background: #f5f3ff; color: #5b21b6; }
+.action-type { background: #f0fdf4; color: #166534; }
+.action-hold { background: #fef4e0; color: #92400e; }
+
+/* Note block */
+.note-block { background: #faf8f5; border-top: 1px solid #f0ebe2; padding: 14px 22px; font-size: 13px; color: #666; line-height: 1.6; display: flex; gap: 10px; }
+.note-icon { flex-shrink: 0; font-size: 14px; margin-top: 2px; }
+
+/* Nav structure */
+.nav-diagram { background: #fff; border: 1px solid #ede8e0; border-radius: 16px; padding: 28px; margin-bottom: 28px; }
+.nav-title { font-size: 14px; font-weight: 700; margin-bottom: 20px; }
+.nav-bar { background: #1a1a1a; border-radius: 16px; padding: 14px 20px; display: flex; justify-content: space-around; margin-bottom: 24px; }
+.nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.nav-icon { font-size: 20px; }
+.nav-label { font-size: 10px; color: #aaa; }
+.nav-label.active { color: #f97316; }
+.nav-active { border-bottom: 2px solid #f97316; padding-bottom: 2px; }
+
+.nav-tree { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+.nav-branch { background: #faf8f5; border-radius: 12px; padding: 14px 16px; }
+.nav-branch-title { font-size: 12px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.nav-branch-items { font-size: 12px; color: #777; line-height: 2; }
+.nav-branch-items span { display: block; padding-left: 12px; position: relative; }
+.nav-branch-items span::before { content: "└"; position: absolute; left: 0; color: #ddd; }
+
+/* UX Principles */
+.principle-card { background: #fff; border: 1px solid #ede8e0; border-radius: 14px; padding: 20px 22px; margin-bottom: 14px; display: flex; gap: 16px; }
+.principle-num { width: 36px; height: 36px; background: #e8430a; color: #fff; border-radius: 10px; font-size: 14px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.principle-body { flex: 1; }
+.principle-title { font-size: 15px; font-weight: 700; margin-bottom: 5px; }
+.principle-desc { font-size: 13px; color: #555; line-height: 1.7; }
+.principle-example { font-size: 12px; color: #999; font-style: italic; margin-top: 6px; }
+
+/* Do / Don't */
+.do-dont { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.do-card { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 16px 18px; }
+.dont-card { background: #fef2f2; border: 1px solid #fecaca; border-radius: 12px; padding: 16px 18px; }
+.dd-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+.do-card .dd-title { color: #166534; }
+.dont-card .dd-title { color: #991b1b; }
+.dd-list { list-style: none; font-size: 13px; color: #555; }
+.dd-list li { padding: 4px 0; display: flex; gap: 8px; line-height: 1.4; }
+.dd-list li::before { font-weight: 700; flex-shrink: 0; }
+.do-card .dd-list li::before { content: "✓"; color: #16a34a; }
+.dont-card .dd-list li::before { content: "✗"; color: #dc2626; }
+
+/* Creation flow */
+.flow-card { background: #fff; border: 1px solid #ede8e0; border-radius: 14px; overflow: hidden; margin-bottom: 14px; }
+.flow-header { background: linear-gradient(135deg, #e8430a, #f97316); color: #fff; padding: 16px 20px; font-size: 14px; font-weight: 700; }
+.flow-steps-wrap { padding: 20px; }
+.flow-step { display: flex; gap: 14px; margin-bottom: 16px; align-items: flex-start; }
+.flow-step:last-child { margin-bottom: 0; }
+.flow-step-num { width: 28px; height: 28px; background: #fff0e6; color: #e8430a; border-radius: 8px; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.flow-step-body { flex: 1; }
+.flow-step-title { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+.flow-step-desc { font-size: 12px; color: #666; line-height: 1.5; }
+.flow-connector { width: 2px; height: 12px; background: #f0ebe2; margin-left: 13px; margin-bottom: 4px; }
+
+/* Color system */
+.color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-bottom: 20px; }
+.color-swatch { border-radius: 10px; overflow: hidden; border: 1px solid #ede8e0; }
+.color-preview { height: 50px; }
+.color-info { padding: 8px 10px; background: #fff; }
+.color-name { font-size: 11px; font-weight: 700; }
+.color-hex { font-family: 'SF Mono', monospace; font-size: 10px; color: #999; }
+.color-use { font-size: 10px; color: #aaa; }
+
+/* Typography scale */
+.type-row { display: flex; align-items: baseline; gap: 16px; padding: 12px 0; border-bottom: 1px solid #f5f1eb; }
+.type-row:last-child { border-bottom: none; }
+.type-label { font-size: 11px; color: #aaa; min-width: 120px; }
+.type-use { font-size: 11px; color: #bbb; }
+
+/* Spacing */
+.callout { border-left: 3px solid #e8430a; background: #fff8f5; border-radius: 0 10px 10px 0; padding: 14px 18px; margin: 16px 0; font-size: 13px; color: #555; line-height: 1.7; }
+.callout strong { color: #e8430a; }
+.callout-blue { border-left: 3px solid #3b82f6; background: #eff6ff; border-radius: 0 10px 10px 0; padding: 14px 18px; margin: 16px 0; font-size: 13px; color: #555; line-height: 1.7; }
+.callout-green { border-left: 3px solid #16a34a; background: #f0fdf4; border-radius: 0 10px 10px 0; padding: 14px 18px; margin: 16px 0; font-size: 13px; color: #555; line-height: 1.7; }
+
+/* Grid helpers */
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin-bottom: 14px; }
+.grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 14px; }
+.card { background: #fff; border: 1px solid #ede8e0; border-radius: 12px; padding: 18px 20px; }
+.card-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+.card-body { font-size: 13px; color: #555; line-height: 1.7; }
+
+/* Footer */
+.footer { margin-top: 56px; padding-top: 24px; border-top: 1px solid #ede8e0; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; font-size: 12px; color: #bbb; }
+
+@media (max-width: 700px) {
+  .page { padding: 24px 16px; }
+  .cover { padding: 32px 24px; }
+  .cover h1 { font-size: 26px; }
+  .screen-body { grid-template-columns: 1fr; }
+  .screen-col { border-right: none; border-bottom: 1px solid #f8f4ef; }
+  .screen-col:last-child { border-bottom: none; }
+  .do-dont { grid-template-columns: 1fr; }
+  .principle-card { flex-direction: column; }
+}
+@media print { body { background: #fff; } .page { padding: 24px; } }
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-tag">UX & Screen Design · RecipeVerse · March 2026</div>
+  <h1>UX & App Screens</h1>
+  <div class="cover-sub">Every screen in the RecipeVerse MVP — what's on it, what users can do, and how they all connect. Designed for mobile-first, creator-friendly, distraction-free cooking.</div>
+  <div class="cover-pills">
+    <span class="cover-pill">13 screens</span>
+    <span class="cover-pill">Mobile-first</span>
+    <span class="cover-pill">5-tab navigation</span>
+    <span class="cover-pill">Creator-focused</span>
+  </div>
+  <div class="cover-meta">
+    <span>Version 1.0</span>
+    <span>Platform: iOS + Android + Web</span>
+    <span>Audience: Designers · Founders</span>
+  </div>
+</div>
+
+<!-- TOC -->
+<div class="toc">
+  <div class="toc-title">All screens in this document</div>
+  <div class="toc-grid">
+    <div class="toc-item"><span class="toc-num">01</span> Onboarding & sign up</div>
+    <div class="toc-item"><span class="toc-num">02</span> Home feed</div>
+    <div class="toc-item"><span class="toc-num">03</span> Explore / discover</div>
+    <div class="toc-item"><span class="toc-num">04</span> Recipe detail</div>
+    <div class="toc-item"><span class="toc-num">05</span> Create recipe</div>
+    <div class="toc-item"><span class="toc-num">06</span> Voice upload screen</div>
+    <div class="toc-item"><span class="toc-num">07</span> Social import screen</div>
+    <div class="toc-item"><span class="toc-num">08</span> Creator profile</div>
+    <div class="toc-item"><span class="toc-num">09</span> My profile</div>
+    <div class="toc-item"><span class="toc-num">10</span> Saved recipes</div>
+    <div class="toc-item"><span class="toc-num">11</span> Search results</div>
+    <div class="toc-item"><span class="toc-num">12</span> Notifications</div>
+    <div class="toc-item"><span class="toc-num">13</span> Settings</div>
+  </div>
+</div>
+
+<div class="callout"><strong>Design philosophy:</strong> RecipeVerse is "Instagram for recipes" — but simpler. Every screen should feel like it belongs in the kitchen. No clutter, no dark patterns, no endless scroll traps. Just food, community, and creativity.</div>
+
+<!-- ───── PART 1: SCREENS ───── -->
+<div class="section-label">Part 1 — All 13 MVP screens</div>
+
+<!-- 01 ONBOARDING -->
+<div class="screen-card">
+  <div class="screen-header">
+    <div class="screen-icon-wrap si-orange">👋</div>
+    <div class="screen-meta">
+      <div class="screen-name">01 — Onboarding & sign up</div>
+      <div class="screen-desc">The very first thing a new user sees. Must communicate RecipeVerse's value in 3 seconds and make signing up feel effortless. First impressions are everything.</div>
+      <div class="screen-url">/welcome &nbsp; /signup &nbsp; /login</div>
+      <div class="screen-badges">
+        <span class="badge b-pub">🌐 Public</span>
+        <span class="badge b-primary">First impression</span>
+      </div>
+    </div>
+  </div>
+  <div class="screen-body">
+    <div class="screen-col">
+      <div class="col-heading">What's on screen</div>
+      <ul class="content-list">
+        <li>RecipeVerse logo + tagline ("Share your culinary magic")</li>
+        <li>3 swipeable intro slides with food photography</li>
+        <li>Large "Continue with Google" button (primary CTA)</li>
+        <li>"Sign up with email" secondary option</li>
+        <li>"Already have an account? Log in" link</li>
+        <li>Cuisine interest picker (6–8 options with food photos)</li>
+        <li>3 suggested creators to follow immediately</li>
+        <li>Progress dots showing onboarding steps</li>
+      </ul>
+    </div>
+    <div class="screen-col">
+      <div class="col-heading">User actions</div>
+      <ul class="action-list">
+        <li><span class="action-pill action-swipe">swipe</span> Through intro slides</li>
+        <li><span class="action-pill action-tap">tap</span> "Continue with Google" — fastest path</li>
+        <li><span class="action-pill action-type">type</span> Email + password for email sign up</li>
+        <li><span class="action-pill action-tap">tap</span> Cuisine interests (multi-select)</li>
+        <li><span class="action-pill action-tap">tap</span> Follow suggested creators</li>
+        <li><span class="action-pill action-tap">tap</span> "Skip" to go straight to feed</li>
+        <li><span class="action-pill action-tap">tap</span> Log in if returning user</li>
+      </ul>
+    </div>
+    <div class="screen-col">
+      <div class="col-heading">UX notes</div>
+      <ul class="content-list">
+        <li>Google sign-up must be the biggest, most prominent button. Most users will use it.</li>
+        <li>Keep the onboarding to max 3 steps — welcome, pick cuisines, follow creators.</li>
+        <li>The "Skip" option must always be visible. Never trap users.</li>
+        <li>After onboarding, the feed must never be empty — show trending if no follows yet.</li>
+        <li>Show real food photos during onboarding — not illustrations. Makes it feel alive.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="note-block"><div class="note-icon">💡</div><div>The goal of onboarding is to get the user to their first "wow moment" as fast as possible. That moment is seeing a recipe so good they immediately save it or follow the creator. Everything in onboarding should serve that goal.</div></div>
+</div>
+
+<!-- 02 HOME FEED -->
+<div class="screen-card">
+  <div class="screen-header">
+    <div class="screen-icon-wrap si-orange">🏠</div>
+    <div class="screen-meta">
+      <div class="screen-name">02 — Home feed</div>
+      <div class="screen-desc">The main daily-use screen. Shows recipes from followed creators. This is the habit loop — users open the app, see new recipes, engage, repeat. Must feel alive and personal.</div>
+      <div class="screen-url">/feed</div>
+      <div class="screen-badges">
+        <span class="badge b-nav">📍 Tab 1</span>
+        <span class="badge b-auth">🔐 Auth required</span>
+        <span class="badge b-primary">Daily driver</span>
+      </div>
+    </div>
+  </div>
+  <div class="screen-body">
+    <div class="screen-col">
+      <div class="col-heading">What's on screen</div>
+      <ul class="content-list">
+        <li>Top bar: RecipeVerse logo + search icon + notification bell with badge</li>
+        <li>Horizontal cuisine filter pills (All, Italian, Asian, etc.)</li>
+        <li>Stories-style row of creator avatars at top (new posts)</li>
+        <li>Recipe cards in vertical scroll — full-width with large food photo</li>
+        <li>Each card: photo, title, creator avatar + name, cook time, like + save buttons</li>
+        <li>Star rating preview on card (e.g. ★ 4.8)</li>
+        <li>Floating "+" create button (bottom right, always visible)</li>
+        <li>Pull-to-refresh gesture supported</li>
+      </ul>
+    </div>
+    <div class="screen-col">
+      <div class="col-heading">User actions</div>
+      <ul class="action-list">
+        <li><span class="action-pill action-tap">tap</span> Recipe card → opens recipe detail</li>
+        <li><span class="action-pill action-tap">tap</span> Heart icon → like instantly</li>
+        <li><span class="action-pill action-tap">tap</span> Bookmark icon → save to collection</li>
+        <li><span class="action-pill action-tap">tap</span> Creator avatar → opens their profile</li>
+        <li><span class="action-pill action-tap">tap</span> Cuisine pill → filters the feed</li>
+        <li><span class="action-pill action-tap">tap</span> Bell → opens notifications</li>
+        <li><span class="action-pill action-scroll">scroll</span> Down → loads more recipes</li>
+        <li><span class="action-pill action-swipe">pull</span> Down → refreshes feed</li>
+        <li><span class="action-pill action-tap">tap</span> "+" button → opens create screen</li>
+        <li><span class="action-pill action-tap">tap</span> Creator story ring → opens their latest recipe</li>
+      </ul>
+    </div>
+    <div class="screen-col">
+      <div class="col-heading">UX notes</div>
+      <ul class="content-list">
+        <li>Recipe photo should be 16:9 or square — tall enough to look great, short enough to see 1.5 cards at once (teases more content below).</li>
+        <li>Like and save buttons must respond instantly (optimistic UI — update before server confirms).</li>
+        <li>Empty feed state: show trending recipes with message "Follow more creators to personalise your feed."</li>
+        <li>The floating "+" button should always be visible. Creating content is the most important action on the platform.</li>
+        <li>Show cook time on the card — it's the #1 thing users look for before tapping.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="note-block"><div class="note-icon">💡</div><div>The stories row at the top (like Instagram) is a powerful engagement tool — it shows which creators you follow posted recently and creates FOMO. It's a low-effort high-reward feature to add in Week 5 of the build.</div></div>
+</div>
+
+<!-- 03 EXPLORE -->
+<div class="screen-card">
+  <div class="screen-header">
+    <div class="screen-icon-wrap si-blue">🔭</div>
+    <div class="screen-meta">
+      <div class="screen-name">03 — Explore / discover</div>
+      <div class="screen-desc">Discovery for everyone — especially new users who don't follow anyone yet. Shows trending recipes, top creators, and browseable categories. This is how RecipeVerse grows virally.</div>
+      <div class="screen-url">/explore</div>
+      <div class="screen-badges">
+        <span class="badge b-nav">📍 Tab 2</span>
+        <span class="badge b-pub">🌐 Public</span>
+        <span class="badge b-primary">Discovery engine</span>
+      </div>
+    </div>
+  </div>
+  <div class="screen-body">
+    <div class="screen-col">
+      <div class="col-heading">What's on screen</div>
+      <ul class="content-list">
+        <li>Large search bar at top (auto-focused when tapped)</li>
+        <li>Section: "Trending today" — 5 recipe cards horizontal scroll</li>
+        <li>Section: "Browse by cuisine" — grid of cuisine cards with food photos</li>
+        <li>Section: "Top creators this week" — horizontal scroll of creator chips</li>
+        <li>Section: "New this week" — latest published recipes</li>
+        <li>Section: "Quick meals (under 30 min)" — curated collection</li>
+        <li>Infinite scroll of all public recipes below sections</li>
+      </ul>
+    </div>
+    <div class="screen-col">
+      <div class="col-heading">User actions</div>
+      <ul class="action-list">
+        <li><span class="action-pill action-tap">tap</span> Search bar → opens search screen</li>
+        <li><span class="action-pill action-tap">tap</span> Recipe card → opens detail</li>
+        <li><span class="action-pill action-scroll">scroll</span> Horizontal within sections</li>
+        <li><span class="action-pill action-tap">tap</span> Cuisine card → filtered results</li>
+        <li><span class="action-pill action-tap">tap</span> Creator chip → their profile</li>
+        <li><span class="action-pill action-tap">tap</span> Like / save directly from card</li>
+        <li><span class="action-pill action-scroll">scroll</span> Down → more recipes</li>
+      </ul>
+    </div>
+    <div class="screen-col">
+      <div class="col-heading">UX notes</div>
+      <ul class="content-list">
+        <li>Use a 2-column recipe grid (not single column) — shows more content and feels more like Pinterest/Instagram explore.</li>
+        <li>Trending algorithm: weight by (likes + saves) in last 24 hours. Simple and effective.</li>
+        <li>Cuisine cards should use beautiful food photography, not icons. Visual = emotional.</li>
+        <li>Never show the same recipe twice in one session.</li>
+        <li>The explore page is SEO gold — it should be server-side rendered for Google indexing.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="note-block"><div class="note-icon">💡</div><div>Explore is where RecipeVerse grows. When a non-user sees a shared recipe link, they land on this page after viewing it. Make it instantly impressive — the best recipes should be front and centre, not hidden behind a scroll.</div></div>
+</div>
+
+<!-- 04 RECIPE DETAIL -->
+<div class="screen-card">
+  <div class="screen-header">
+    <div class="screen-icon-wrap si-green">🍳</div>
+    <div class="screen-meta">
+      <div class="screen-name">04 — Recipe detail</div>
+      <div class="screen-desc">The most important screen in the app. Where users actually read and cook a recipe. Must be beautiful, easy to follow in the kitchen, and encourage engagement. This screen is also what gets shared and drives viral growth.</div>
+      <div class="screen-url">/recipe/:id</div>
+      <div class="screen-badges">
+        <span class="badge b-pub">🌐 Public</span>
+        <span class="badge b-primary">Most important screen</span>
+        <span class="badge b-secondary">Most shared</span>
+      </div>
+    </div>
+  </div>
+  <div class="screen-body">
+    <div class="screen-col">
+      <div class="col-heading">What's on screen</div>
+      <ul class="content-list">
+        <li>Full-width hero food photo (swipeable if multiple)</li>
+        <li>Recipe title in large bold text</li>
+        <li>Creator row: avatar, name, follow button, verified badge</li>
+        <li>Quick stats bar: cook time · servings · difficulty · avg rating</li>
+        <li>Like, save, share action buttons (sticky bar)</li>
+        <li>Description / story paragraph</li>
+        <li>Cuisine + tag chips</li>
+        <li>Ingredients section with checkboxes (tap to cross off)</li>
+        <li>Step-by-step instructions with large step numbers</li>
+        <li>Optional photo per step</li>
+        <li>Notes section at the bottom</li>
+        <li>Star rating widget (tap to rate)</li>
+        <li>Reviews section (top 3 shown, "see all" link)</li>
+        <li>Comments section with reply threads</li>
+        <li>"More from [creator]" horizontal scroll</li>
+      </ul>
+    </div>
+    <div class="screen-col">
+      <div class="col-heading">User actions</div>
+      <ul class="action-list">
+        <li><span class="action-pill action-tap">tap</span> Heart → like recipe</li>
+        <li><span class="action-pill action-tap">tap</span> Bookmark → save to collection</li>
+        <li><span class="action-pill action-tap">tap</span> Share → copy link or share sheet</li>
+        <li><span class="action-pill action-tap">tap</span> Follow → follow creator</li>
+        <li><span class="action-pill action-tap">tap</span> Ingredient checkbox → cross off while cooking</li>
+        <li><span class="action-pill action-tap">tap</span> Step number → mark step done</li>
+        <li><span class="action-pill action-tap">tap</span> Star rating → leave a review</li>
+        <li><span class="action-pill action-type">type</span> Comment → post to thread</li>
+        <li><span class="action-pill action-tap">tap</span> Reply on comment</li>
+        <li><span class="action-pill action-tap">tap</span> Creator avatar → their profile</li>
+        <li><span class="action-pill action-tap">tap</span> Related recipe → opens it</li>
+        <li><span class="action-pill action-tap">tap</span> Tag chip → filtered explore</li>
+      </ul>
+    </div>
+    <div class="screen-col">
+      <div class="col-heading">UX notes</div>
+      <ul class="content-list">
+        <li>Sticky action bar (like, save, share) should stay at the bottom as you scroll. Never lose it.</li>
+        <li>Ingredient checkboxes are a kitchen UX killer feature — users tick off as they add each ingredient. Simple, no extra feature needed.</li>
+        <li>Step numbers should be very large (40px+). When your hands are covered in flour, you need to tap the right step with your elbow.</li>
+        <li>"Keep screen on" while on this page — nothing worse than your phone locking while you're mid-cook.</li>
+        <li>Share button should generate a beautiful Open Graph preview with the food photo for social sharing.</li>
+        <li>SEO: recipe title in H1, schema.org/Recipe markup, fast load under 2s.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="note-block"><div class="note-icon">💡</div><div>Every shared recipe link is free marketing. When someone shares this page to WhatsApp, their friends see the food photo and recipe title in the preview. Design this page to be the most beautiful food page on the internet — that's your viral loop.</div></div>
+</div>
+
+<!-- 05 CREATE RECIPE -->
+<div class="screen-card">
+  <div class="screen-header">
+    <div class="screen-icon-wrap si-purple">✍️</div>
+    <div class="screen-meta">
+      <div class="screen-name">05 — Create recipe (hub screen)</div>
+      <div class="screen-desc">The entry point for all content creation. Users land here and choose how they want to create: type manually, record by voice, or import from social. This choice screen sets the tone for the whole creation experience.</div>
+      <div class="screen-url">/create</div>
+      <div class="screen-badges">
+        <span class="badge b-nav">📍 Tab 3 (centre)</span>
+        <span class="badge b-auth">🔐 Auth required</span>
+        <span class="badge b-primary">Signature feature</span>
+      </div>
+    </div>
+  </div>
+  <div class="screen-body">
+    <div class="screen-col">
+      <div class="col-heading">What's on screen</div>
+      <ul class="content-list">
+        <li>Header: "Share a recipe"</li>
+        <li>3 large creation mode cards (equal size, visually appealing)</li>
+        <li>Mode 1: 🎙️ Voice — "Speak your recipe" (highlighted as recommended)</li>
+        <li>Mode 2: ✍️ Type — "Write it yourself"</li>
+        <li>Mode 3: 🔗 Import — "Paste a link"</li>
+        <li>Each card has an icon, title, and 1-line description</li>
+        <li>Drafts section below: "Continue where you left off" (if any drafts exist)</li>
+      </ul>
+    </div>
+    <div class="screen-col">
+      <div class="col-heading">User actions</div>
+      <ul class="action-list">
+        <li><span class="action-pill action-tap">tap</span> Voice card → opens voice recorder</li>
+        <li><span class="action-pill action-tap">tap</span> Type card → opens recipe form</li>
+        <li><span class="action-pill action-tap">tap</span> Import card → opens URL paste screen</li>
+        <li><span class="action-pill action-tap">tap</span> Draft → continues editing it</li>
+        <li><span class="action-pill action-swipe">swipe</span> Down → dismisses (modal style)</li>
+      </ul>
+    </div>
+    <div class="screen-col">
+      <div class="col-heading">UX notes</div>
+      <ul class="content-list">
+        <li>Voice should be visually prominent — it's the differentiator. Give it a slightly larger card or an "AI-powered" badge.</li>
+        <li>This screen should feel exciting, not like filling out a form. Use warm colours, big icons.</li>
+        <li>Show a "Tip" each time: "Did you know? You can import directly from Instagram!"</li>
+        <li>The create button in the nav tab bar should be a big orange circle (+), not a small icon. Make it unmissable.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="note-block"><div class="note-icon">💡</div><div>The create screen is where creators are born. Make it feel like opening a blank canvas — full of potential. If it feels like a form, creators will post less. If it feels like a creative tool, they'll post more.</div></div>
+</div>
+
+<!-- 06 VOICE SCREEN -->
+<div class="screen-card">
+  <div class="screen-header">
+    <div class="screen-icon-wrap si-purple">🎙️</div>
+    <div class="screen-meta">
+      <div class="screen-name">06 — Voice recording screen</div>
+      <div class="screen-desc">RecipeVerse's most unique feature. The creator speaks their recipe naturally, the AI structures it. The UX here must feel magical — minimal, focused, and reassuring. No distractions while recording.</div>
+      <div class="screen-url">/create/voice</div>
+      <div class="screen-badges">
+        <span class="badge b-auth">🔐 Auth required</span>
+        <span class="badge b-primary">Signature AI feature</span>
+      </div>
+    </div>
+  </div>
+  <div class="screen-body">
+    <div class="screen-col">
+      <div class="col-heading">What's on screen</div>
+      <ul class="content-list">
+        <li>Full-screen dark background (focus mode)</li>
+        <li>Large animated microphone icon in centre</li>
+        <li>Real-time audio waveform visualiser</li>
+        <li>Recording timer (00:00 counting up)</li>
+        <li>Hint text: "Speak your recipe naturally — title, ingredients, steps"</li>
+        <li>Example prompt: "e.g. 'Spicy pasta for 4 people, you'll need 200g pasta...'"</li>
+        <li>Stop button (large, red)</li>
+        <li>Cancel button (top left)</li>
+        <li>After stop: AI processing animation with "Structuring your recipe..." message</li>
+        <li>Then transitions to: AI Review Screen (all fields pre-filled)</li>
+      </ul>
+    </div>
+    <div class="screen-col">
+      <div class="col-heading">User actions</div>
+      <ul class="action-list">
+        <li><span class="action-pill action-tap">tap</span> Mic button → starts recording</li>
+        <li><span class="action-pill action-tap">tap</span> Stop → ends recording + triggers AI</li>
+        <li><span class="action-pill action-tap">tap</span> Cancel → goes back to create hub</li>
+        <li><span class="action-pill action-tap">tap</span> Re-record → if unhappy with first attempt</li>
+        <li>Wait → AI processes (5–10 seconds)</li>
+        <li>Auto-advance to review screen when done</li>
+      </ul>
+    </div>
+    <div class="screen-col">
+      <div class="col-heading">UX notes</div>
+      <ul class="content-list">
+        <li>The waveform visualiser is critical — it shows the user their voice is being captured. Without visual feedback, people feel like it's not working.</li>
+        <li>Keep the screen dark and distraction-free during recording. This is focus time.</li>
+        <li>Show a gentle hint about what to say before the user starts — many people won't know how to begin speaking a recipe.</li>
+        <li>The AI processing screen should show a spinner + warm message, not a blank screen. "Structuring your recipe..." feels like magic.</li>
+        <li>If AI processing fails, show a friendly error with "Try again" and "Type it instead" options.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="note-block"><div class="note-icon">💡</div><div>The moment between tapping "Stop" and seeing the AI-filled review screen is the magic moment of RecipeVerse. Users should think "wait, it actually worked?!" Design this transition to feel special — a satisfying animation, a warm message, then a perfectly structured recipe appears. This is your product's wow moment.</div></div>
+</div>
+
+<!-- 07 IMPORT SCREEN -->
+<div class="screen-card">
+  <div class="screen-header">
+    <div class="screen-icon-wrap si-teal">🔗</div>
+    <div class="screen-meta">
+      <div class="screen-name">07 — Social import screen</div>
+      <div class="screen-desc">Creator pastes a URL from Instagram, YouTube, or Facebook and AI extracts the recipe. Lowers the barrier for creators who already have content elsewhere and want to repost it on RecipeVerse.</div>
+      <div class="screen-url">/create/import</div>
+      <div class="screen-badges">
+        <span class="badge b-auth">🔐 Auth required</span>
+        <span class="badge b-secondary">Onboarding accelerator</span>
+      </div>
+    </div>
+  </div>
+  <div class="screen-body">
+    <div class="screen-col">
+      <div class="col-heading">What's on screen</div>
+      <ul class="content-list">
+        <li>Header: "Import from social"</li>
+        <li>Supported platform icons: Instagram · YouTube · Facebook</li>
+        <li>Large URL input field with placeholder "Paste your link here"</li>
+        <li>Paste from clipboard button (auto-detect if link is already copied)</li>
+        <li>"Import" button (disabled until URL is valid)</li>
+        <li>Processing state: spinning animation + "Fetching recipe content..."</li>
+        <li>Rights confirmation checkbox: "I own or have rights to this content"</li>
+        <li>Tips: "Works best with recipe videos that have captions or descriptions"</li>
+      </ul>
+    </div>
+    <div class="screen-col">
+      <div class="col-heading">User actions</div>
+      <ul class="action-list">
+        <li><span class="action-pill action-type">type</span> or paste URL into field</li>
+        <li><span class="action-pill action-tap">tap</span> "Paste from clipboard" shortcut</li>
+        <li><span class="action-pill action-tap">tap</span> Import → triggers AI fetch</li>
+        <li><span class="action-pill action-tap">tap</span> Rights checkbox (required)</li>
+        <li>Wait → AI processes and fills fields</li>
+        <li>Auto-advance to review screen</li>
+        <li><span class="action-pill action-tap">tap</span> Cancel → back to create hub</li>
+      </ul>
+    </div>
+    <div class="screen-col">
+      <div class="col-heading">UX notes</div>
+      <ul class="content-list">
+        <li>Auto-detect if the user has a URL copied to clipboard and pre-fill the input. This removes friction enormously.</li>
+        <li>Show platform logos prominently — not just text. Creators immediately recognise Instagram's gradient and YouTube red.</li>
+        <li>If the URL fails (private post, no caption), show a friendly message: "We couldn't extract the recipe. Try typing it instead." Don't leave users stuck.</li>
+        <li>The rights checkbox is both legal protection and an education moment. Keep it simple — one line, not a legal wall of text.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="note-block"><div class="note-icon">💡</div><div>For a food creator with 50 Instagram posts, this screen means they can have 50 recipes on RecipeVerse in an afternoon. That's a massive content seeding opportunity. Make this screen feel fast and smooth — speed is the entire value prop here.</div></div>
+</div>
+
+<!-- 08 CREATOR PROFILE -->
+<div class="screen-card">
+  <div class="screen-header">
+    <div class="screen-icon-wrap si-pink">👤</div>
+    <div class="screen-meta">
+      <div class="screen-name">08 — Creator profile (other user's)</div>
+      <div class="screen-desc">The public page of any creator. Where followers come to browse all their recipes and new visitors decide whether to follow. Must communicate a creator's identity and make their best recipes front and centre.</div>
+      <div class="screen-url">/profile/:username</div>
+      <div class="screen-badges">
+        <span class="badge b-pub">🌐 Public</span>
+        <span class="badge b-secondary">Discovery page</span>
+      </div>
+    </div>
+  </div>
+  <div class="screen-body">
+    <div class="screen-col">
+      <div class="col-heading">What's on screen</div>
+      <ul class="content-list">
+        <li>Cover banner (colourful gradient if no photo set)</li>
+        <li>Large avatar photo overlapping banner</li>
+        <li>Display name + @username + verified badge (if applicable)</li>
+        <li>Bio text (up to 160 chars)</li>
+        <li>Location + website link (if set)</li>
+        <li>Stats row: X Recipes · X Followers · X Following</li>
+        <li>Large Follow / Following button (primary CTA)</li>
+        <li>Pinned recipe (creator can pin 1 recipe to top)</li>
+        <li>Recipe grid: 3 columns, square thumbnails</li>
+        <li>Filter tabs: "Recipes" / "Saved" (own profile only)</li>
+      </ul>
+    </div>
+    <div class="screen-col">
+      <div class="col-heading">User actions</div>
+      <ul class="action-list">
+        <li><span class="action-pill action-tap">tap</span> Follow → follow this creator</li>
+        <li><span class="action-pill action-tap">tap</span> Following → shows unfollow option</li>
+        <li><span class="action-pill action-tap">tap</span> Recipe thumbnail → opens recipe detail</li>
+        <li><span class="action-pill action-tap">tap</span> Followers count → see follower list</li>
+        <li><span class="action-pill action-tap">tap</span> Following count → see following list</li>
+        <li><span class="action-pill action-tap">tap</span> Website link → opens browser</li>
+        <li><span class="action-pill action-scroll">scroll</span> Down → loads more recipes</li>
+        <li><span class="action-pill action-tap">tap</span> Share → share profile link</li>
+      </ul>
+    </div>
+    <div class="screen-col">
+      <div class="col-heading">UX notes</div>
+      <ul class="content-list">
+        <li>The Follow button must be the most prominent element after the avatar. It's the primary conversion action on this page.</li>
+        <li>Show recipe count prominently — "24 Recipes" tells a new visitor this creator is prolific and worth following.</li>
+        <li>Recipe grid: 3 columns of square thumbnails is Instagram-standard. Users intuitively know this pattern.</li>
+        <li>The pinned recipe is a powerful creator tool — they pin their best work to always be first. Give creators this control.</li>
+        <li>Load the above-fold content (avatar, name, bio, follow button) instantly before the recipe grid loads.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="note-block"><div class="note-icon">💡</div><div>The creator profile is their storefront. Design it to make even a creator with 5 recipes look impressive. Good use of whitespace, beautiful food thumbnails, and a clean bio layout can make a new creator feel proud to share their profile link.</div></div>
+</div>
+
+<!-- 09 MY PROFILE -->
+<div class="screen-card">
+  <div class="screen-header">
+    <div class="screen-icon-wrap si-pink">🪪</div>
+    <div class="screen-meta">
+      <div class="screen-name">09 — My profile (own profile)</div>
+      <div class="screen-desc">Same layout as the creator profile but with extra creator tools — edit profile, view stats, manage drafts, and delete recipes. This is the creator's control centre.</div>
+      <div class="screen-url">/me</div>
+      <div class="screen-badges">
+        <span class="badge b-nav">📍 Tab 5</span>
+        <span class="badge b-auth">🔐 Auth required</span>
+      </div>
+    </div>
+  </div>
+  <div class="screen-body">
+    <div class="screen-col">
+      <div class="col-heading">What's on screen (additions vs creator profile)</div>
+      <ul class="content-list">
+        <li>All elements from creator profile screen</li>
+        <li>"Edit Profile" button instead of Follow</li>
+        <li>Tabs: "Published" / "Drafts" / "Saved"</li>
+        <li>Draft recipes shown in Drafts tab with "Continue editing" CTA</li>
+        <li>Edit icon on each recipe thumbnail (long press)</li>
+        <li>Settings gear icon in top right corner</li>
+        <li>Total views count visible (private analytics)</li>
+        <li>Notification to "Add a profile photo" if not set</li>
+      </ul>
+    </div>
+    <div class="screen-col">
+      <div class="col-heading">User actions</div>
+      <ul class="action-list">
+        <li><span class="action-pill action-tap">tap</span> Edit Profile → opens edit form</li>
+        <li><span class="action-pill action-tap">tap</span> Drafts tab → see unpublished recipes</li>
+        <li><span class="action-pill action-tap">tap</span> Recipe thumbnail → opens detail</li>
+        <li><span class="action-pill action-hold">hold</span> Recipe thumbnail → edit/delete options</li>
+        <li><span class="action-pill action-tap">tap</span> Settings icon → opens settings</li>
+        <li><span class="action-pill action-tap">tap</span> Avatar → change profile photo</li>
+        <li><span class="action-pill action-tap">tap</span> Saved tab → own saved collections</li>
+      </ul>
+    </div>
+    <div class="screen-col">
+      <div class="col-heading">UX notes</div>
+      <ul class="content-list">
+        <li>The Drafts tab is critical — creators often start recipes and finish later. Easy access to drafts = more published recipes.</li>
+        <li>Long press on a recipe for edit/delete feels natural on mobile. Also add a 3-dot menu as an alternative for discoverability.</li>
+        <li>Show a gentle "Your profile is looking empty — add a bio!" nudge until the profile is complete. Completeness drives engagement.</li>
+        <li>Keep stats simple for MVP: total recipe views, total likes, total saves. Don't overwhelm — full analytics come in Phase 2.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- 10 SAVED -->
+<div class="screen-card">
+  <div class="screen-header">
+    <div class="screen-icon-wrap si-amber">🔖</div>
+    <div class="screen-meta">
+      <div class="screen-name">10 — Saved recipes</div>
+      <div class="screen-desc">The user's personal recipe box. Organises saved recipes into named collections. This is a high-retention feature — once a user has 20 saved recipes, they become much less likely to leave the platform.</div>
+      <div class="screen-url">/saved</div>
+      <div class="screen-badges">
+        <span class="badge b-nav">📍 Tab 4</span>
+        <span class="badge b-auth">🔐 Auth required</span>
+        <span class="badge b-secondary">Retention anchor</span>
+      </div>
+    </div>
+  </div>
+  <div class="screen-body">
+    <div class="screen-col">
+      <div class="col-heading">What's on screen</div>
+      <ul class="content-list">
+        <li>Header: "My Recipe Box" + total saved count</li>
+        <li>"All Saved" default collection (always first)</li>
+        <li>User-created collections shown as large cards with food photo collage</li>
+        <li>"+ New Collection" button</li>
+        <li>Each collection card: name, recipe count, 4-photo collage thumbnail</li>
+        <li>Inside a collection: recipe grid (2 columns)</li>
+        <li>Sort option: Recently saved / Alphabetical / Most liked</li>
+        <li>Search within saved (later feature, not MVP)</li>
+      </ul>
+    </div>
+    <div class="screen-col">
+      <div class="col-heading">User actions</div>
+      <ul class="action-list">
+        <li><span class="action-pill action-tap">tap</span> Collection → opens it to show recipes</li>
+        <li><span class="action-pill action-tap">tap</span> "+ New Collection" → name it and create</li>
+        <li><span class="action-pill action-tap">tap</span> Recipe in collection → opens detail</li>
+        <li><span class="action-pill action-hold">hold</span> Recipe → move to different collection</li>
+        <li><span class="action-pill action-tap">tap</span> Unsave icon → removes from collection</li>
+        <li><span class="action-pill action-hold">hold</span> Collection → rename or delete</li>
+        <li><span class="action-pill action-tap">tap</span> Sort → changes order</li>
+      </ul>
+    </div>
+    <div class="screen-col">
+      <div class="col-heading">UX notes</div>
+      <ul class="content-list">
+        <li>Collections should feel like Pinterest boards — visual, personal, browseable. Use the food photos to make each collection feel unique.</li>
+        <li>The 4-photo collage as collection thumbnail is a small design detail that makes collections feel alive and content-rich.</li>
+        <li>Empty state: "You haven't saved any recipes yet. Find something delicious →" with a link to Explore. Never show a blank sad screen.</li>
+        <li>Collection creation should be instant — a simple text popup to enter a name, then done. No multi-step flow.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- 11 SEARCH -->
+<div class="screen-card">
+  <div class="screen-header">
+    <div class="screen-icon-wrap si-blue">🔍</div>
+    <div class="screen-meta">
+      <div class="screen-name">11 — Search results</div>
+      <div class="screen-desc">Intent-driven screen. Users come here knowing what they want. Must surface results instantly and make filtering effortless. Bad search = users leave the platform to find the recipe on Google.</div>
+      <div class="screen-url">/search?q=...</div>
+      <div class="screen-badges">
+        <span class="badge b-pub">🌐 Public</span>
+        <span class="badge b-secondary">Intent-driven</span>
+      </div>
+    </div>
+  </div>
+  <div class="screen-body">
+    <div class="screen-col">
+      <div class="col-heading">What's on screen</div>
+      <ul class="content-list">
+        <li>Search bar at top (always in focus)</li>
+        <li>Recent searches (before typing)</li>
+        <li>Trending search terms (before typing)</li>
+        <li>After typing: instant results appear (debounced, 300ms)</li>
+        <li>Filter bar: All · Cuisine · Dietary · Time · Rating</li>
+        <li>Sort: Relevant / Newest / Top rated / Most saved</li>
+        <li>Result tabs: Recipes · Creators</li>
+        <li>Recipe results: 2-column grid with photo, title, rating, time</li>
+        <li>Creator results: list with avatar, name, recipe count, follow button</li>
+        <li>Result count: "47 recipes for 'chicken'"</li>
+      </ul>
+    </div>
+    <div class="screen-col">
+      <div class="col-heading">User actions</div>
+      <ul class="action-list">
+        <li><span class="action-pill action-type">type</span> Search term → instant results</li>
+        <li><span class="action-pill action-tap">tap</span> Filter pill → opens filter drawer</li>
+        <li><span class="action-pill action-tap">tap</span> Sort → changes result order</li>
+        <li><span class="action-pill action-tap">tap</span> Recipes/Creators tab → switches view</li>
+        <li><span class="action-pill action-tap">tap</span> Recipe result → opens detail</li>
+        <li><span class="action-pill action-tap">tap</span> Creator result → opens profile</li>
+        <li><span class="action-pill action-tap">tap</span> Follow (in creator result) → follows</li>
+        <li><span class="action-pill action-tap">tap</span> Recent search → re-runs it</li>
+        <li><span class="action-pill action-tap">tap</span> × on search → clears and shows defaults</li>
+      </ul>
+    </div>
+    <div class="screen-col">
+      <div class="col-heading">UX notes</div>
+      <ul class="content-list">
+        <li>Results should appear as the user types — not after pressing enter. 300ms debounce feels instant.</li>
+        <li>If no results: show "No recipes for X. Try these similar searches:" — never a dead end.</li>
+        <li>Filters should be a bottom drawer (slide up from bottom), not a full new screen. Feels faster and less disruptive.</li>
+        <li>Save the last 5 searches. Users frequently repeat searches ("I know I searched for pasta last week").</li>
+        <li>Search by ingredient is the power feature — searching "chicken" returns all recipes where chicken is an ingredient, not just in the title.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- 12 NOTIFICATIONS -->
+<div class="screen-card">
+  <div class="screen-header">
+    <div class="screen-icon-wrap si-red">🔔</div>
+    <div class="screen-meta">
+      <div class="screen-name">12 — Notifications</div>
+      <div class="screen-desc">The engagement loop closer. This screen brings users back into the app after they've left. Good notifications feel personal and exciting. Bad ones feel spammy and get turned off.</div>
+      <div class="screen-url">/notifications</div>
+      <div class="screen-badges">
+        <span class="badge b-auth">🔐 Auth required</span>
+        <span class="badge b-secondary">Retention tool</span>
+      </div>
+    </div>
+  </div>
+  <div class="screen-body">
+    <div class="screen-col">
+      <div class="col-heading">What's on screen</div>
+      <ul class="content-list">
+        <li>Header: "Notifications" + unread count</li>
+        <li>"Mark all as read" button</li>
+        <li>Notification list, newest first</li>
+        <li>Each notification: actor avatar, short message, time, thumbnail (if recipe)</li>
+        <li>Unread notifications have orange left border or light background</li>
+        <li>Notification types: followed you · liked your recipe · commented · replied · new recipe from [creator]</li>
+        <li>Empty state: "Nothing here yet — start following creators!"</li>
+      </ul>
+    </div>
+    <div class="screen-col">
+      <div class="col-heading">User actions</div>
+      <ul class="action-list">
+        <li><span class="action-pill action-tap">tap</span> Notification → navigates to relevant content</li>
+        <li><span class="action-pill action-tap">tap</span> Actor avatar → opens their profile</li>
+        <li><span class="action-pill action-tap">tap</span> Mark all read → clears badge</li>
+        <li><span class="action-pill action-swipe">swipe</span> Left on notification → dismiss it</li>
+        <li><span class="action-pill action-scroll">scroll</span> Down → loads older notifications</li>
+      </ul>
+    </div>
+    <div class="screen-col">
+      <div class="col-heading">UX notes</div>
+      <ul class="content-list">
+        <li>Keep notification text short and human: "Ji-Yeon saved your Jollof Rice 🔖" not "User [id] performed save action on recipe [id]".</li>
+        <li>Group similar notifications: "Marco and 4 others liked your Carbonara" — not 5 separate entries.</li>
+        <li>The notification badge on the bell icon should be a red dot (not a number) if under 10, a number if 10+.</li>
+        <li>Never send more than 3 notifications per day to any user. Respect their attention. Quality over quantity.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- 13 SETTINGS -->
+<div class="screen-card">
+  <div class="screen-header">
+    <div class="screen-icon-wrap si-gray">⚙️</div>
+    <div class="screen-meta">
+      <div class="screen-name">13 — Settings</div>
+      <div class="screen-desc">Account and preference management. Should be simple and honest — no dark patterns, no hidden options to delete your data. Users should feel in control.</div>
+      <div class="screen-url">/settings</div>
+      <div class="screen-badges">
+        <span class="badge b-auth">🔐 Auth required</span>
+      </div>
+    </div>
+  </div>
+  <div class="screen-body">
+    <div class="screen-col">
+      <div class="col-heading">Settings groups</div>
+      <ul class="content-list">
+        <li><strong>Account:</strong> Edit profile, change email, change password</li>
+        <li><strong>Notifications:</strong> Toggle each type on/off (new follower, likes, comments, new recipes)</li>
+        <li><strong>Privacy:</strong> Public/private account, blocked users</li>
+        <li><strong>Content:</strong> Dietary preferences for feed filtering</li>
+        <li><strong>About:</strong> Terms, Privacy Policy, version number</li>
+        <li><strong>Danger zone:</strong> Delete account (requires confirmation)</li>
+        <li>Log out button (always prominent)</li>
+      </ul>
+    </div>
+    <div class="screen-col">
+      <div class="col-heading">User actions</div>
+      <ul class="action-list">
+        <li><span class="action-pill action-tap">tap</span> Edit profile → opens edit form</li>
+        <li><span class="action-pill action-tap">tap</span> Notification toggles → enable/disable</li>
+        <li><span class="action-pill action-tap">tap</span> Privacy toggle → public/private</li>
+        <li><span class="action-pill action-tap">tap</span> Log out → logs out with confirmation</li>
+        <li><span class="action-pill action-tap">tap</span> Delete account → confirmation flow</li>
+        <li><span class="action-pill action-tap">tap</span> Terms/Privacy → opens in browser</li>
+      </ul>
+    </div>
+    <div class="screen-col">
+      <div class="col-heading">UX notes</div>
+      <ul class="content-list">
+        <li>Log out should be easy to find but not accidentally tappable. Don't hide it — that's a dark pattern.</li>
+        <li>Delete account must have a two-step confirmation: "Are you sure?" then "Type DELETE to confirm". Irreversible actions need friction.</li>
+        <li>Notification toggles should use native iOS/Android switch components — users recognise them instantly.</li>
+        <li>Keep settings minimal. Every extra setting is a decision a user has to make. Add only what's truly needed.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ───── PART 2: NAVIGATION ───── -->
+<div class="section-label">Part 2 — Navigation structure</div>
+
+<div class="nav-diagram">
+  <div class="nav-title">Bottom tab bar (always visible on mobile)</div>
+  <div class="nav-bar">
+    <div class="nav-item"><div class="nav-icon">🏠</div><div class="nav-label active">Feed</div></div>
+    <div class="nav-item"><div class="nav-icon">🔭</div><div class="nav-label">Explore</div></div>
+    <div class="nav-item" style="background: #e8430a; border-radius: 14px; padding: 6px 16px;"><div class="nav-icon">＋</div><div class="nav-label" style="color:#fff; font-weight:700;">Create</div></div>
+    <div class="nav-item"><div class="nav-icon">🔖</div><div class="nav-label">Saved</div></div>
+    <div class="nav-item"><div class="nav-icon">👤</div><div class="nav-label">Profile</div></div>
+  </div>
+  <div class="nav-tree">
+    <div class="nav-branch">
+      <div class="nav-branch-title">🏠 Feed (Tab 1)</div>
+      <div class="nav-branch-items">
+        <span>Recipe detail page</span>
+        <span>Creator profile</span>
+        <span>Comments view</span>
+      </div>
+    </div>
+    <div class="nav-branch">
+      <div class="nav-branch-title">🔭 Explore (Tab 2)</div>
+      <div class="nav-branch-items">
+        <span>Search results</span>
+        <span>Cuisine filtered view</span>
+        <span>Recipe detail</span>
+      </div>
+    </div>
+    <div class="nav-branch">
+      <div class="nav-branch-title" style="color:#e8430a;">＋ Create (Tab 3)</div>
+      <div class="nav-branch-items">
+        <span>Voice recording</span>
+        <span>Type form</span>
+        <span>Social import</span>
+        <span>AI review screen</span>
+      </div>
+    </div>
+    <div class="nav-branch">
+      <div class="nav-branch-title">🔖 Saved (Tab 4)</div>
+      <div class="nav-branch-items">
+        <span>Collection detail</span>
+        <span>Recipe detail</span>
+      </div>
+    </div>
+    <div class="nav-branch">
+      <div class="nav-branch-title">👤 Profile (Tab 5)</div>
+      <div class="nav-branch-items">
+        <span>Edit profile</span>
+        <span>My recipe detail</span>
+        <span>Notifications</span>
+        <span>Settings</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="callout-blue"><strong>Navigation rule:</strong> The Create button (Tab 3) should be orange and larger than the other tabs. It's the most important action in the app. Every other tab is navigation — Tab 3 is an action. Make it look different.</div>
+
+<!-- ───── PART 3: UX PRINCIPLES ───── -->
+<div class="section-label">Part 3 — Mobile-first UX recommendations</div>
+
+<div class="principle-card">
+  <div class="principle-num">1</div>
+  <div class="principle-body">
+    <div class="principle-title">Thumb zone first</div>
+    <div class="principle-desc">On mobile, users hold their phone with one hand and reach with their thumb. The bottom 40% of the screen is the "easy zone." Put the most important actions there — like, save, the create button, the navigation bar. Put titles and info at the top where it's safe from accidental taps.</div>
+    <div class="principle-example">Example: The sticky action bar (like, save, share) sits at the bottom of the recipe detail page, reachable with one thumb while the other hand holds a wooden spoon.</div>
+  </div>
+</div>
+
+<div class="principle-card">
+  <div class="principle-num">2</div>
+  <div class="principle-body">
+    <div class="principle-title">Make every tap target at least 44×44px</div>
+    <div class="principle-desc">Apple's own design guidelines say no tap target should be smaller than 44x44 points. This applies to every button, icon, link, and interactive element in RecipeVerse. Small tap targets frustrate users and cause mis-taps. When in doubt, make it bigger.</div>
+    <div class="principle-example">Example: The ingredient checkboxes on the recipe detail page should be 44px tall even if the ingredient name is short — fat finger-friendly.</div>
+  </div>
+</div>
+
+<div class="principle-card">
+  <div class="principle-num">3</div>
+  <div class="principle-body">
+    <div class="principle-title">Optimistic UI — respond instantly, confirm later</div>
+    <div class="principle-desc">When a user taps the heart, fill it immediately. When they tap save, show the bookmark filled immediately. Don't wait for the server to respond before updating the UI. If the API call fails, revert the change. This makes the app feel native-speed even on slow connections.</div>
+    <div class="principle-example">Example: Tap like → heart fills orange instantly → API call runs in background → if it fails, show "Couldn't like right now. Try again." and revert the heart.</div>
+  </div>
+</div>
+
+<div class="principle-card">
+  <div class="principle-num">4</div>
+  <div class="principle-body">
+    <div class="principle-title">Never show a blank screen</div>
+    <div class="principle-desc">Every empty state should guide the user forward. Empty feed? Show trending + "Follow creators to personalise." No saved recipes? Show "Save a recipe you love." Zero notifications? Show "Share a recipe to start getting feedback." Empty states are opportunities, not dead ends.</div>
+    <div class="principle-example">Example: New user with 0 follows sees: "Discover creators to follow →" with a button that goes directly to Explore. Never just an empty white screen.</div>
+  </div>
+</div>
+
+<div class="principle-card">
+  <div class="principle-num">5</div>
+  <div class="principle-body">
+    <div class="principle-title">Loading states for everything async</div>
+    <div class="principle-desc">Whenever data is loading, show a skeleton screen (grey placeholder shapes in the layout) instead of a spinner. Skeleton screens feel faster because the user can see the shape of what's coming. Use a spinner only for actions (posting a comment, uploading a file).</div>
+    <div class="principle-example">Example: Feed opens → skeleton cards appear instantly → real recipe cards fade in as they load. The user never sees a blank white screen during loading.</div>
+  </div>
+</div>
+
+<div class="principle-card">
+  <div class="principle-num">6</div>
+  <div class="principle-body">
+    <div class="principle-title">Cooking mode on recipe detail</div>
+    <div class="principle-desc">When a user is actively cooking, their hands are dirty and their phone is on the counter. Design for this: auto-keep the screen awake, use extra-large step text, make ingredient checkboxes huge, and put a "Cooking mode" button that zooms into step-by-step view full screen.</div>
+    <div class="principle-example">Example: Tapping "Start cooking" enters a full-screen step view. Step 1 fills the whole screen. Tap anywhere to advance to Step 2. No nav bar, no distractions.</div>
+  </div>
+</div>
+
+<!-- ───── PART 4: CREATION UX ───── -->
+<div class="section-label">Part 4 — Recipe creation UX best practices</div>
+
+<div class="callout"><strong>The core challenge:</strong> Recipe creation is the hardest thing to make easy. A full recipe has 8+ fields. If it feels like a tax form, creators won't post. If it feels like texting a friend, they'll post every day.</div>
+
+<div class="grid2">
+  <div class="flow-card">
+    <div class="flow-header">🎙️ Voice creation flow</div>
+    <div class="flow-steps-wrap">
+      <div class="flow-step"><div class="flow-step-num">1</div><div class="flow-step-body"><div class="flow-step-title">One tap to start</div><div class="flow-step-desc">The mic button starts recording immediately. No "are you sure?" prompt. Reduce friction to zero.</div></div></div>
+      <div class="flow-connector"></div>
+      <div class="flow-step"><div class="flow-step-num">2</div><div class="flow-step-body"><div class="flow-step-title">Visual feedback</div><div class="flow-step-desc">Waveform animation shows voice is being captured. Timer shows how long they've recorded.</div></div></div>
+      <div class="flow-connector"></div>
+      <div class="flow-step"><div class="flow-step-num">3</div><div class="flow-step-body"><div class="flow-step-title">Magic moment</div><div class="flow-step-desc">AI processes in 5–8 seconds. Show a warm loading message, not a spinner.</div></div></div>
+      <div class="flow-connector"></div>
+      <div class="flow-step"><div class="flow-step-num">4</div><div class="flow-step-body"><div class="flow-step-title">Review all fields</div><div class="flow-step-desc">All fields pre-filled. User scrolls through, fixes any errors, adds a photo.</div></div></div>
+      <div class="flow-connector"></div>
+      <div class="flow-step"><div class="flow-step-num">5</div><div class="flow-step-body"><div class="flow-step-title">One tap to publish</div><div class="flow-step-desc">Big orange Publish button. Celebration animation on success ("Your recipe is live! 🎉").</div></div></div>
+    </div>
+  </div>
+
+  <div class="flow-card">
+    <div class="flow-header">✍️ Typed creation flow</div>
+    <div class="flow-steps-wrap">
+      <div class="flow-step"><div class="flow-step-num">1</div><div class="flow-step-body"><div class="flow-step-title">Title first</div><div class="flow-step-desc">Auto-focus on the title field. First thing typed sets the tone. Keep this field large and inviting.</div></div></div>
+      <div class="flow-connector"></div>
+      <div class="flow-step"><div class="flow-step-num">2</div><div class="flow-step-body"><div class="flow-step-title">Ingredients as a list</div><div class="flow-step-desc">Each ingredient is one line. Tap "+" to add another. Never a big text box — lists feel manageable.</div></div></div>
+      <div class="flow-connector"></div>
+      <div class="flow-step"><div class="flow-step-num">3</div><div class="flow-step-body"><div class="flow-step-title">Steps as numbered blocks</div><div class="flow-step-desc">Same pattern as ingredients. One step = one input. Drag handle to reorder. Tap "+" to add.</div></div></div>
+      <div class="flow-connector"></div>
+      <div class="flow-step"><div class="flow-step-num">4</div><div class="flow-step-body"><div class="flow-step-title">Quick fields</div><div class="flow-step-desc">Cook time, servings, difficulty — use pickers and steppers, not free-text inputs. Faster to fill.</div></div></div>
+      <div class="flow-connector"></div>
+      <div class="flow-step"><div class="flow-step-num">5</div><div class="flow-step-body"><div class="flow-step-title">Photo last</div><div class="flow-step-desc">Photo upload is at the end — many users won't have a photo ready. Make it optional but encouraged.</div></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="do-dont">
+  <div class="do-card">
+    <div class="dd-title">✓ Do this</div>
+    <ul class="dd-list">
+      <li>Auto-save drafts every 30 seconds silently</li>
+      <li>Show a progress indicator ("3 of 5 sections complete")</li>
+      <li>Use pickers for cook time (5, 10, 15 min increments)</li>
+      <li>Let users reorder ingredients and steps by dragging</li>
+      <li>Show a preview of how the recipe will look before publishing</li>
+      <li>Celebrate when they publish with a brief animation</li>
+      <li>Make the keyboard dismiss when tapping outside a field</li>
+      <li>Add a character counter on description (max 500)</li>
+      <li>Pre-fill cuisine based on recently used</li>
+    </ul>
+  </div>
+  <div class="dont-card">
+    <div class="dd-title">✗ Don't do this</div>
+    <ul class="dd-list">
+      <li>Don't make any field mandatory except title + 1 ingredient</li>
+      <li>Don't show all fields at once — progressive disclosure</li>
+      <li>Don't use a single giant text area for all ingredients</li>
+      <li>Don't lose draft data if the app crashes or they navigate away</li>
+      <li>Don't require a photo to publish — many creators will skip it</li>
+      <li>Don't use dropdowns for cuisine — use horizontal scrollable chips</li>
+      <li>Don't show a wall of tags to select from — show top 10, + search</li>
+      <li>Don't auto-publish — always require an explicit Publish tap</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ───── PART 5: VISUAL DESIGN ───── -->
+<div class="section-label">Part 5 — Visual design foundation</div>
+
+<h3 style="font-size:14px; font-weight:700; margin-bottom:14px;">Colour palette</h3>
+<div class="color-grid">
+  <div class="color-swatch"><div class="color-preview" style="background:#e8430a;"></div><div class="color-info"><div class="color-name">Brand Orange</div><div class="color-hex">#e8430a</div><div class="color-use">Primary CTA, active nav</div></div></div>
+  <div class="color-swatch"><div class="color-preview" style="background:#f97316;"></div><div class="color-info"><div class="color-name">Warm Orange</div><div class="color-hex">#f97316</div><div class="color-use">Gradients, hover states</div></div></div>
+  <div class="color-swatch"><div class="color-preview" style="background:#fbbf24;"></div><div class="color-info"><div class="color-name">Golden Yellow</div><div class="color-hex">#fbbf24</div><div class="color-use">Stars, highlights</div></div></div>
+  <div class="color-swatch"><div class="color-preview" style="background:#1a1a1a;"></div><div class="color-info"><div class="color-name">Near Black</div><div class="color-hex">#1a1a1a</div><div class="color-use">Headings, body text</div></div></div>
+  <div class="color-swatch"><div class="color-preview" style="background:#555555;"></div><div class="color-info"><div class="color-name">Body Grey</div><div class="color-hex">#555555</div><div class="color-use">Body text, descriptions</div></div></div>
+  <div class="color-swatch"><div class="color-preview" style="background:#f8f6f2;"></div><div class="color-info"><div class="color-name">Warm White</div><div class="color-hex">#f8f6f2</div><div class="color-use">Page background</div></div></div>
+  <div class="color-swatch"><div class="color-preview" style="background:#ffffff; border-top: 1px solid #f0ebe2;"></div><div class="color-info"><div class="color-name">Pure White</div><div class="color-hex">#ffffff</div><div class="color-use">Cards, surfaces</div></div></div>
+  <div class="color-swatch"><div class="color-preview" style="background:#ef4444;"></div><div class="color-info"><div class="color-name">Error Red</div><div class="color-hex">#ef4444</div><div class="color-use">Errors, delete actions</div></div></div>
+  <div class="color-swatch"><div class="color-preview" style="background:#16a34a;"></div><div class="color-info"><div class="color-name">Success Green</div><div class="color-hex">#16a34a</div><div class="color-use">Success states</div></div></div>
+</div>
+
+<h3 style="font-size:14px; font-weight:700; margin:20px 0 14px;">Typography scale</h3>
+<div class="card">
+  <div class="type-row"><div class="type-label">Display / Hero</div><div style="font-size:28px; font-weight:800; color:#1a1a1a;">RecipeVerse</div><div class="type-use">28px · 800 weight · Onboarding titles</div></div>
+  <div class="type-row"><div class="type-label">Screen title</div><div style="font-size:22px; font-weight:800; color:#1a1a1a;">Home Feed</div><div class="type-use">22px · 800 weight · Page headings</div></div>
+  <div class="type-row"><div class="type-label">Recipe title</div><div style="font-size:18px; font-weight:700; color:#1a1a1a;">Spicy Jollof Rice</div><div class="type-use">18px · 700 weight · Recipe names</div></div>
+  <div class="type-row"><div class="type-label">Section heading</div><div style="font-size:15px; font-weight:700; color:#1a1a1a;">Ingredients</div><div class="type-use">15px · 700 weight · Section labels</div></div>
+  <div class="type-row"><div class="type-label">Body text</div><div style="font-size:14px; font-weight:400; color:#555;">A classic West African dish bursting with spice...</div><div class="type-use">14px · 400 weight · Descriptions, steps</div></div>
+  <div class="type-row"><div class="type-label">Caption / meta</div><div style="font-size:12px; font-weight:400; color:#999;">45 min · 4 servings · Medium</div><div class="type-use">12px · 400 weight · Recipe metadata</div></div>
+  <div class="type-row"><div class="type-label">Label / tag</div><div style="font-size:11px; font-weight:600; color:#e8430a; background:#fff0e6; padding:2px 8px; border-radius:4px;">Nigerian</div><div class="type-use">11px · 600 weight · Chips, badges, tags</div></div>
+</div>
+
+<div class="callout-green"><strong>Final UX rule:</strong> Every screen should pass the "5-second test" — if a new user looks at any screen for 5 seconds, they should understand what it is and what to do next. If they can't, simplify it. Great UX is invisible — users should be thinking about food, not the interface.</div>
+
+<div class="footer">
+  <span>RecipeVerse — UX & Screen Design v1.0</span>
+  <span>Confidential · March 2026</span>
+</div>
+
+</div>
+</body>
+</html>

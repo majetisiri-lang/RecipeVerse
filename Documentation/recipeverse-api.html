@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>RecipeVerse — API Design</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8f6f2; color: #1a1a1a; line-height: 1.7; font-size: 15px; }
+.page { max-width: 980px; margin: 0 auto; padding: 48px 32px; }
+
+/* Cover */
+.cover { background: linear-gradient(135deg, #e8430a 0%, #f97316 55%, #fbbf24 100%); border-radius: 20px; padding: 48px; color: #fff; margin-bottom: 40px; }
+.cover-tag { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.75; margin-bottom: 12px; }
+.cover h1 { font-size: 38px; font-weight: 800; margin-bottom: 8px; }
+.cover-sub { font-size: 16px; opacity: 0.88; max-width: 560px; margin-bottom: 24px; line-height: 1.6; }
+.cover-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+.cover-pill { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 4px 14px; font-size: 12px; }
+.cover-meta { display: flex; flex-wrap: wrap; gap: 20px; font-size: 12px; opacity: 0.7; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 20px; }
+
+/* Legend */
+.legend { background: #fff; border: 1px solid #ede8e0; border-radius: 16px; padding: 22px 28px; margin-bottom: 32px; }
+.legend-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #aaa; margin-bottom: 14px; }
+.legend-items { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+.legend-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #555; }
+.method { display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 6px; font-family: 'SF Mono', monospace; white-space: nowrap; letter-spacing: 0.03em; }
+.m-post { background: #dcfce7; color: #166534; }
+.m-get { background: #dbeafe; color: #1e40af; }
+.m-put { background: #fef9c3; color: #854d0e; }
+.m-patch { background: #fef3c7; color: #92400e; }
+.m-delete { background: #fee2e2; color: #991b1b; }
+.auth-badge { background: #f5f3ff; color: #5b21b6; border: 1px solid #ddd6fe; border-radius: 6px; font-size: 11px; padding: 2px 8px; font-weight: 600; }
+.pub-badge { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; border-radius: 6px; font-size: 11px; padding: 2px 8px; font-weight: 600; }
+
+/* TOC */
+.toc { background: #fff; border: 1px solid #ede8e0; border-radius: 16px; padding: 24px 28px; margin-bottom: 40px; }
+.toc-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #aaa; margin-bottom: 14px; }
+.toc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 4px; }
+.toc-item { font-size: 13px; color: #e8430a; display: flex; align-items: center; gap: 8px; padding: 4px 0; }
+.toc-num { font-size: 11px; color: #ccc; font-weight: 700; min-width: 24px; }
+
+/* Section heading */
+.section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: #bbb; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #f0ebe2; margin-top: 48px; }
+.section-label:first-of-type { margin-top: 0; }
+
+/* API Card */
+.api-card { background: #fff; border: 1px solid #ede8e0; border-radius: 16px; overflow: hidden; margin-bottom: 24px; }
+.api-header { padding: 18px 24px; border-bottom: 1px solid #f0ebe2; display: flex; align-items: flex-start; gap: 14px; flex-wrap: wrap; }
+.api-method-path { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 200px; }
+.api-path { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 14px; font-weight: 700; color: #1a1a1a; }
+.api-title-block { flex: 2; min-width: 200px; }
+.api-title { font-size: 16px; font-weight: 800; margin-bottom: 3px; }
+.api-desc { font-size: 13px; color: #666; line-height: 1.5; }
+.api-badges { display: flex; gap: 6px; align-items: center; margin-top: 6px; flex-wrap: wrap; }
+
+.api-body { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+.api-col { padding: 20px 24px; }
+.api-col:first-child { border-right: 1px solid #f5f1eb; }
+.col-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em; color: #bbb; margin-bottom: 12px; }
+
+/* Input/Output tables */
+.field-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.field-table tr { border-bottom: 1px solid #f8f4ef; }
+.field-table tr:last-child { border-bottom: none; }
+.field-table td { padding: 6px 0; vertical-align: top; }
+.field-name { font-family: 'SF Mono', monospace; font-size: 11px; color: #e8430a; font-weight: 600; padding-right: 10px; white-space: nowrap; }
+.field-type { color: #888; font-size: 11px; padding-right: 10px; font-family: 'SF Mono', monospace; white-space: nowrap; }
+.field-desc { color: #555; font-size: 12px; line-height: 1.5; }
+.req-dot { width: 6px; height: 6px; background: #ef4444; border-radius: 50%; display: inline-block; margin-right: 6px; flex-shrink: 0; }
+.opt-dot { width: 6px; height: 6px; background: #22c55e; border-radius: 50%; display: inline-block; margin-right: 6px; flex-shrink: 0; }
+
+/* Code blocks */
+.code-block { background: #1e1e2e; border-radius: 10px; padding: 14px 16px; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 11px; line-height: 1.7; overflow-x: auto; margin-top: 4px; }
+.c-key { color: #89b4fa; }
+.c-str { color: #a6e3a1; }
+.c-num { color: #fab387; }
+.c-bool { color: #f38ba8; }
+.c-null { color: #6c7086; }
+.c-punc { color: #cdd6f4; }
+.c-comment { color: #6c7086; font-style: italic; }
+
+/* Note block */
+.note-block { background: #faf8f5; border-top: 1px solid #f0ebe2; padding: 14px 24px; font-size: 13px; color: #666; line-height: 1.6; display: flex; gap: 10px; }
+.note-icon { font-size: 14px; flex-shrink: 0; margin-top: 2px; }
+
+/* Callouts */
+.callout { border-left: 3px solid #e8430a; background: #fff8f5; border-radius: 0 10px 10px 0; padding: 14px 18px; margin: 16px 0; font-size: 13px; color: #555; line-height: 1.7; }
+.callout strong { color: #e8430a; }
+.callout-blue { border-left: 3px solid #3b82f6; background: #eff6ff; border-radius: 0 10px 10px 0; padding: 14px 18px; margin: 16px 0; font-size: 13px; color: #555; line-height: 1.7; }
+.callout-green { border-left: 3px solid #16a34a; background: #f0fdf4; border-radius: 0 10px 10px 0; padding: 14px 18px; margin: 16px 0; font-size: 13px; color: #555; line-height: 1.7; }
+
+/* Base URL card */
+.base-card { background: #1e1e2e; border-radius: 12px; padding: 20px 24px; margin-bottom: 32px; }
+.base-label { font-size: 11px; color: #6c7086; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
+.base-url { font-family: 'SF Mono', monospace; font-size: 15px; color: #a6e3a1; font-weight: 600; }
+.base-note { font-size: 12px; color: #6c7086; margin-top: 8px; }
+
+/* Error table */
+.err-table { width: 100%; border-collapse: collapse; font-size: 13px; background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid #ede8e0; margin-bottom: 14px; }
+.err-table th { text-align: left; padding: 10px 16px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: #aaa; background: #faf8f5; border-bottom: 1px solid #ede8e0; }
+.err-table td { padding: 10px 16px; border-bottom: 1px solid #f5f1eb; }
+.err-table tr:last-child td { border-bottom: none; }
+.err-code { font-family: 'SF Mono', monospace; font-weight: 700; font-size: 13px; }
+.e4 { color: #b91c1c; }
+.e5 { color: #92400e; }
+.e2 { color: #166534; }
+
+/* Footer */
+.footer { margin-top: 56px; padding-top: 24px; border-top: 1px solid #ede8e0; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; font-size: 12px; color: #bbb; }
+
+@media (max-width: 700px) {
+  .page { padding: 24px 16px; }
+  .cover { padding: 32px 24px; }
+  .cover h1 { font-size: 26px; }
+  .api-body { grid-template-columns: 1fr; }
+  .api-col:first-child { border-right: none; border-bottom: 1px solid #f5f1eb; }
+  .api-header { flex-direction: column; }
+}
+@media print { body { background: #fff; } .page { padding: 24px; } }
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-tag">Backend API Design · RecipeVerse · March 2026</div>
+  <h1>API Reference</h1>
+  <div class="cover-sub">Every API endpoint the RecipeVerse MVP needs — explained in plain English with real examples. Built for founders, designers, and developers.</div>
+  <div class="cover-pills">
+    <span class="cover-pill">13 endpoint groups</span>
+    <span class="cover-pill">REST + tRPC</span>
+    <span class="cover-pill">JWT auth</span>
+    <span class="cover-pill">JSON responses</span>
+  </div>
+  <div class="cover-meta">
+    <span>Version 1.0</span>
+    <span>Base: /api/v1</span>
+    <span>Auth: Bearer token (Clerk)</span>
+    <span>Format: JSON</span>
+  </div>
+</div>
+
+<!-- LEGEND -->
+<div class="legend">
+  <div class="legend-title">How to read this document</div>
+  <div class="legend-items">
+    <div class="legend-item"><span class="method m-post">POST</span> Create something new</div>
+    <div class="legend-item"><span class="method m-get">GET</span> Fetch / read data</div>
+    <div class="legend-item"><span class="method m-patch">PATCH</span> Update part of something</div>
+    <div class="legend-item"><span class="method m-delete">DELETE</span> Remove something</div>
+    <div class="legend-item"><span class="auth-badge">🔐 Auth required</span> Must be logged in</div>
+    <div class="legend-item"><span class="pub-badge">🌐 Public</span> Anyone can call this</div>
+    <div class="legend-item"><span style="display:flex;align-items:center;gap:4px;font-size:12px;"><span class="req-dot"></span> Required input</span></div>
+    <div class="legend-item"><span style="display:flex;align-items:center;gap:4px;font-size:12px;"><span class="opt-dot"></span> Optional input</span></div>
+  </div>
+</div>
+
+<!-- TOC -->
+<div class="toc">
+  <div class="toc-title">All API groups</div>
+  <div class="toc-grid">
+    <div class="toc-item"><span class="toc-num">01</span> POST /auth/signup</div>
+    <div class="toc-item"><span class="toc-num">02</span> POST /auth/login</div>
+    <div class="toc-item"><span class="toc-num">03</span> POST /profiles</div>
+    <div class="toc-item"><span class="toc-num">04</span> PATCH /profiles/me</div>
+    <div class="toc-item"><span class="toc-num">05</span> POST /recipes</div>
+    <div class="toc-item"><span class="toc-num">06</span> PATCH /recipes/:id</div>
+    <div class="toc-item"><span class="toc-num">07</span> GET /recipes/feed</div>
+    <div class="toc-item"><span class="toc-num">08</span> GET /recipes/:id</div>
+    <div class="toc-item"><span class="toc-num">09</span> POST/DELETE /follows</div>
+    <div class="toc-item"><span class="toc-num">10</span> POST/DELETE /likes</div>
+    <div class="toc-item"><span class="toc-num">11</span> POST /comments</div>
+    <div class="toc-item"><span class="toc-num">12</span> POST/DELETE /saved</div>
+    <div class="toc-item"><span class="toc-num">13</span> GET /search</div>
+    <div class="toc-item"><span class="toc-num">14</span> POST /media/upload</div>
+  </div>
+</div>
+
+<!-- BASE URL -->
+<div class="base-card">
+  <div class="base-label">Base URL (all endpoints start with this)</div>
+  <div class="base-url">https://api.recipeverse.com/api/v1</div>
+  <div class="base-note">All requests must include the header: Content-Type: application/json &nbsp;·&nbsp; Authenticated requests also need: Authorization: Bearer &lt;your_token&gt;</div>
+</div>
+
+<div class="callout"><strong>What is an API?</strong> Think of an API like a waiter in a restaurant. Your app (the customer) tells the waiter what it wants. The waiter goes to the kitchen (the database), gets the food (data), and brings it back. Every button tap in RecipeVerse calls an API endpoint behind the scenes.</div>
+
+<!-- ───── SECTION 1: AUTH ───── -->
+<div class="section-label">Part 1 — Authentication</div>
+
+<!-- 01 SIGNUP -->
+<div class="api-card">
+  <div class="api-header">
+    <div class="api-method-path">
+      <span class="method m-post">POST</span>
+      <span class="api-path">/auth/signup</span>
+    </div>
+    <div class="api-title-block">
+      <div class="api-title">Sign up with email & password</div>
+      <div class="api-desc">Creates a brand new user account. Sends a verification email. Returns an auth token the app stores for future requests.</div>
+      <div class="api-badges"><span class="pub-badge">🌐 Public</span></div>
+    </div>
+  </div>
+  <div class="api-body">
+    <div class="api-col">
+      <div class="col-title">Required inputs (request body)</div>
+      <table class="field-table">
+        <tr><td class="field-name"><span class="req-dot"></span>email</td><td class="field-type">string</td><td class="field-desc">User's email address. Must be unique.</td></tr>
+        <tr><td class="field-name"><span class="req-dot"></span>password</td><td class="field-type">string</td><td class="field-desc">Min 8 characters. Stored as a hash, never plain text.</td></tr>
+        <tr><td class="field-name"><span class="req-dot"></span>display_name</td><td class="field-type">string</td><td class="field-desc">Their full name shown on the profile.</td></tr>
+        <tr><td class="field-name"><span class="req-dot"></span>username</td><td class="field-type">string</td><td class="field-desc">Their @handle. Must be unique, no spaces.</td></tr>
+      </table>
+    </div>
+    <div class="api-col">
+      <div class="col-title">Example success response (201 Created)</div>
+      <div class="code-block"><span class="c-punc">{</span><br>
+&nbsp;&nbsp;<span class="c-key">"success"</span><span class="c-punc">:</span> <span class="c-bool">true</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;<span class="c-key">"token"</span><span class="c-punc">:</span> <span class="c-str">"eyJhbGciOiJIUzI1..."</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;<span class="c-key">"user"</span><span class="c-punc">: {</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"id"</span><span class="c-punc">:</span> <span class="c-str">"usr_a1b2c3"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"email"</span><span class="c-punc">:</span> <span class="c-str">"amara@example.com"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"username"</span><span class="c-punc">:</span> <span class="c-str">"amaracooks"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"email_verified"</span><span class="c-punc">:</span> <span class="c-bool">false</span><br>
+&nbsp;&nbsp;<span class="c-punc">}</span><br>
+<span class="c-punc">}</span></div>
+    </div>
+  </div>
+  <div class="note-block"><div class="note-icon">💡</div><div>The token is like a key card. The app stores it and sends it with every future request to prove the user is logged in. email_verified starts as false until they click the link in their email.</div></div>
+</div>
+
+<!-- 02 LOGIN -->
+<div class="api-card">
+  <div class="api-header">
+    <div class="api-method-path">
+      <span class="method m-post">POST</span>
+      <span class="api-path">/auth/login</span>
+    </div>
+    <div class="api-title-block">
+      <div class="api-title">Log in with email & password</div>
+      <div class="api-desc">Checks the email and password. If correct, returns a fresh auth token. This is called every time a returning user opens the app and enters their credentials.</div>
+      <div class="api-badges"><span class="pub-badge">🌐 Public</span></div>
+    </div>
+  </div>
+  <div class="api-body">
+    <div class="api-col">
+      <div class="col-title">Required inputs</div>
+      <table class="field-table">
+        <tr><td class="field-name"><span class="req-dot"></span>email</td><td class="field-type">string</td><td class="field-desc">The email they signed up with.</td></tr>
+        <tr><td class="field-name"><span class="req-dot"></span>password</td><td class="field-type">string</td><td class="field-desc">Their password. Compared against the stored hash.</td></tr>
+      </table>
+    </div>
+    <div class="api-col">
+      <div class="col-title">Example success response (200 OK)</div>
+      <div class="code-block"><span class="c-punc">{</span><br>
+&nbsp;&nbsp;<span class="c-key">"success"</span><span class="c-punc">:</span> <span class="c-bool">true</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;<span class="c-key">"token"</span><span class="c-punc">:</span> <span class="c-str">"eyJhbGciOiJIUzI1..."</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;<span class="c-key">"user"</span><span class="c-punc">: {</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"id"</span><span class="c-punc">:</span> <span class="c-str">"usr_a1b2c3"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"username"</span><span class="c-punc">:</span> <span class="c-str">"amaracooks"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"avatar_url"</span><span class="c-punc">:</span> <span class="c-str">"https://cdn.rv.com/u/a1.jpg"</span><br>
+&nbsp;&nbsp;<span class="c-punc">}</span><br>
+<span class="c-punc">}</span></div>
+    </div>
+  </div>
+  <div class="note-block"><div class="note-icon">💡</div><div>If email or password is wrong, return a 401 error with message "Invalid email or password." Never say which one is wrong — that would help hackers guess accounts.</div></div>
+</div>
+
+<!-- ───── SECTION 2: PROFILES ───── -->
+<div class="section-label">Part 2 — Profiles</div>
+
+<!-- 03 CREATE PROFILE -->
+<div class="api-card">
+  <div class="api-header">
+    <div class="api-method-path">
+      <span class="method m-post">POST</span>
+      <span class="api-path">/profiles</span>
+    </div>
+    <div class="api-title-block">
+      <div class="api-title">Create profile (auto-called at signup)</div>
+      <div class="api-desc">Creates the public profile for a newly signed-up user. In most cases this is called automatically by the system right after signup — users don't trigger this manually.</div>
+      <div class="api-badges"><span class="auth-badge">🔐 Auth required</span></div>
+    </div>
+  </div>
+  <div class="api-body">
+    <div class="api-col">
+      <div class="col-title">Inputs</div>
+      <table class="field-table">
+        <tr><td class="field-name"><span class="req-dot"></span>username</td><td class="field-type">string</td><td class="field-desc">Their chosen @handle. Checked for availability.</td></tr>
+        <tr><td class="field-name"><span class="req-dot"></span>display_name</td><td class="field-type">string</td><td class="field-desc">Full name shown on the profile page.</td></tr>
+        <tr><td class="field-name"><span class="opt-dot"></span>avatar_url</td><td class="field-type">string</td><td class="field-desc">URL to their profile photo (from Google if OAuth).</td></tr>
+        <tr><td class="field-name"><span class="opt-dot"></span>bio</td><td class="field-type">string</td><td class="field-desc">Short description, max 160 characters.</td></tr>
+        <tr><td class="field-name"><span class="opt-dot"></span>location</td><td class="field-type">string</td><td class="field-desc">E.g. "Lagos, Nigeria".</td></tr>
+      </table>
+    </div>
+    <div class="api-col">
+      <div class="col-title">Example success response (201 Created)</div>
+      <div class="code-block"><span class="c-punc">{</span><br>
+&nbsp;&nbsp;<span class="c-key">"id"</span><span class="c-punc">:</span> <span class="c-str">"pro_x9y8z7"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;<span class="c-key">"user_id"</span><span class="c-punc">:</span> <span class="c-str">"usr_a1b2c3"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;<span class="c-key">"username"</span><span class="c-punc">:</span> <span class="c-str">"amaracooks"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;<span class="c-key">"display_name"</span><span class="c-punc">:</span> <span class="c-str">"Amara Osei"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;<span class="c-key">"follower_count"</span><span class="c-punc">:</span> <span class="c-num">0</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;<span class="c-key">"following_count"</span><span class="c-punc">:</span> <span class="c-num">0</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;<span class="c-key">"recipe_count"</span><span class="c-punc">:</span> <span class="c-num">0</span><br>
+<span class="c-punc">}</span></div>
+    </div>
+  </div>
+  <div class="note-block"><div class="note-icon">💡</div><div>This is almost never called directly by the frontend. It fires automatically inside the signup flow. Think of it as the system setting up the user's public page immediately after they create an account.</div></div>
+</div>
+
+<!-- 04 UPDATE PROFILE -->
+<div class="api-card">
+  <div class="api-header">
+    <div class="api-method-path">
+      <span class="method m-patch">PATCH</span>
+      <span class="api-path">/profiles/me</span>
+    </div>
+    <div class="api-title-block">
+      <div class="api-title">Update my profile</div>
+      <div class="api-desc">Lets a logged-in user edit their own public profile — change their bio, location, avatar, or display name. Only send the fields you want to change.</div>
+      <div class="api-badges"><span class="auth-badge">🔐 Auth required</span></div>
+    </div>
+  </div>
+  <div class="api-body">
+    <div class="api-col">
+      <div class="col-title">Inputs (send only what changes)</div>
+      <table class="field-table">
+        <tr><td class="field-name"><span class="opt-dot"></span>display_name</td><td class="field-type">string</td><td class="field-desc">New display name.</td></tr>
+        <tr><td class="field-name"><span class="opt-dot"></span>bio</td><td class="field-type">string</td><td class="field-desc">Updated bio text, max 160 chars.</td></tr>
+        <tr><td class="field-name"><span class="opt-dot"></span>avatar_url</td><td class="field-type">string</td><td class="field-desc">URL of new profile photo (uploaded first via /media/upload).</td></tr>
+        <tr><td class="field-name"><span class="opt-dot"></span>location</td><td class="field-type">string</td><td class="field-desc">Updated location text.</td></tr>
+        <tr><td class="field-name"><span class="opt-dot"></span>website_url</td><td class="field-type">string</td><td class="field-desc">Link to their external website or blog.</td></tr>
+      </table>
+    </div>
+    <div class="api-col">
+      <div class="col-title">Example success response (200 OK)</div>
+      <div class="code-block"><span class="c-punc">{</span><br>
+&nbsp;&nbsp;<span class="c-key">"success"</span><span class="c-punc">:</span> <span class="c-bool">true</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;<span class="c-key">"profile"</span><span class="c-punc">: {</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"username"</span><span class="c-punc">:</span> <span class="c-str">"amaracooks"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"display_name"</span><span class="c-punc">:</span> <span class="c-str">"Amara Osei-Bonsu"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"bio"</span><span class="c-punc">:</span> <span class="c-str">"West African food lover 🍛"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"location"</span><span class="c-punc">:</span> <span class="c-str">"Lagos, Nigeria"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"updated_at"</span><span class="c-punc">:</span> <span class="c-str">"2026-03-17T10:23:00Z"</span><br>
+&nbsp;&nbsp;<span class="c-punc">}</span><br>
+<span class="c-punc">}</span></div>
+    </div>
+  </div>
+  <div class="note-block"><div class="note-icon">💡</div><div>PATCH means "partial update" — you only send the fields you're changing. You don't need to re-send all fields. This is different from PUT which would require sending the entire profile each time.</div></div>
+</div>
+
+<!-- ───── SECTION 3: RECIPES ───── -->
+<div class="section-label">Part 3 — Recipes</div>
+
+<!-- 05 CREATE RECIPE -->
+<div class="api-card">
+  <div class="api-header">
+    <div class="api-method-path">
+      <span class="method m-post">POST</span>
+      <span class="api-path">/recipes</span>
+    </div>
+    <div class="api-title-block">
+      <div class="api-title">Create a new recipe</div>
+      <div class="api-desc">Saves a new recipe to the database. Works for all three creation methods: typed, voice-converted (AI pre-fills the fields), and social import. The status field controls if it goes live immediately or saves as a draft.</div>
+      <div class="api-badges"><span class="auth-badge">🔐 Auth required</span></div>
+    </div>
+  </div>
+  <div class="api-body">
+    <div class="api-col">
+      <div class="col-title">Inputs</div>
+      <table class="field-table">
+        <tr><td class="field-name"><span class="req-dot"></span>title</td><td class="field-type">string</td><td class="field-desc">Recipe name. E.g. "Spicy Jollof Rice".</td></tr>
+        <tr><td class="field-name"><span class="req-dot"></span>ingredients</td><td class="field-type">array</td><td class="field-desc">List of {name, quantity, unit, order_index}.</td></tr>
+        <tr><td class="field-name"><span class="req-dot"></span>steps</td><td class="field-type">array</td><td class="field-desc">List of {step_number, instruction, image_url?}.</td></tr>
+        <tr><td class="field-name"><span class="req-dot"></span>status</td><td class="field-type">string</td><td class="field-desc">"published" or "draft".</td></tr>
+        <tr><td class="field-name"><span class="opt-dot"></span>description</td><td class="field-type">string</td><td class="field-desc">Short intro about the recipe.</td></tr>
+        <tr><td class="field-name"><span class="opt-dot"></span>cuisine</td><td class="field-type">string</td><td class="field-desc">E.g. "Nigerian", "Italian".</td></tr>
+        <tr><td class="field-name"><span class="opt-dot"></span>difficulty</td><td class="field-type">string</td><td class="field-desc">"easy", "medium", or "hard".</td></tr>
+        <tr><td class="field-name"><span class="opt-dot"></span>cook_time_mins</td><td class="field-type">integer</td><td class="field-desc">Total cook time in minutes.</td></tr>
+        <tr><td class="field-name"><span class="opt-dot"></span>servings</td><td class="field-type">integer</td><td class="field-desc">Number of servings.</td></tr>
+        <tr><td class="field-name"><span class="opt-dot"></span>cover_image_url</td><td class="field-type">string</td><td class="field-desc">URL from /media/upload done first.</td></tr>
+        <tr><td class="field-name"><span class="opt-dot"></span>tags</td><td class="field-type">array</td><td class="field-desc">List of tag names: ["vegan", "quick"].</td></tr>
+        <tr><td class="field-name"><span class="opt-dot"></span>source_url</td><td class="field-type">string</td><td class="field-desc">Original URL if imported from social media.</td></tr>
+      </table>
+    </div>
+    <div class="api-col">
+      <div class="col-title">Example success response (201 Created)</div>
+      <div class="code-block"><span class="c-punc">{</span><br>
+&nbsp;&nbsp;<span class="c-key">"success"</span><span class="c-punc">:</span> <span class="c-bool">true</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;<span class="c-key">"recipe"</span><span class="c-punc">: {</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"id"</span><span class="c-punc">:</span> <span class="c-str">"rec_p9q8r7"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"title"</span><span class="c-punc">:</span> <span class="c-str">"Spicy Jollof Rice"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"slug"</span><span class="c-punc">:</span> <span class="c-str">"spicy-jollof-rice"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"status"</span><span class="c-punc">:</span> <span class="c-str">"published"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"author"</span><span class="c-punc">: {</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"username"</span><span class="c-punc">:</span> <span class="c-str">"amaracooks"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"avatar_url"</span><span class="c-punc">:</span> <span class="c-str">"https://cdn.rv.com/u/a1.jpg"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-punc">},</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"published_at"</span><span class="c-punc">:</span> <span class="c-str">"2026-03-17T10:30:00Z"</span><br>
+&nbsp;&nbsp;<span class="c-punc">}</span><br>
+<span class="c-punc">}</span></div>
+    </div>
+  </div>
+  <div class="note-block"><div class="note-icon">💡</div><div>For voice uploads: the AI processing happens before this API is called. The AI returns structured data (title, ingredients, steps) which pre-fills the form. The user reviews it, then this endpoint is called to save it. This API doesn't know or care how the recipe was created.</div></div>
+</div>
+
+<!-- 06 EDIT RECIPE -->
+<div class="api-card">
+  <div class="api-header">
+    <div class="api-method-path">
+      <span class="method m-patch">PATCH</span>
+      <span class="api-path">/recipes/:id</span>
+    </div>
+    <div class="api-title-block">
+      <div class="api-title">Edit an existing recipe</div>
+      <div class="api-desc">Updates any fields of an existing recipe. Only the recipe's author can edit it. Also used to change status from "draft" to "published" when ready to go live.</div>
+      <div class="api-badges"><span class="auth-badge">🔐 Auth required</span></div>
+    </div>
+  </div>
+  <div class="api-body">
+    <div class="api-col">
+      <div class="col-title">Inputs (send only changed fields)</div>
+      <table class="field-table">
+        <tr><td class="field-name"><span class="opt-dot"></span>title</td><td class="field-type">string</td><td class="field-desc">Updated title.</td></tr>
+        <tr><td class="field-name"><span class="opt-dot"></span>description</td><td class="field-type">string</td><td class="field-desc">Updated description.</td></tr>
+        <tr><td class="field-name"><span class="opt-dot"></span>ingredients</td><td class="field-type">array</td><td class="field-desc">Full updated ingredients list (replaces old list).</td></tr>
+        <tr><td class="field-name"><span class="opt-dot"></span>steps</td><td class="field-type">array</td><td class="field-desc">Full updated steps list (replaces old list).</td></tr>
+        <tr><td class="field-name"><span class="opt-dot"></span>status</td><td class="field-type">string</td><td class="field-desc">"published", "draft", or "archived".</td></tr>
+        <tr><td class="field-name"><span class="opt-dot"></span>cover_image_url</td><td class="field-type">string</td><td class="field-desc">New cover photo URL.</td></tr>
+        <tr><td class="field-name"><span class="opt-dot"></span>tags</td><td class="field-type">array</td><td class="field-desc">Replaces existing tag list.</td></tr>
+      </table>
+    </div>
+    <div class="api-col">
+      <div class="col-title">Example success response (200 OK)</div>
+      <div class="code-block"><span class="c-punc">{</span><br>
+&nbsp;&nbsp;<span class="c-key">"success"</span><span class="c-punc">:</span> <span class="c-bool">true</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;<span class="c-key">"recipe"</span><span class="c-punc">: {</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"id"</span><span class="c-punc">:</span> <span class="c-str">"rec_p9q8r7"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"title"</span><span class="c-punc">:</span> <span class="c-str">"Spicy Jollof Rice (Updated)"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"status"</span><span class="c-punc">:</span> <span class="c-str">"published"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"updated_at"</span><span class="c-punc">:</span> <span class="c-str">"2026-03-17T11:00:00Z"</span><br>
+&nbsp;&nbsp;<span class="c-punc">}</span><br>
+<span class="c-punc">}</span></div>
+    </div>
+  </div>
+  <div class="note-block"><div class="note-icon">💡</div><div>The :id in the URL path is the recipe ID. So editing recipe "rec_p9q8r7" would call PATCH /recipes/rec_p9q8r7. The server checks that the logged-in user is the recipe's author before allowing any changes.</div></div>
+</div>
+
+<!-- 07 GET FEED -->
+<div class="api-card">
+  <div class="api-header">
+    <div class="api-method-path">
+      <span class="method m-get">GET</span>
+      <span class="api-path">/recipes/feed</span>
+    </div>
+    <div class="api-title-block">
+      <div class="api-title">Get the home feed</div>
+      <div class="api-desc">Returns a paginated list of recipes from creators the logged-in user follows, sorted newest first. New users with no follows get trending recipes instead so the feed is never empty.</div>
+      <div class="api-badges"><span class="auth-badge">🔐 Auth required</span></div>
+    </div>
+  </div>
+  <div class="api-body">
+    <div class="api-col">
+      <div class="col-title">Query parameters (in the URL)</div>
+      <table class="field-table">
+        <tr><td class="field-name"><span class="opt-dot"></span>page</td><td class="field-type">integer</td><td class="field-desc">Page number for pagination. Default: 1.</td></tr>
+        <tr><td class="field-name"><span class="opt-dot"></span>limit</td><td class="field-type">integer</td><td class="field-desc">Recipes per page. Default: 20. Max: 50.</td></tr>
+        <tr><td class="field-name"><span class="opt-dot"></span>cursor</td><td class="field-type">string</td><td class="field-desc">ID of the last recipe seen (for infinite scroll).</td></tr>
+      </table>
+      <div style="margin-top:12px; font-size:12px; color:#888;">Example: GET /recipes/feed?limit=20&amp;cursor=rec_abc123</div>
+    </div>
+    <div class="api-col">
+      <div class="col-title">Example success response (200 OK)</div>
+      <div class="code-block"><span class="c-punc">{</span><br>
+&nbsp;&nbsp;<span class="c-key">"recipes"</span><span class="c-punc">: [</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-punc">{</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"id"</span><span class="c-punc">:</span> <span class="c-str">"rec_p9q8r7"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"title"</span><span class="c-punc">:</span> <span class="c-str">"Spicy Jollof Rice"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"cover_image_url"</span><span class="c-punc">:</span> <span class="c-str">"https://cdn.rv.com/r/p9.jpg"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"cook_time_mins"</span><span class="c-punc">:</span> <span class="c-num">45</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"difficulty"</span><span class="c-punc">:</span> <span class="c-str">"medium"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"like_count"</span><span class="c-punc">:</span> <span class="c-num">142</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"avg_rating"</span><span class="c-punc">:</span> <span class="c-num">4.8</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"is_liked_by_me"</span><span class="c-punc">:</span> <span class="c-bool">false</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"is_saved_by_me"</span><span class="c-punc">:</span> <span class="c-bool">true</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"author"</span><span class="c-punc">: {</span> <span class="c-key">"username"</span><span class="c-punc">:</span> <span class="c-str">"amaracooks"</span> <span class="c-punc">}</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-punc">}</span><br>
+&nbsp;&nbsp;<span class="c-punc">],</span><br>
+&nbsp;&nbsp;<span class="c-key">"next_cursor"</span><span class="c-punc">:</span> <span class="c-str">"rec_m3n4o5"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;<span class="c-key">"has_more"</span><span class="c-punc">:</span> <span class="c-bool">true</span><br>
+<span class="c-punc">}</span></div>
+    </div>
+  </div>
+  <div class="note-block"><div class="note-icon">💡</div><div>is_liked_by_me and is_saved_by_me are added for the logged-in user so the app knows whether to show a filled or empty heart/bookmark icon without making extra API calls. next_cursor is used for "load more" — pass it back as the cursor param to get the next batch.</div></div>
+</div>
+
+<!-- 08 GET RECIPE DETAIL -->
+<div class="api-card">
+  <div class="api-header">
+    <div class="api-method-path">
+      <span class="method m-get">GET</span>
+      <span class="api-path">/recipes/:id</span>
+    </div>
+    <div class="api-title-block">
+      <div class="api-title">Get full recipe details</div>
+      <div class="api-desc">Returns everything about one recipe — all ingredients, all steps, all media, the author's profile, ratings, and recent comments. This powers the recipe detail page.</div>
+      <div class="api-badges"><span class="pub-badge">🌐 Public</span></div>
+    </div>
+  </div>
+  <div class="api-body">
+    <div class="api-col">
+      <div class="col-title">Inputs</div>
+      <table class="field-table">
+        <tr><td class="field-name"><span class="req-dot"></span>:id</td><td class="field-type">URL param</td><td class="field-desc">The recipe ID or slug in the URL path.</td></tr>
+      </table>
+      <div style="margin-top:16px; font-size:12px; color:#888;">Example:<br>GET /recipes/rec_p9q8r7<br>GET /recipes/spicy-jollof-rice</div>
+    </div>
+    <div class="api-col">
+      <div class="col-title">Example success response (200 OK)</div>
+      <div class="code-block"><span class="c-punc">{</span><br>
+&nbsp;&nbsp;<span class="c-key">"id"</span><span class="c-punc">:</span> <span class="c-str">"rec_p9q8r7"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;<span class="c-key">"title"</span><span class="c-punc">:</span> <span class="c-str">"Spicy Jollof Rice"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;<span class="c-key">"description"</span><span class="c-punc">:</span> <span class="c-str">"A family favourite..."</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;<span class="c-key">"cook_time_mins"</span><span class="c-punc">:</span> <span class="c-num">45</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;<span class="c-key">"servings"</span><span class="c-punc">:</span> <span class="c-num">4</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;<span class="c-key">"ingredients"</span><span class="c-punc">: [</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-punc">{</span> <span class="c-key">"name"</span><span class="c-punc">:</span> <span class="c-str">"long grain rice"</span><span class="c-punc">,</span> <span class="c-key">"quantity"</span><span class="c-punc">:</span> <span class="c-str">"2"</span><span class="c-punc">,</span> <span class="c-key">"unit"</span><span class="c-punc">:</span> <span class="c-str">"cups"</span> <span class="c-punc">}</span><br>
+&nbsp;&nbsp;<span class="c-punc">],</span><br>
+&nbsp;&nbsp;<span class="c-key">"steps"</span><span class="c-punc">: [</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-punc">{</span> <span class="c-key">"step_number"</span><span class="c-punc">:</span> <span class="c-num">1</span><span class="c-punc">,</span> <span class="c-key">"instruction"</span><span class="c-punc">:</span> <span class="c-str">"Blend tomatoes..."</span> <span class="c-punc">}</span><br>
+&nbsp;&nbsp;<span class="c-punc">],</span><br>
+&nbsp;&nbsp;<span class="c-key">"author"</span><span class="c-punc">: {</span> <span class="c-key">"username"</span><span class="c-punc">:</span> <span class="c-str">"amaracooks"</span><span class="c-punc">,</span> <span class="c-key">"is_verified"</span><span class="c-punc">:</span> <span class="c-bool">false</span> <span class="c-punc">},</span><br>
+&nbsp;&nbsp;<span class="c-key">"avg_rating"</span><span class="c-punc">:</span> <span class="c-num">4.8</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;<span class="c-key">"like_count"</span><span class="c-punc">:</span> <span class="c-num">142</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;<span class="c-key">"is_liked_by_me"</span><span class="c-punc">:</span> <span class="c-bool">false</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;<span class="c-key">"tags"</span><span class="c-punc">:</span> <span class="c-punc">[</span><span class="c-str">"nigerian"</span><span class="c-punc">,</span> <span class="c-str">"rice"</span><span class="c-punc">]</span><br>
+<span class="c-punc">}</span></div>
+    </div>
+  </div>
+  <div class="note-block"><div class="note-icon">💡</div><div>This is the most important and most-called API in the whole app. Every time someone opens a recipe page, this fires. Keep it fast — cache it on a CDN for logged-out users. Also increments view_count in the background.</div></div>
+</div>
+
+<!-- ───── SECTION 4: SOCIAL ───── -->
+<div class="section-label">Part 4 — Social interactions</div>
+
+<!-- 09 FOLLOW -->
+<div class="api-card">
+  <div class="api-header">
+    <div class="api-method-path">
+      <span class="method m-post">POST</span>
+      <span class="api-path">/follows/:userId</span>
+    </div>
+    <div class="api-title-block">
+      <div class="api-title">Follow / unfollow a user</div>
+      <div class="api-desc">POST to follow. DELETE to unfollow. When you follow someone, their recipes start appearing in your home feed. The followed user's follower_count goes up by 1 and they get a notification.</div>
+      <div class="api-badges"><span class="auth-badge">🔐 Auth required</span></div>
+    </div>
+  </div>
+  <div class="api-body">
+    <div class="api-col">
+      <div class="col-title">Inputs</div>
+      <table class="field-table">
+        <tr><td class="field-name"><span class="req-dot"></span>:userId</td><td class="field-type">URL param</td><td class="field-desc">The ID of the user to follow or unfollow.</td></tr>
+      </table>
+      <div style="margin-top:12px; font-size:12px; color:#888;">Follow: POST /follows/usr_marco123<br>Unfollow: DELETE /follows/usr_marco123</div>
+    </div>
+    <div class="api-col">
+      <div class="col-title">Example success response (200 OK)</div>
+      <div class="code-block"><span class="c-comment">// After following:</span><br>
+<span class="c-punc">{</span><br>
+&nbsp;&nbsp;<span class="c-key">"success"</span><span class="c-punc">:</span> <span class="c-bool">true</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;<span class="c-key">"action"</span><span class="c-punc">:</span> <span class="c-str">"followed"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;<span class="c-key">"following_id"</span><span class="c-punc">:</span> <span class="c-str">"usr_marco123"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;<span class="c-key">"their_follower_count"</span><span class="c-punc">:</span> <span class="c-num">1043</span><br>
+<span class="c-punc">}</span><br><br>
+<span class="c-comment">// After unfollowing:</span><br>
+<span class="c-punc">{</span><br>
+&nbsp;&nbsp;<span class="c-key">"success"</span><span class="c-punc">:</span> <span class="c-bool">true</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;<span class="c-key">"action"</span><span class="c-punc">:</span> <span class="c-str">"unfollowed"</span><br>
+<span class="c-punc">}</span></div>
+    </div>
+  </div>
+  <div class="note-block"><div class="note-icon">💡</div><div>After a follow, two things happen in the background: (1) the followed user's follower_count in the profiles table goes up by 1, and (2) a notification row is created so they get an alert. Both happen server-side — the frontend just calls this one endpoint.</div></div>
+</div>
+
+<!-- 10 LIKE -->
+<div class="api-card">
+  <div class="api-header">
+    <div class="api-method-path">
+      <span class="method m-post">POST</span>
+      <span class="api-path">/likes/:recipeId</span>
+    </div>
+    <div class="api-title-block">
+      <div class="api-title">Like / unlike a recipe</div>
+      <div class="api-desc">POST to like a recipe. DELETE to unlike. Tapping the heart icon calls POST. Tapping it again calls DELETE. The like_count on the recipe updates instantly in the UI (optimistic update).</div>
+      <div class="api-badges"><span class="auth-badge">🔐 Auth required</span></div>
+    </div>
+  </div>
+  <div class="api-body">
+    <div class="api-col">
+      <div class="col-title">Inputs</div>
+      <table class="field-table">
+        <tr><td class="field-name"><span class="req-dot"></span>:recipeId</td><td class="field-type">URL param</td><td class="field-desc">The ID of the recipe being liked or unliked.</td></tr>
+      </table>
+      <div style="margin-top:12px; font-size:12px; color:#888;">Like: POST /likes/rec_p9q8r7<br>Unlike: DELETE /likes/rec_p9q8r7</div>
+    </div>
+    <div class="api-col">
+      <div class="col-title">Example success response (200 OK)</div>
+      <div class="code-block"><span class="c-punc">{</span><br>
+&nbsp;&nbsp;<span class="c-key">"success"</span><span class="c-punc">:</span> <span class="c-bool">true</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;<span class="c-key">"action"</span><span class="c-punc">:</span> <span class="c-str">"liked"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;<span class="c-key">"recipe_id"</span><span class="c-punc">:</span> <span class="c-str">"rec_p9q8r7"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;<span class="c-key">"new_like_count"</span><span class="c-punc">:</span> <span class="c-num">143</span><br>
+<span class="c-punc">}</span></div>
+    </div>
+  </div>
+  <div class="note-block"><div class="note-icon">💡</div><div>Optimistic update means the frontend shows the heart as filled immediately when tapped — without waiting for the server response. If the API call fails, it reverts. This makes the app feel instant and responsive even on slow connections.</div></div>
+</div>
+
+<!-- 11 COMMENT -->
+<div class="api-card">
+  <div class="api-header">
+    <div class="api-method-path">
+      <span class="method m-post">POST</span>
+      <span class="api-path">/recipes/:recipeId/comments</span>
+    </div>
+    <div class="api-title-block">
+      <div class="api-title">Post a comment (or reply)</div>
+      <div class="api-desc">Adds a comment to a recipe. If parent_comment_id is included, it's a reply to that comment. Returns the new comment so the UI can display it instantly without refetching all comments.</div>
+      <div class="api-badges"><span class="auth-badge">🔐 Auth required</span></div>
+    </div>
+  </div>
+  <div class="api-body">
+    <div class="api-col">
+      <div class="col-title">Inputs</div>
+      <table class="field-table">
+        <tr><td class="field-name"><span class="req-dot"></span>body</td><td class="field-type">string</td><td class="field-desc">The comment text. Min 1 character, max 1000.</td></tr>
+        <tr><td class="field-name"><span class="opt-dot"></span>parent_comment_id</td><td class="field-type">string</td><td class="field-desc">Include this to make it a reply. Leave out for a top-level comment.</td></tr>
+      </table>
+    </div>
+    <div class="api-col">
+      <div class="col-title">Example success response (201 Created)</div>
+      <div class="code-block"><span class="c-punc">{</span><br>
+&nbsp;&nbsp;<span class="c-key">"success"</span><span class="c-punc">:</span> <span class="c-bool">true</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;<span class="c-key">"comment"</span><span class="c-punc">: {</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"id"</span><span class="c-punc">:</span> <span class="c-str">"cmt_j1k2l3"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"body"</span><span class="c-punc">:</span> <span class="c-str">"Made this last night — amazing!"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"parent_comment_id"</span><span class="c-punc">:</span> <span class="c-null">null</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"author"</span><span class="c-punc">: {</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"username"</span><span class="c-punc">:</span> <span class="c-str">"jiyeon_eats"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"avatar_url"</span><span class="c-punc">:</span> <span class="c-str">"https://cdn.rv.com/u/jy.jpg"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-punc">},</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"created_at"</span><span class="c-punc">:</span> <span class="c-str">"2026-03-17T14:05:00Z"</span><br>
+&nbsp;&nbsp;<span class="c-punc">}</span><br>
+<span class="c-punc">}</span></div>
+    </div>
+  </div>
+  <div class="note-block"><div class="note-icon">💡</div><div>After a comment is posted, a notification is created for the recipe's author so they know someone commented. If it's a reply, the notification goes to the parent comment's author instead.</div></div>
+</div>
+
+<!-- 12 SAVE -->
+<div class="api-card">
+  <div class="api-header">
+    <div class="api-method-path">
+      <span class="method m-post">POST</span>
+      <span class="api-path">/saved/:recipeId</span>
+    </div>
+    <div class="api-title-block">
+      <div class="api-title">Save / unsave a recipe to a collection</div>
+      <div class="api-desc">POST to save a recipe to a named collection (like a bookmark). DELETE to remove it. If collection_name is not provided, it saves to the default "All Saved" collection.</div>
+      <div class="api-badges"><span class="auth-badge">🔐 Auth required</span></div>
+    </div>
+  </div>
+  <div class="api-body">
+    <div class="api-col">
+      <div class="col-title">Inputs</div>
+      <table class="field-table">
+        <tr><td class="field-name"><span class="req-dot"></span>:recipeId</td><td class="field-type">URL param</td><td class="field-desc">Recipe to save or unsave.</td></tr>
+        <tr><td class="field-name"><span class="opt-dot"></span>collection_name</td><td class="field-type">string</td><td class="field-desc">Which collection to save to. Defaults to "All Saved".</td></tr>
+      </table>
+      <div style="margin-top:12px; font-size:12px; color:#888;">Save: POST /saved/rec_p9q8r7<br>Unsave: DELETE /saved/rec_p9q8r7</div>
+    </div>
+    <div class="api-col">
+      <div class="col-title">Example success response (200 OK)</div>
+      <div class="code-block"><span class="c-punc">{</span><br>
+&nbsp;&nbsp;<span class="c-key">"success"</span><span class="c-punc">:</span> <span class="c-bool">true</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;<span class="c-key">"action"</span><span class="c-punc">:</span> <span class="c-str">"saved"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;<span class="c-key">"collection_name"</span><span class="c-punc">:</span> <span class="c-str">"Weekend Dinners"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;<span class="c-key">"recipe_id"</span><span class="c-punc">:</span> <span class="c-str">"rec_p9q8r7"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;<span class="c-key">"saved_at"</span><span class="c-punc">:</span> <span class="c-str">"2026-03-17T15:00:00Z"</span><br>
+<span class="c-punc">}</span></div>
+    </div>
+  </div>
+  <div class="note-block"><div class="note-icon">💡</div><div>The same recipe can be saved to multiple collections. For example Ji-Yeon saves Marco's carbonara to both "Italian Classics" and "Quick Dinners". Each save is a separate row in saved_recipes with a different collection_name.</div></div>
+</div>
+
+<!-- ───── SECTION 5: SEARCH ───── -->
+<div class="section-label">Part 5 — Search & media</div>
+
+<!-- 13 SEARCH -->
+<div class="api-card">
+  <div class="api-header">
+    <div class="api-method-path">
+      <span class="method m-get">GET</span>
+      <span class="api-path">/search</span>
+    </div>
+    <div class="api-title-block">
+      <div class="api-title">Search recipes and creators</div>
+      <div class="api-desc">The main search endpoint. Searches recipe titles, ingredients, tags, and creator usernames. Supports filters to narrow results. Returns both recipe and creator results in the same response.</div>
+      <div class="api-badges"><span class="pub-badge">🌐 Public</span></div>
+    </div>
+  </div>
+  <div class="api-body">
+    <div class="api-col">
+      <div class="col-title">Query parameters</div>
+      <table class="field-table">
+        <tr><td class="field-name"><span class="req-dot"></span>q</td><td class="field-type">string</td><td class="field-desc">The search term. E.g. "chicken", "pasta", "@marco".</td></tr>
+        <tr><td class="field-name"><span class="opt-dot"></span>cuisine</td><td class="field-type">string</td><td class="field-desc">Filter by cuisine. E.g. "italian".</td></tr>
+        <tr><td class="field-name"><span class="opt-dot"></span>difficulty</td><td class="field-type">string</td><td class="field-desc">"easy", "medium", or "hard".</td></tr>
+        <tr><td class="field-name"><span class="opt-dot"></span>max_time</td><td class="field-type">integer</td><td class="field-desc">Max cook time in minutes.</td></tr>
+        <tr><td class="field-name"><span class="opt-dot"></span>min_rating</td><td class="field-type">number</td><td class="field-desc">Min average rating (1–5).</td></tr>
+        <tr><td class="field-name"><span class="opt-dot"></span>sort</td><td class="field-type">string</td><td class="field-desc">"relevant" (default), "newest", "top_rated", "most_saved".</td></tr>
+        <tr><td class="field-name"><span class="opt-dot"></span>page</td><td class="field-type">integer</td><td class="field-desc">Page number for pagination.</td></tr>
+      </table>
+      <div style="margin-top:10px; font-size:11px; color:#888;">Example:<br>GET /search?q=chicken&cuisine=korean&max_time=30&sort=top_rated</div>
+    </div>
+    <div class="api-col">
+      <div class="col-title">Example success response (200 OK)</div>
+      <div class="code-block"><span class="c-punc">{</span><br>
+&nbsp;&nbsp;<span class="c-key">"query"</span><span class="c-punc">:</span> <span class="c-str">"chicken"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;<span class="c-key">"total_results"</span><span class="c-punc">:</span> <span class="c-num">47</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;<span class="c-key">"recipes"</span><span class="c-punc">: [</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-punc">{</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"id"</span><span class="c-punc">:</span> <span class="c-str">"rec_abc123"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"title"</span><span class="c-punc">:</span> <span class="c-str">"Korean BBQ Chicken Bowl"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"cover_image_url"</span><span class="c-punc">:</span> <span class="c-str">"https://cdn.rv.com/r/abc.jpg"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"cook_time_mins"</span><span class="c-punc">:</span> <span class="c-num">25</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"avg_rating"</span><span class="c-punc">:</span> <span class="c-num">4.9</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"author"</span><span class="c-punc">:</span> <span class="c-punc">{</span> <span class="c-key">"username"</span><span class="c-punc">:</span> <span class="c-str">"jiyeon_eats"</span> <span class="c-punc">}</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-punc">}</span><br>
+&nbsp;&nbsp;<span class="c-punc">],</span><br>
+&nbsp;&nbsp;<span class="c-key">"creators"</span><span class="c-punc">: [</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-punc">{</span> <span class="c-key">"username"</span><span class="c-punc">:</span> <span class="c-str">"chickenlover99"</span><span class="c-punc">,</span> <span class="c-key">"recipe_count"</span><span class="c-punc">:</span> <span class="c-num">24</span> <span class="c-punc">}</span><br>
+&nbsp;&nbsp;<span class="c-punc">],</span><br>
+&nbsp;&nbsp;<span class="c-key">"has_more"</span><span class="c-punc">:</span> <span class="c-bool">true</span><br>
+<span class="c-punc">}</span></div>
+    </div>
+  </div>
+  <div class="note-block"><div class="note-icon">💡</div><div>PostgreSQL has built-in full-text search that handles this without needing a separate search service. At MVP scale (under 100k recipes), this is fast enough. At larger scale, swap to Algolia or Typesense for better speed and typo tolerance.</div></div>
+</div>
+
+<!-- 14 UPLOAD MEDIA -->
+<div class="api-card">
+  <div class="api-header">
+    <div class="api-method-path">
+      <span class="method m-post">POST</span>
+      <span class="api-path">/media/upload</span>
+    </div>
+    <div class="api-title-block">
+      <div class="api-title">Upload a photo or video</div>
+      <div class="api-desc">Uploads an image or video file to cloud storage (Uploadthing/Cloudinary) and returns the URL. This URL is then used when creating or editing a recipe. Always upload media first, then attach the URL to the recipe.</div>
+      <div class="api-badges"><span class="auth-badge">🔐 Auth required</span></div>
+    </div>
+  </div>
+  <div class="api-body">
+    <div class="api-col">
+      <div class="col-title">Inputs (multipart/form-data)</div>
+      <table class="field-table">
+        <tr><td class="field-name"><span class="req-dot"></span>file</td><td class="field-type">File</td><td class="field-desc">The image (JPG/PNG, max 10MB) or video (MP4, max 100MB).</td></tr>
+        <tr><td class="field-name"><span class="req-dot"></span>type</td><td class="field-type">string</td><td class="field-desc">"image" or "video".</td></tr>
+        <tr><td class="field-name"><span class="opt-dot"></span>role</td><td class="field-type">string</td><td class="field-desc">"cover", "step", "avatar", or "gallery".</td></tr>
+      </table>
+      <div style="margin-top:12px; padding:10px 12px; background:#fff8f5; border-radius:8px; font-size:12px; color:#666;">
+        ⚠️ This endpoint uses <strong>multipart/form-data</strong> not JSON. The file is sent as binary data, not a text string.
+      </div>
+    </div>
+    <div class="api-col">
+      <div class="col-title">Example success response (201 Created)</div>
+      <div class="code-block"><span class="c-punc">{</span><br>
+&nbsp;&nbsp;<span class="c-key">"success"</span><span class="c-punc">:</span> <span class="c-bool">true</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;<span class="c-key">"media"</span><span class="c-punc">: {</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"id"</span><span class="c-punc">:</span> <span class="c-str">"med_q1w2e3"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"url"</span><span class="c-punc">:</span> <span class="c-str">"https://cdn.rv.com/r/q1w2e3.jpg"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"type"</span><span class="c-punc">:</span> <span class="c-str">"image"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"role"</span><span class="c-punc">:</span> <span class="c-str">"cover"</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"width"</span><span class="c-punc">:</span> <span class="c-num">1200</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"height"</span><span class="c-punc">:</span> <span class="c-num">800</span><span class="c-punc">,</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-key">"size_bytes"</span><span class="c-punc">:</span> <span class="c-num">245000</span><br>
+&nbsp;&nbsp;<span class="c-punc">}</span><br>
+<span class="c-punc">}</span></div>
+    </div>
+  </div>
+  <div class="note-block"><div class="note-icon">💡</div><div>The upload flow is always: (1) Upload the file here → get back a URL. (2) Use that URL in the create/edit recipe call. Files are never stored in the database — only the URL string. The actual file lives in cloud storage which is built for serving images fast globally.</div></div>
+</div>
+
+<!-- ERROR CODES -->
+<div class="section-label">Standard error responses</div>
+<div class="callout-blue"><strong>Every API returns the same error format:</strong> { "success": false, "error": { "code": 401, "message": "You must be logged in to do this." } } — consistent errors make it easy for the frontend to handle them.</div>
+
+<table class="err-table">
+  <thead><tr><th>Status code</th><th>Meaning</th><th>When it happens</th><th>Example message</th></tr></thead>
+  <tbody>
+    <tr><td class="err-code e2">200 OK</td><td>Success</td><td>Request worked, data returned</td><td>"success": true</td></tr>
+    <tr><td class="err-code e2">201 Created</td><td>Created</td><td>New resource was successfully created</td><td>Recipe, comment, or user created</td></tr>
+    <tr><td class="err-code e4">400 Bad Request</td><td>Invalid input</td><td>Required field missing or wrong format</td><td>"Title is required"</td></tr>
+    <tr><td class="err-code e4">401 Unauthorized</td><td>Not logged in</td><td>Token missing or expired</td><td>"You must be logged in"</td></tr>
+    <tr><td class="err-code e4">403 Forbidden</td><td>No permission</td><td>Logged in but not allowed (e.g. editing someone else's recipe)</td><td>"You don't own this recipe"</td></tr>
+    <tr><td class="err-code e4">404 Not Found</td><td>Doesn't exist</td><td>Recipe or user ID doesn't exist in the database</td><td>"Recipe not found"</td></tr>
+    <tr><td class="err-code e4">409 Conflict</td><td>Duplicate</td><td>Username taken, already liked, already following</td><td>"Username already taken"</td></tr>
+    <tr><td class="err-code e4">422 Unprocessable</td><td>Validation failed</td><td>Data format correct but fails business rules</td><td>"Rating must be between 1 and 5"</td></tr>
+    <tr><td class="err-code e5">500 Server Error</td><td>Our bug</td><td>Something unexpected broke on the server</td><td>"Something went wrong. Try again."</td></tr>
+  </tbody>
+</table>
+
+<div class="callout-green"><strong>The rule of good APIs:</strong> Be predictable. Every endpoint should behave the same way — same error format, same response structure, same auth pattern. When the frontend team can predict how any API works, they build faster and make fewer bugs.</div>
+
+<div class="footer">
+  <span>RecipeVerse — API Design v1.0</span>
+  <span>Confidential · March 2026</span>
+</div>
+
+</div>
+</body>
+</html>

@@ -1,26 +1,54 @@
 {
-  "name": "temp-app",
+  "name": "recipeverse",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:push": "dotenv -e .env.local -- drizzle-kit push",
+    "db:studio": "dotenv -e .env.local -- drizzle-kit studio",
+    "db:generate": "dotenv -e .env.local -- drizzle-kit generate"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.79.0",
+    "@clerk/nextjs": "^7.0.5",
+    "@hookform/resolvers": "^5.2.2",
+    "@neondatabase/serverless": "^1.0.2",
+    "@tanstack/react-query": "^5.90.21",
+    "@trpc/client": "^11.13.4",
+    "@trpc/react-query": "^11.13.4",
+    "@trpc/server": "^11.13.4",
+    "@uploadthing/react": "^7.3.3",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
+    "drizzle-orm": "^0.45.1",
+    "lucide-react": "^0.577.0",
+    "next": "14.2.35",
+    "openai": "^6.32.0",
+    "postgres": "^3.4.8",
     "react": "^18",
     "react-dom": "^18",
-    "next": "14.2.35"
+    "react-hook-form": "^7.71.2",
+    "server-only": "^0.0.1",
+    "superjson": "^2.2.6",
+    "tailwind-merge": "^3.5.0",
+    "uploadthing": "^7.7.4",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@tailwindcss/postcss": "^4.2.1",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "autoprefixer": "^10.4.27",
+    "dotenv-cli": "^11.0.0",
+    "drizzle-kit": "^0.31.10",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.35",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
-    "eslint": "^8",
-    "eslint-config-next": "14.2.35"
+    "typescript": "^5"
   }
 }

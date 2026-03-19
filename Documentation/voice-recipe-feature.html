@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>RecipeVerse — AI Voice Recipe</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8f6f2; color: #1a1a1a; line-height: 1.7; font-size: 15px; }
+.page { max-width: 960px; margin: 0 auto; padding: 48px 32px; }
+
+.cover { background: linear-gradient(135deg, #e8430a 0%, #f97316 55%, #fbbf24 100%); border-radius: 20px; padding: 48px; color: #fff; margin-bottom: 40px; }
+.cover-tag { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.75; margin-bottom: 12px; }
+.cover h1 { font-size: 36px; font-weight: 800; margin-bottom: 8px; }
+.cover-sub { font-size: 15px; opacity: 0.88; max-width: 560px; line-height: 1.6; margin-bottom: 20px; }
+.cover-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.cover-pill { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 4px 14px; font-size: 12px; }
+
+.toc { background: #fff; border: 1px solid #ede8e0; border-radius: 16px; padding: 24px 28px; margin-bottom: 40px; }
+.toc-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #aaa; margin-bottom: 14px; }
+.toc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 5px; }
+.toc-item { font-size: 13px; color: #e8430a; display: flex; align-items: center; gap: 8px; padding: 3px 0; }
+.toc-num { font-size: 11px; color: #ccc; font-weight: 700; min-width: 22px; }
+
+.sec-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: #bbb; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #f0ebe2; margin-top: 52px; }
+.sec-label:first-of-type { margin-top: 0; }
+
+h3 { font-size: 15px; font-weight: 700; margin: 24px 0 12px; }
+p { margin-bottom: 12px; color: #555; font-size: 14px; line-height: 1.7; }
+
+.card { background: #fff; border: 1px solid #ede8e0; border-radius: 12px; padding: 20px 24px; margin-bottom: 14px; }
+.card-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+.card-body { font-size: 13px; color: #555; line-height: 1.7; }
+.card-highlight { background: #fff8f5; border: 1px solid #fdd9c8; border-radius: 12px; padding: 20px 24px; margin-bottom: 14px; }
+.card-blue { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 20px 24px; margin-bottom: 14px; }
+.card-green { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 20px 24px; margin-bottom: 14px; }
+.card-amber { background: #fffbeb; border: 1px solid #fde68a; border-radius: 12px; padding: 20px 24px; margin-bottom: 14px; }
+
+.callout { border-left: 3px solid #e8430a; background: #fff8f5; border-radius: 0 10px 10px 0; padding: 14px 18px; margin: 16px 0; font-size: 13px; color: #555; line-height: 1.7; }
+.callout strong { color: #e8430a; }
+.callout-blue { border-left: 3px solid #3b82f6; background: #eff6ff; border-radius: 0 10px 10px 0; padding: 14px 18px; margin: 16px 0; font-size: 13px; color: #555; }
+.callout-green { border-left: 3px solid #16a34a; background: #f0fdf4; border-radius: 0 10px 10px 0; padding: 14px 18px; margin: 16px 0; font-size: 13px; color: #555; }
+.callout-amber { border-left: 3px solid #f59e0b; background: #fffbeb; border-radius: 0 10px 10px 0; padding: 14px 18px; margin: 16px 0; font-size: 13px; color: #555; }
+
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin-bottom: 14px; }
+.grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 14px; }
+
+/* Pipeline steps */
+.pipeline { margin-bottom: 28px; }
+.pipe-step { display: flex; gap: 20px; margin-bottom: 0; position: relative; }
+.pipe-left { display: flex; flex-direction: column; align-items: center; width: 48px; flex-shrink: 0; }
+.pipe-circle { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; z-index: 1; }
+.pipe-line { width: 2px; background: #f0ebe2; flex: 1; min-height: 24px; }
+.pipe-body { background: #fff; border: 1px solid #ede8e0; border-radius: 12px; padding: 18px 22px; flex: 1; margin-bottom: 16px; }
+.pipe-step-num { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #bbb; margin-bottom: 4px; }
+.pipe-title { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+.pipe-desc { font-size: 13px; color: #555; line-height: 1.6; }
+.pipe-tech { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.tech-pill { font-size: 11px; padding: 2px 10px; border-radius: 20px; font-weight: 600; }
+.t-whisper { background: #e8f0ff; color: #1a4db5; }
+.t-ai { background: #f0eeff; color: #5035b0; }
+.t-frontend { background: #e8f5e8; color: #166534; }
+.t-backend { background: #fff0e6; color: #c44b0a; }
+.t-user { background: #fce8f3; color: #9d174d; }
+
+/* Example transformation */
+.transform-box { background: #fff; border: 1px solid #ede8e0; border-radius: 16px; overflow: hidden; margin-bottom: 20px; }
+.transform-header { background: #1a1a2e; color: #cdd6f4; padding: 14px 20px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.transform-body { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0; }
+.tx-panel { padding: 20px; }
+.tx-divider { display: flex; align-items: center; justify-content: center; padding: 20px 8px; font-size: 22px; color: #e8430a; }
+.tx-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #bbb; margin-bottom: 10px; }
+.tx-input { font-size: 13px; color: #555; font-style: italic; line-height: 1.7; background: #faf8f5; border-radius: 8px; padding: 12px 14px; border: 1px solid #f0ebe2; }
+.tx-output { font-size: 12px; }
+.tx-field { margin-bottom: 10px; }
+.tx-field-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #aaa; margin-bottom: 3px; }
+.tx-field-val { font-size: 13px; color: #1a1a1a; background: #faf8f5; border-radius: 6px; padding: 6px 10px; border-left: 3px solid #e8430a; }
+.tx-field-val.uncertain { border-left-color: #f59e0b; background: #fffbeb; }
+.tx-field-val.missing { border-left-color: #e5e7eb; background: #f9fafb; color: #aaa; font-style: italic; }
+
+/* Uncertainty handling */
+.uncertainty-table { width: 100%; border-collapse: collapse; font-size: 13px; background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid #ede8e0; margin-bottom: 14px; }
+.uncertainty-table th { text-align: left; padding: 11px 16px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; color: #999; background: #faf8f5; border-bottom: 1px solid #ede8e0; }
+.uncertainty-table td { padding: 11px 16px; border-bottom: 1px solid #f5f1eb; vertical-align: top; font-size: 13px; color: #444; }
+.uncertainty-table tr:last-child td { border-bottom: none; }
+.u-scenario { font-weight: 600; color: #1a1a1a; }
+.badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
+.b-warn { background: #fef3c7; color: #92400e; }
+.b-ok { background: #dcfce7; color: #166534; }
+.b-err { background: #fee2e2; color: #991b1b; }
+
+/* Review screen mockup */
+.mockup-wrap { background: var(--color-bg, #f0ebe2); border-radius: 16px; padding: 20px; margin-bottom: 20px; display: flex; justify-content: center; }
+.phone { width: 280px; background: #fff; border-radius: 24px; border: 8px solid #1a1a1a; overflow: hidden; }
+.phone-bar { background: #1a1a1a; padding: 8px 20px 6px; display: flex; justify-content: space-between; align-items: center; }
+.phone-time { color: #fff; font-size: 11px; font-weight: 600; }
+.phone-icons { color: #fff; font-size: 11px; }
+.ph-header { background: #e8430a; padding: 14px 16px; color: #fff; }
+.ph-header-title { font-size: 14px; font-weight: 700; }
+.ph-header-sub { font-size: 11px; opacity: 0.8; margin-top: 2px; }
+.ph-body { padding: 14px 16px; }
+.ph-field { margin-bottom: 12px; }
+.ph-field-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #aaa; margin-bottom: 4px; }
+.ph-field-val { font-size: 12px; color: #1a1a1a; background: #faf8f5; border-radius: 6px; padding: 6px 8px; border: 1px solid #f0ebe2; }
+.ph-field-val.warn { border-color: #fde68a; background: #fffbeb; }
+.ph-warn-badge { font-size: 9px; background: #fef3c7; color: #92400e; padding: 1px 6px; border-radius: 4px; margin-left: 4px; font-weight: 600; }
+.ph-list { list-style: none; }
+.ph-list li { font-size: 11px; color: #555; padding: 3px 0; display: flex; gap: 6px; border-bottom: 1px solid #f5f1eb; }
+.ph-list li:last-child { border-bottom: none; }
+.ph-list li::before { content: "·"; color: #e8430a; font-weight: 700; }
+.ph-btn-row { display: flex; gap: 8px; margin-top: 14px; padding: 0 0 4px; }
+.ph-btn { flex: 1; padding: 8px 0; border-radius: 8px; font-size: 11px; font-weight: 700; text-align: center; }
+.ph-btn-secondary { background: #f5f1eb; color: #666; }
+.ph-btn-primary { background: #e8430a; color: #fff; }
+
+/* MVP vs Advanced */
+.version-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 14px; }
+.version-card { border-radius: 14px; overflow: hidden; }
+.vc-header { padding: 16px 20px; color: #fff; }
+.mvp-header { background: #1a1a1a; }
+.adv-header { background: linear-gradient(135deg, #e8430a, #f97316); }
+.vc-title { font-size: 15px; font-weight: 700; }
+.vc-sub { font-size: 12px; opacity: 0.7; margin-top: 2px; }
+.vc-body { background: #fff; border: 1px solid #ede8e0; border-top: none; padding: 16px 20px; }
+.vc-list { list-style: none; }
+.vc-list li { font-size: 13px; color: #555; padding: 6px 0; border-bottom: 1px solid #f5f1eb; display: flex; gap: 8px; line-height: 1.5; align-items: flex-start; }
+.vc-list li:last-child { border-bottom: none; }
+.vc-list li::before { font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+.mvp-header + .vc-body .vc-list li::before { content: "✓"; color: #16a34a; }
+.adv-header + .vc-body .vc-list li::before { content: "✦"; color: #e8430a; }
+
+/* Cost table */
+.cost-table { width: 100%; border-collapse: collapse; font-size: 13px; background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid #ede8e0; }
+.cost-table th { text-align: left; padding: 11px 16px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; color: #999; background: #faf8f5; border-bottom: 1px solid #ede8e0; }
+.cost-table td { padding: 11px 16px; border-bottom: 1px solid #f5f1eb; }
+.cost-table tr:last-child td { border-bottom: none; }
+.mono { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; color: #e8430a; }
+
+/* Prompt box */
+.prompt-box { background: #1e1e2e; border-radius: 12px; padding: 18px 20px; margin-bottom: 16px; }
+.prompt-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #6c7086; margin-bottom: 10px; }
+.prompt-text { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; line-height: 1.7; color: #cdd6f4; }
+.c-comment { color: #6c7086; font-style: italic; }
+.c-str { color: #a6e3a1; }
+.c-key { color: #89b4fa; }
+.c-var { color: #fab387; }
+
+.footer { margin-top: 56px; padding-top: 24px; border-top: 1px solid #ede8e0; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; font-size: 12px; color: #bbb; }
+@media (max-width: 680px) {
+  .page { padding: 24px 16px; }
+  .cover { padding: 32px 24px; }
+  .cover h1 { font-size: 26px; }
+  .transform-body { grid-template-columns: 1fr; }
+  .tx-divider { transform: rotate(90deg); padding: 8px; }
+  .version-grid { grid-template-columns: 1fr; }
+  .mockup-wrap { display: none; }
+}
+@media print { body { background: #fff; } .page { padding: 24px; } }
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="cover">
+  <div class="cover-tag">Feature deep-dive · RecipeVerse · March 2026</div>
+  <h1>AI Voice Recipe Recording</h1>
+  <div class="cover-sub">How a user can speak a recipe out loud — naturally, in their own words — and RecipeVerse turns it into a perfectly structured, publishable recipe in under 10 seconds.</div>
+  <div class="cover-pills">
+    <span class="cover-pill">Whisper API (speech-to-text)</span>
+    <span class="cover-pill">Claude API (AI structuring)</span>
+    <span class="cover-pill">Founder-friendly guide</span>
+  </div>
+</div>
+
+<div class="toc">
+  <div class="toc-title">Contents</div>
+  <div class="toc-grid">
+    <div class="toc-item"><span class="toc-num">01</span> The big picture — how it works</div>
+    <div class="toc-item"><span class="toc-num">02</span> Real example: voice to recipe</div>
+    <div class="toc-item"><span class="toc-num">03</span> Step-by-step technical pipeline</div>
+    <div class="toc-item"><span class="toc-num">04</span> Part 1 — Speech to text (Whisper)</div>
+    <div class="toc-item"><span class="toc-num">05</span> Part 2 — AI structuring (Claude)</div>
+    <div class="toc-item"><span class="toc-num">06</span> What happens when AI is unsure</div>
+    <div class="toc-item"><span class="toc-num">07</span> The review & edit screen</div>
+    <div class="toc-item"><span class="toc-num">08</span> MVP vs advanced version</div>
+    <div class="toc-item"><span class="toc-num">09</span> The AI prompt we send</div>
+    <div class="toc-item"><span class="toc-num">10</span> Cost estimates</div>
+  </div>
+</div>
+
+<!-- 01 BIG PICTURE -->
+<div class="sec-label">Part 1 — The big picture</div>
+
+<div class="card-highlight">
+  <div class="card-title">In plain English — what this feature does</div>
+  <div class="card-body">A user opens the app, taps one button, and speaks like they're telling a friend how to make their favourite dish. They might say "Take 2 cups of rice, wash it, add 3 cups of water, cook for 10 minutes, then add salt." When they stop speaking, the app thinks for 5 seconds — and then a fully formatted recipe appears on screen, ready to review and publish. No typing. No forms. Just talking.</div>
+</div>
+
+<div class="grid2">
+  <div class="card">
+    <div class="card-title">Why this is a big deal</div>
+    <div class="card-body">The #1 reason home cooks don't share recipes online is that typing out a full recipe with ingredients and steps is time-consuming and tedious. Voice removes that barrier completely. A 2-minute recording can produce a recipe that would take 15 minutes to type. That's a 7x improvement in creator productivity.</div>
+  </div>
+  <div class="card">
+    <div class="card-title">Two technologies working together</div>
+    <div class="card-body">This feature uses two separate AI services in sequence. First, OpenAI Whisper listens to the audio and converts it into raw text — like a very accurate transcription service. Then, Claude AI reads that raw text and organises it into a structured recipe. Each tool does what it's best at.</div>
+  </div>
+</div>
+
+<div class="callout"><strong>The analogy:</strong> Think of it like having a very smart kitchen assistant. You talk, they listen (Whisper), understand what you're cooking (Claude), and write it all down perfectly formatted. You just review their notes before sharing them.</div>
+
+<!-- 02 REAL EXAMPLE -->
+<div class="sec-label">Part 2 — Real example: voice to structured recipe</div>
+
+<p>Here is exactly what happens when a user says the example phrase from your prompt.</p>
+
+<div class="transform-box">
+  <div class="transform-header">
+    <span style="font-size:14px;">🎙️</span> What the user says → what the AI produces
+  </div>
+  <div class="transform-body">
+    <div class="tx-panel">
+      <div class="tx-label">User speaks (raw voice)</div>
+      <div class="tx-input">"Take 2 cups of rice, wash it, add 3 cups of water, cook for 10 minutes, then add salt."</div>
+      <div style="margin-top: 14px; padding: 10px 12px; background: #1e1e2e; border-radius: 8px; font-family: monospace; font-size: 11px; color: #a6e3a1; line-height: 1.6;">
+        ↓ Whisper transcribes<br>
+        ↓ Claude structures<br>
+        ↓ ~6 seconds total
+      </div>
+    </div>
+    <div class="tx-divider">→</div>
+    <div class="tx-panel">
+      <div class="tx-label">AI produces (structured recipe)</div>
+      <div class="tx-output">
+        <div class="tx-field">
+          <div class="tx-field-label">Title (AI guessed)</div>
+          <div class="tx-field-val uncertain">Simple Salted Rice <span style="font-size:10px; color:#f59e0b;">⚠ AI guess — review</span></div>
+        </div>
+        <div class="tx-field">
+          <div class="tx-field-label">Ingredients</div>
+          <div class="tx-field-val">2 cups rice<br>3 cups water<br>Salt (to taste)</div>
+        </div>
+        <div class="tx-field">
+          <div class="tx-field-label">Steps</div>
+          <div class="tx-field-val">1. Wash the rice thoroughly.<br>2. Add rice and 3 cups of water to pot.<br>3. Cook for 10 minutes.<br>4. Add salt to taste.</div>
+        </div>
+        <div class="tx-field">
+          <div class="tx-field-label">Cook time</div>
+          <div class="tx-field-val">10 minutes</div>
+        </div>
+        <div class="tx-field">
+          <div class="tx-field-label">Servings</div>
+          <div class="tx-field-val missing">Not mentioned — leave blank</div>
+        </div>
+        <div class="tx-field">
+          <div class="tx-field-label">Tips / notes</div>
+          <div class="tx-field-val missing">Not mentioned — leave blank</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="callout-blue"><strong>Notice:</strong> The AI didn't make things up. Where the user gave information (rice, water, 10 minutes, salt) — it structured it. Where the user didn't say anything (servings, tips) — it left those fields blank rather than guessing. For the title, it made a reasonable guess but flagged it for the user to review.</div>
+
+<!-- 03 PIPELINE -->
+<div class="sec-label">Part 3 — Step-by-step technical pipeline</div>
+
+<p>Here is every step in the system, from the user tapping the microphone to the structured recipe appearing on screen.</p>
+
+<div class="pipeline">
+  <div class="pipe-step">
+    <div class="pipe-left">
+      <div class="pipe-circle" style="background:#fff0e6;">🎙️</div>
+      <div class="pipe-line"></div>
+    </div>
+    <div class="pipe-body">
+      <div class="pipe-step-num">Step 1 — User's device</div>
+      <div class="pipe-title">User taps the mic and speaks</div>
+      <div class="pipe-desc">The user taps the big orange microphone button. The app starts recording using the device's microphone. A waveform animation shows the voice is being captured. The user speaks naturally — no special format required. When done, they tap Stop.</div>
+      <div class="pipe-tech">
+        <span class="tech-pill t-frontend">Web: MediaRecorder API</span>
+        <span class="tech-pill t-frontend">Mobile: expo-av</span>
+        <span class="tech-pill t-user">User action</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="pipe-step">
+    <div class="pipe-left">
+      <div class="pipe-circle" style="background:#eff6ff;">📤</div>
+      <div class="pipe-line"></div>
+    </div>
+    <div class="pipe-body">
+      <div class="pipe-step-num">Step 2 — Upload</div>
+      <div class="pipe-title">Audio file is sent to the server</div>
+      <div class="pipe-desc">The recorded audio file (in .webm or .m4a format) is sent from the user's device to the RecipeVerse backend. This happens the moment they tap Stop. A loading animation appears: "Processing your recipe..."</div>
+      <div class="pipe-tech">
+        <span class="tech-pill t-frontend">Multipart form upload</span>
+        <span class="tech-pill t-backend">Next.js API route</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="pipe-step">
+    <div class="pipe-left">
+      <div class="pipe-circle" style="background:#e8f0ff;">🔊</div>
+      <div class="pipe-line"></div>
+    </div>
+    <div class="pipe-body">
+      <div class="pipe-step-num">Step 3 — Speech to text (Whisper)</div>
+      <div class="pipe-title">Whisper converts audio to raw text</div>
+      <div class="pipe-desc">The server sends the audio file to OpenAI's Whisper API. Whisper listens to the audio and converts it into a raw text transcript. This takes about 2–4 seconds for a 2-minute recording. The result is plain text — exactly what the user said, with no structure yet.</div>
+      <div class="pipe-tech">
+        <span class="tech-pill t-whisper">OpenAI Whisper API</span>
+        <span class="tech-pill t-backend">Server-side only</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="pipe-step">
+    <div class="pipe-left">
+      <div class="pipe-circle" style="background:#f5f3ff;">🤖</div>
+      <div class="pipe-line"></div>
+    </div>
+    <div class="pipe-body">
+      <div class="pipe-step-num">Step 4 — AI structuring (Claude)</div>
+      <div class="pipe-title">Claude reads the transcript and structures the recipe</div>
+      <div class="pipe-desc">The raw transcript is sent to Claude AI with a carefully written prompt. Claude reads the text and extracts: title, ingredients (with quantities and units), numbered steps, cook time, servings, notes, and difficulty. It returns this as structured JSON data that the app can read.</div>
+      <div class="pipe-tech">
+        <span class="tech-pill t-ai">Claude API (claude-sonnet-4-6)</span>
+        <span class="tech-pill t-backend">Returns JSON</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="pipe-step">
+    <div class="pipe-left">
+      <div class="pipe-circle" style="background:#f0fdf4;">✅</div>
+      <div class="pipe-line"></div>
+    </div>
+    <div class="pipe-body">
+      <div class="pipe-step-num">Step 5 — Review screen</div>
+      <div class="pipe-title">The structured recipe appears for the user to review</div>
+      <div class="pipe-desc">The app receives the JSON and instantly populates every field in the recipe form. The user sees their full recipe structured and ready. Fields the AI was unsure about are highlighted in yellow. The user reviews, makes any corrections, adds a photo, and taps Publish.</div>
+      <div class="pipe-tech">
+        <span class="tech-pill t-frontend">Pre-filled form</span>
+        <span class="tech-pill t-user">User reviews and edits</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="pipe-step">
+    <div class="pipe-left">
+      <div class="pipe-circle" style="background:#fff0e6;">🚀</div>
+    </div>
+    <div class="pipe-body">
+      <div class="pipe-step-num">Step 6 — Publish</div>
+      <div class="pipe-title">Recipe goes live on RecipeVerse</div>
+      <div class="pipe-desc">User taps Publish. The recipe is saved to the database and appears instantly on their profile and in the feeds of their followers. A celebration animation plays: "Your recipe is live! 🎉"</div>
+      <div class="pipe-tech">
+        <span class="tech-pill t-backend">POST /api/recipes</span>
+        <span class="tech-pill t-user">Done!</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 04 WHISPER -->
+<div class="sec-label">Part 4 — Speech to text: what Whisper does</div>
+
+<div class="card-highlight">
+  <div class="card-title">What Whisper is and what it does in this feature</div>
+  <div class="card-body">Whisper is an AI model made by OpenAI that is specifically designed to convert spoken audio into written text. It is extremely accurate, works in 50+ languages, and handles accents, background noise, and natural speech patterns very well. Think of it as a professional transcriptionist that works in milliseconds.</div>
+</div>
+
+<h3>Whisper's exact job in RecipeVerse</h3>
+<div class="grid2">
+  <div class="card">
+    <div class="card-title">What Whisper does</div>
+    <div class="card-body" style="color:#555;">
+      <ul style="list-style:none; font-size:13px;">
+        <li style="padding:5px 0; border-bottom:1px solid #f5f1eb; display:flex; gap:8px;"><span style="color:#16a34a; font-weight:700;">✓</span> Converts audio file to raw text</li>
+        <li style="padding:5px 0; border-bottom:1px solid #f5f1eb; display:flex; gap:8px;"><span style="color:#16a34a; font-weight:700;">✓</span> Handles accents and regional dialects</li>
+        <li style="padding:5px 0; border-bottom:1px solid #f5f1eb; display:flex; gap:8px;"><span style="color:#16a34a; font-weight:700;">✓</span> Works in English, Spanish, French, Arabic and 50+ more</li>
+        <li style="padding:5px 0; border-bottom:1px solid #f5f1eb; display:flex; gap:8px;"><span style="color:#16a34a; font-weight:700;">✓</span> Handles background noise reasonably well</li>
+        <li style="padding:5px 0; display:flex; gap:8px;"><span style="color:#16a34a; font-weight:700;">✓</span> Processes a 3-min recording in ~3 seconds</li>
+      </ul>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">What Whisper does NOT do</div>
+    <div class="card-body" style="color:#555;">
+      <ul style="list-style:none; font-size:13px;">
+        <li style="padding:5px 0; border-bottom:1px solid #f5f1eb; display:flex; gap:8px;"><span style="color:#dc2626; font-weight:700;">✗</span> It does NOT understand what the words mean</li>
+        <li style="padding:5px 0; border-bottom:1px solid #f5f1eb; display:flex; gap:8px;"><span style="color:#dc2626; font-weight:700;">✗</span> It does NOT organise text into ingredients/steps</li>
+        <li style="padding:5px 0; border-bottom:1px solid #f5f1eb; display:flex; gap:8px;"><span style="color:#dc2626; font-weight:700;">✗</span> It may struggle with very uncommon ingredient names</li>
+        <li style="padding:5px 0; border-bottom:1px solid #f5f1eb; display:flex; gap:8px;"><span style="color:#dc2626; font-weight:700;">✗</span> It does NOT work in real-time (file must be complete)</li>
+        <li style="padding:5px 0; display:flex; gap:8px;"><span style="color:#dc2626; font-weight:700;">✗</span> It does NOT handle very heavy background music well</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="callout-blue"><strong>Whisper's output example:</strong> For the input "Take 2 cups of rice, wash it, add 3 cups of water", Whisper returns exactly: <em>"Take 2 cups of rice, wash it, add 3 cups of water."</em> — just plain text. It doesn't know that "2 cups of rice" is an ingredient. That's Claude's job next.</div>
+
+<!-- 05 CLAUDE -->
+<div class="sec-label">Part 5 — AI structuring: what Claude does</div>
+
+<div class="card-highlight">
+  <div class="card-title">What Claude does with the raw transcript</div>
+  <div class="card-body">Claude receives the plain text from Whisper and a very specific set of instructions from us (called a "prompt"). Claude reads the text intelligently — like a smart human reading a recipe description — and organises everything into the right fields. It understands context, can infer a title from the description, and knows that "add salt" is a step, not an ingredient list item.</div>
+</div>
+
+<h3>The AI prompt we send to Claude</h3>
+<p>The "prompt" is the instruction we give Claude. This is the most important part of the whole feature — a better prompt gives better results. Here is the actual prompt RecipeVerse should use:</p>
+
+<div class="prompt-box">
+  <div class="prompt-label">System prompt sent to Claude API</div>
+  <div class="prompt-text">
+<span class="c-comment">You are a recipe structuring assistant for a cooking platform.</span><br>
+<span class="c-comment">You will receive a raw voice transcript of someone describing a recipe.</span><br>
+<span class="c-comment">Your job is to extract and structure it into clean JSON.</span><br><br>
+<span class="c-key">Rules:</span><br>
+<span class="c-str">- Extract only what the user explicitly said. Never invent information.</span><br>
+<span class="c-str">- If a field is not mentioned, set it to null — do not guess.</span><br>
+<span class="c-str">- For the title: make a short, descriptive guess based on the ingredients/method.</span><br>
+<span class="c-str">  Mark it as "ai_generated": true so the UI can flag it for review.</span><br>
+<span class="c-str">- Quantities and units must be separated: "2 cups" → quantity: "2", unit: "cups"</span><br>
+<span class="c-str">- Steps must be numbered, one action per step.</span><br>
+<span class="c-str">- If a quantity is unclear (e.g. "some salt") set confidence: "low".</span><br><br>
+<span class="c-key">Return ONLY valid JSON in this exact format, nothing else:</span><br>
+<span class="c-var">{</span><br>
+<span class="c-var">&nbsp;&nbsp;"title": "...",</span><br>
+<span class="c-var">&nbsp;&nbsp;"title_ai_generated": true,</span><br>
+<span class="c-var">&nbsp;&nbsp;"ingredients": [</span><br>
+<span class="c-var">&nbsp;&nbsp;&nbsp;&nbsp;{ "name": "rice", "quantity": "2", "unit": "cups", "confidence": "high" }</span><br>
+<span class="c-var">&nbsp;&nbsp;],</span><br>
+<span class="c-var">&nbsp;&nbsp;"steps": [ { "number": 1, "instruction": "Wash the rice." } ],</span><br>
+<span class="c-var">&nbsp;&nbsp;"cook_time_mins": 10,</span><br>
+<span class="c-var">&nbsp;&nbsp;"servings": null,</span><br>
+<span class="c-var">&nbsp;&nbsp;"notes": null,</span><br>
+<span class="c-var">&nbsp;&nbsp;"overall_confidence": "high"</span><br>
+<span class="c-var">}</span>
+  </div>
+</div>
+
+<div class="callout"><strong>Why the prompt matters so much:</strong> The same transcript sent to Claude with a vague prompt vs. a specific prompt gives completely different results. The prompt above forces Claude to be honest about uncertainty, never invent data, and return a consistent format the app can always parse reliably.</div>
+
+<!-- 06 UNCERTAINTY -->
+<div class="sec-label">Part 6 — What happens when the AI is unsure</div>
+
+<p>The AI will not always be confident. Here is exactly what happens in every uncertainty scenario, and how the system handles it gracefully.</p>
+
+<table class="uncertainty-table">
+  <thead><tr><th>Scenario</th><th>Example</th><th>What the AI does</th><th>What the user sees</th></tr></thead>
+  <tbody>
+    <tr>
+      <td class="u-scenario">Title not said</td>
+      <td style="font-size:12px; color:#666;">"Just rice with water and salt"</td>
+      <td><span class="badge b-warn">AI guesses</span><br><span style="font-size:12px; color:#666;">Sets title_ai_generated: true</span></td>
+      <td style="font-size:12px; color:#555;">Title field shown in yellow with "AI guess — please edit" label</td>
+    </tr>
+    <tr>
+      <td class="u-scenario">Vague quantity</td>
+      <td style="font-size:12px; color:#666;">"Add some salt" or "a handful of rice"</td>
+      <td><span class="badge b-warn">Low confidence</span><br><span style="font-size:12px; color:#666;">Sets confidence: "low"</span></td>
+      <td style="font-size:12px; color:#555;">That ingredient shown in amber with "check this quantity" tooltip</td>
+    </tr>
+    <tr>
+      <td class="u-scenario">Field not mentioned</td>
+      <td style="font-size:12px; color:#666;">User never says how many servings</td>
+      <td><span class="badge b-ok">Returns null</span><br><span style="font-size:12px; color:#666;">Never invents a value</span></td>
+      <td style="font-size:12px; color:#555;">Field shown as empty with placeholder. User can fill or leave blank.</td>
+    </tr>
+    <tr>
+      <td class="u-scenario">Unclear step order</td>
+      <td style="font-size:12px; color:#666;">"Mix it all together, oh and first wash the rice"</td>
+      <td><span class="badge b-warn">AI reorders</span><br><span style="font-size:12px; color:#666;">Uses context to sort logically</span></td>
+      <td style="font-size:12px; color:#555;">Steps shown reordered. Drag handles visible so user can fix order.</td>
+    </tr>
+    <tr>
+      <td class="u-scenario">Very short recording</td>
+      <td style="font-size:12px; color:#666;">Under 10 seconds, no real recipe content</td>
+      <td><span class="badge b-err">Low overall confidence</span><br><span style="font-size:12px; color:#666;">overall_confidence: "low"</span></td>
+      <td style="font-size:12px; color:#555;">Banner shown: "We couldn't extract much — try speaking more detail, or type it instead."</td>
+    </tr>
+    <tr>
+      <td class="u-scenario">Whisper transcription error</td>
+      <td style="font-size:12px; color:#666;">"Turmeric" heard as "two metric"</td>
+      <td><span class="badge b-warn">Best guess</span><br><span style="font-size:12px; color:#666;">Claude still structures what it got</span></td>
+      <td style="font-size:12px; color:#555;">Review screen always editable. User catches this in review.</td>
+    </tr>
+    <tr>
+      <td class="u-scenario">API call fails</td>
+      <td style="font-size:12px; color:#666;">Network error or API timeout</td>
+      <td><span class="badge b-err">Error returned</span><br><span style="font-size:12px; color:#666;">System retries once automatically</span></td>
+      <td style="font-size:12px; color:#555;">"Something went wrong. Try again or type your recipe instead." Two clear options given.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout-green"><strong>The safety net principle:</strong> The AI review screen is the ultimate safety net. No matter what the AI produces — perfect or imperfect — the user always reviews every field before anything is published. The user is always in control. The AI just saves them time.</div>
+
+<!-- 07 REVIEW SCREEN -->
+<div class="sec-label">Part 7 — The review and edit screen</div>
+
+<p>This screen is what the user sees after the AI finishes processing. It is the most important screen in the voice feature. Here is what it contains and how it works.</p>
+
+<div style="display: grid; grid-template-columns: 1fr auto; gap: 24px; margin-bottom: 20px; align-items: start;">
+  <div>
+    <h3>What must be on this screen</h3>
+    <div class="card">
+      <div class="card-body">
+        <ul style="list-style:none; font-size:13px; color:#555;">
+          <li style="padding:6px 0; border-bottom:1px solid #f5f1eb; display:flex; gap:10px;"><span style="color:#e8430a; font-weight:700; font-size:16px;">1</span><div><strong style="color:#1a1a1a;">Success message at top</strong> — "Your recipe was structured! Review and edit before publishing."</div></li>
+          <li style="padding:6px 0; border-bottom:1px solid #f5f1eb; display:flex; gap:10px;"><span style="color:#e8430a; font-weight:700; font-size:16px;">2</span><div><strong style="color:#1a1a1a;">Every field editable</strong> — all pre-filled from AI. Every single one can be changed.</div></li>
+          <li style="padding:6px 0; border-bottom:1px solid #f5f1eb; display:flex; gap:10px;"><span style="color:#e8430a; font-weight:700; font-size:16px;">3</span><div><strong style="color:#1a1a1a;">Yellow highlights</strong> — AI-generated title and low-confidence fields shown in amber.</div></li>
+          <li style="padding:6px 0; border-bottom:1px solid #f5f1eb; display:flex; gap:10px;"><span style="color:#e8430a; font-weight:700; font-size:16px;">4</span><div><strong style="color:#1a1a1a;">Add/remove ingredients</strong> — tap + to add a missed ingredient, swipe to delete a wrong one.</div></li>
+          <li style="padding:6px 0; border-bottom:1px solid #f5f1eb; display:flex; gap:10px;"><span style="color:#e8430a; font-weight:700; font-size:16px;">5</span><div><strong style="color:#1a1a1a;">Reorder steps</strong> — drag handle on each step to fix the order.</div></li>
+          <li style="padding:6px 0; border-bottom:1px solid #f5f1eb; display:flex; gap:10px;"><span style="color:#e8430a; font-weight:700; font-size:16px;">6</span><div><strong style="color:#1a1a1a;">Photo upload prompt</strong> — "Add a cover photo to get 3x more views."</div></li>
+          <li style="padding:6px 0; border-bottom:1px solid #f5f1eb; display:flex; gap:10px;"><span style="color:#e8430a; font-weight:700; font-size:16px;">7</span><div><strong style="color:#1a1a1a;">Save as draft</strong> — option to save without publishing yet.</div></li>
+          <li style="padding:6px 0; display:flex; gap:10px;"><span style="color:#e8430a; font-weight:700; font-size:16px;">8</span><div><strong style="color:#1a1a1a;">Big Publish button</strong> — at the bottom, always in reach. Orange, unmissable.</div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="mockup-wrap" style="margin: 0; padding: 16px; background: #f0ebe2; border-radius: 14px;">
+    <div class="phone">
+      <div class="phone-bar">
+        <span class="phone-time">9:41</span>
+        <span class="phone-icons">●●●</span>
+      </div>
+      <div class="ph-header">
+        <div class="ph-header-title">Review your recipe</div>
+        <div class="ph-header-sub">AI structured it — check before publishing</div>
+      </div>
+      <div class="ph-body">
+        <div class="ph-field">
+          <div class="ph-field-label">Title <span class="ph-warn-badge">AI guess</span></div>
+          <div class="ph-field-val warn">Simple Salted Rice</div>
+        </div>
+        <div class="ph-field">
+          <div class="ph-field-label">Ingredients</div>
+          <ul class="ph-list">
+            <li>2 cups rice</li>
+            <li>3 cups water</li>
+            <li>Salt (to taste)</li>
+          </ul>
+        </div>
+        <div class="ph-field">
+          <div class="ph-field-label">Steps</div>
+          <ul class="ph-list">
+            <li>1. Wash the rice</li>
+            <li>2. Add rice + water</li>
+            <li>3. Cook 10 min</li>
+            <li>4. Add salt</li>
+          </ul>
+        </div>
+        <div class="ph-field">
+          <div class="ph-field-label">Cook time</div>
+          <div class="ph-field-val">10 minutes</div>
+        </div>
+        <div class="ph-btn-row">
+          <div class="ph-btn ph-btn-secondary">Save draft</div>
+          <div class="ph-btn ph-btn-primary">Publish</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 08 MVP VS ADVANCED -->
+<div class="sec-label">Part 8 — MVP version vs advanced version</div>
+
+<p>Build the MVP version first and get it in users' hands. Add the advanced features only after you have real feedback.</p>
+
+<div class="version-grid">
+  <div class="version-card">
+    <div class="vc-header mvp-header">
+      <div class="vc-title">MVP version</div>
+      <div class="vc-sub">Build in Week 4 · Ship in Week 8</div>
+    </div>
+    <div class="vc-body">
+      <ul class="vc-list">
+        <li>Single tap to start/stop recording</li>
+        <li>Audio sent to Whisper for transcription</li>
+        <li>Transcript sent to Claude for structuring</li>
+        <li>All 6 recipe fields extracted (title, ingredients, steps, time, servings, notes)</li>
+        <li>AI-generated fields flagged in yellow</li>
+        <li>Full review screen before publishing</li>
+        <li>Retry if something goes wrong</li>
+        <li>"Type instead" fallback always available</li>
+        <li>Max recording length: 5 minutes</li>
+        <li>English language only at launch</li>
+        <li>Cost: ~$0.01 per recipe upload</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="version-card">
+    <div class="vc-header adv-header">
+      <div class="vc-title">Advanced version</div>
+      <div class="vc-sub">Phase 2 · After real user feedback</div>
+    </div>
+    <div class="vc-body">
+      <ul class="vc-list">
+        <li>Real-time transcription shown as user speaks</li>
+        <li>Multi-language support (50+ languages)</li>
+        <li>AI improves based on user corrections over time</li>
+        <li>Auto-detect language from audio</li>
+        <li>"Re-record just the ingredients" partial re-record</li>
+        <li>AI suggests a cover photo based on the recipe name</li>
+        <li>AI suggests relevant tags automatically</li>
+        <li>Cooking timer extracted from steps (e.g. "cook 10 min" → adds timer)</li>
+        <li>Nutritional info estimated from ingredients by AI</li>
+        <li>Voice editing: "Change step 2 to..." updates just that step</li>
+        <li>Background noise filtering before sending to Whisper</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="callout-amber"><strong>The most important Phase 2 addition:</strong> Real-time transcription (showing words appear on screen as the user speaks) dramatically increases trust. Users feel confident the app is "hearing" them correctly and can stop if something goes wrong. Build this in Phase 2 once MVP is validated.</div>
+
+<!-- 09 COST -->
+<div class="sec-label">Part 9 — The AI prompt and cost estimates</div>
+
+<h3>Cost per voice recipe upload</h3>
+<table class="cost-table">
+  <thead><tr><th>Service</th><th>What it does</th><th>Pricing</th><th>Cost per 3-min recipe</th></tr></thead>
+  <tbody>
+    <tr>
+      <td style="font-weight:600;">OpenAI Whisper</td>
+      <td style="font-size:13px; color:#666;">Transcribes the audio to text</td>
+      <td class="mono">$0.006 / minute</td>
+      <td class="mono" style="color:#16a34a;">~$0.018</td>
+    </tr>
+    <tr>
+      <td style="font-weight:600;">Claude API (Sonnet)</td>
+      <td style="font-size:13px; color:#666;">Structures the transcript into recipe fields</td>
+      <td class="mono">$0.003 / 1K tokens</td>
+      <td class="mono" style="color:#16a34a;">~$0.004</td>
+    </tr>
+    <tr>
+      <td style="font-weight:600; color:#e8430a;">Total per recipe</td>
+      <td style="font-size:13px; color:#666;">Full voice-to-recipe pipeline</td>
+      <td></td>
+      <td class="mono" style="color:#e8430a; font-size:15px;"><strong>~$0.022</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="grid3" style="margin-top:14px;">
+  <div class="card">
+    <div class="card-title" style="color:#16a34a;">1,000 uploads/month</div>
+    <div class="card-body">Total AI cost: <strong>~$22/month</strong>. Essentially free at early stage.</div>
+  </div>
+  <div class="card">
+    <div class="card-title" style="color:#1a4db5;">10,000 uploads/month</div>
+    <div class="card-body">Total AI cost: <strong>~$220/month</strong>. Still very manageable.</div>
+  </div>
+  <div class="card">
+    <div class="card-title" style="color:#e8430a;">100,000 uploads/month</div>
+    <div class="card-body">Total AI cost: <strong>~$2,200/month</strong>. At this scale, revenue covers it easily.</div>
+  </div>
+</div>
+
+<div class="callout-green"><strong>The bottom line:</strong> At $0.022 per recipe, this feature costs less than 2 cents to run. Even if you gave every free user unlimited voice uploads, the cost is trivial at MVP scale. It only becomes a meaningful cost when you have hundreds of thousands of users — by which point you'll have revenue to cover it. Build it, don't worry about the cost.</div>
+
+<div class="footer">
+  <span>RecipeVerse — AI Voice Feature v1.0</span>
+  <span>Confidential · March 2026</span>
+</div>
+
+</div>
+</body>
+</html>

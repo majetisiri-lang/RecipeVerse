@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>RecipeVerse — PRD v2.0</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8f6f2; color: #1a1a1a; line-height: 1.7; font-size: 15px; }
+.page { max-width: 920px; margin: 0 auto; padding: 48px 32px; }
+
+/* Cover */
+.cover { background: linear-gradient(135deg, #e8430a 0%, #f97316 55%, #fbbf24 100%); border-radius: 20px; padding: 52px 48px; color: #fff; margin-bottom: 48px; }
+.cover-tag { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.75; margin-bottom: 12px; }
+.cover h1 { font-size: 42px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 8px; }
+.cover-sub { font-size: 17px; opacity: 0.88; max-width: 560px; margin-bottom: 28px; line-height: 1.5; }
+.cover-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+.cover-pill { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 4px 14px; font-size: 12px; }
+.cover-meta { display: flex; flex-wrap: wrap; gap: 20px; font-size: 12px; opacity: 0.75; border-top: 1px solid rgba(255,255,255,0.25); padding-top: 20px; }
+
+/* TOC */
+.toc { background: #fff; border: 1px solid #ede8e0; border-radius: 16px; padding: 28px 32px; margin-bottom: 48px; }
+.toc-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #aaa; margin-bottom: 16px; }
+.toc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 6px; }
+.toc-item { font-size: 13px; color: #e8430a; display: flex; align-items: center; gap: 10px; padding: 4px 0; }
+.toc-num { font-size: 11px; color: #ccc; font-weight: 700; min-width: 22px; }
+
+/* Section */
+.section { margin-bottom: 52px; }
+.section-header { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; padding-bottom: 14px; border-bottom: 2px solid #f0ebe2; }
+.section-num { width: 36px; height: 36px; background: #e8430a; color: #fff; border-radius: 10px; font-size: 14px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.section-title { font-size: 22px; font-weight: 800; }
+.section-for { font-size: 11px; color: #aaa; margin-left: auto; text-transform: uppercase; letter-spacing: 0.07em; white-space: nowrap; }
+
+h3 { font-size: 15px; font-weight: 700; margin: 24px 0 12px; color: #1a1a1a; }
+p { margin-bottom: 12px; color: #555; font-size: 14px; line-height: 1.7; }
+
+/* Cards */
+.card { background: #fff; border: 1px solid #ede8e0; border-radius: 12px; padding: 20px 24px; margin-bottom: 14px; }
+.card-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+.card-body { font-size: 13px; color: #555; line-height: 1.7; }
+.card-highlight { background: #fff8f5; border: 1px solid #fdd9c8; border-radius: 12px; padding: 20px 24px; margin-bottom: 14px; }
+
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin-bottom: 14px; }
+.grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 14px; }
+
+/* Tags */
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.tag { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 600; }
+.t-orange { background: #fff0e6; color: #c44b0a; }
+.t-blue { background: #e8f0ff; color: #1a4db5; }
+.t-green { background: #e8f5e8; color: #1a6e1a; }
+.t-purple { background: #f0eeff; color: #5035b0; }
+.t-teal { background: #e0f5ef; color: #0b6e56; }
+.t-red { background: #ffeaea; color: #b91c1c; }
+.t-amber { background: #fef4e0; color: #7a4f00; }
+.t-gray { background: #f0ede8; color: #666; }
+.t-pink { background: #fce8f3; color: #9d174d; }
+
+/* Callout */
+.callout { border-left: 3px solid #e8430a; background: #fff8f5; border-radius: 0 10px 10px 0; padding: 14px 18px; margin: 16px 0; font-size: 13px; color: #555; }
+.callout strong { color: #e8430a; }
+.callout-blue { border-left: 3px solid #3b82f6; background: #eff6ff; border-radius: 0 10px 10px 0; padding: 14px 18px; margin: 16px 0; font-size: 13px; color: #555; }
+.callout-green { border-left: 3px solid #16a34a; background: #f0fdf4; border-radius: 0 10px 10px 0; padding: 14px 18px; margin: 16px 0; font-size: 13px; color: #555; }
+
+/* Tables */
+.tbl { width: 100%; border-collapse: collapse; font-size: 13px; background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid #ede8e0; margin-bottom: 14px; }
+.tbl th { text-align: left; padding: 11px 16px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; color: #999; background: #faf8f5; border-bottom: 1px solid #ede8e0; font-weight: 600; }
+.tbl td { padding: 11px 16px; border-bottom: 1px solid #f5f1eb; vertical-align: top; color: #444; }
+.tbl tr:last-child td { border-bottom: none; }
+.tbl-name { font-weight: 600; color: #1a1a1a; }
+.tbl-mono { font-family: 'SF Mono', 'Fira Code', monospace; color: #e8430a; font-size: 12px; }
+
+/* Persona cards */
+.persona { background: #fff; border: 1px solid #ede8e0; border-radius: 14px; padding: 22px 24px; }
+.persona-top { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+.persona-avatar { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+.pa-orange { background: #fff0e6; }
+.pa-blue { background: #e8f0ff; }
+.pa-green { background: #e8f5e8; }
+.pa-purple { background: #f0eeff; }
+.pa-teal { background: #e0f5ef; }
+.persona-name { font-size: 15px; font-weight: 700; }
+.persona-role { font-size: 12px; color: #999; }
+.persona-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+.persona-block { background: #faf8f5; border-radius: 8px; padding: 10px 12px; }
+.persona-block-title { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: #bbb; font-weight: 700; margin-bottom: 4px; }
+.persona-block-text { font-size: 12px; color: #555; line-height: 1.6; }
+
+/* User journey */
+.journey { background: #fff; border: 1px solid #ede8e0; border-radius: 12px; overflow: hidden; margin-bottom: 14px; }
+.journey-header { background: #faf8f5; padding: 14px 20px; font-size: 13px; font-weight: 700; border-bottom: 1px solid #ede8e0; display: flex; align-items: center; gap: 10px; }
+.journey-steps { display: flex; overflow-x: auto; padding: 16px 20px; gap: 0; }
+.jstep { min-width: 130px; text-align: center; position: relative; }
+.jstep:not(:last-child)::after { content: '→'; position: absolute; right: -10px; top: 12px; color: #e8430a; font-size: 14px; }
+.jstep-num { width: 28px; height: 28px; background: #e8430a; color: #fff; border-radius: 50%; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; margin: 0 auto 6px; }
+.jstep-label { font-size: 12px; font-weight: 600; color: #1a1a1a; }
+.jstep-sub { font-size: 11px; color: #999; margin-top: 2px; }
+
+/* Requirements */
+.req-block { background: #fff; border: 1px solid #ede8e0; border-radius: 12px; padding: 18px 22px; margin-bottom: 12px; }
+.req-id { font-family: 'SF Mono', monospace; font-size: 11px; color: #e8430a; font-weight: 700; margin-bottom: 4px; }
+.req-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+.req-desc { font-size: 13px; color: #555; line-height: 1.6; }
+.req-ac { margin-top: 10px; }
+.req-ac-title { font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; color: #aaa; font-weight: 700; margin-bottom: 6px; }
+.req-ac-list { list-style: none; font-size: 12px; color: #666; }
+.req-ac-list li { padding: 3px 0; display: flex; gap: 8px; }
+.req-ac-list li::before { content: "✓"; color: #16a34a; font-weight: 700; flex-shrink: 0; }
+
+/* NFR */
+.nfr-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.nfr { background: #fff; border: 1px solid #ede8e0; border-radius: 12px; padding: 16px 18px; }
+.nfr-icon { font-size: 20px; margin-bottom: 8px; }
+.nfr-title { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+.nfr-items { font-size: 12px; color: #666; line-height: 1.8; }
+
+/* Phase timeline */
+.phase { display: flex; gap: 20px; margin-bottom: 18px; }
+.phase-line { display: flex; flex-direction: column; align-items: center; }
+.phase-circle { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; color: #fff; flex-shrink: 0; }
+.ph1 { background: #e8430a; }
+.ph2 { background: #7c3aed; }
+.ph3 { background: #0891b2; }
+.phase-connector { width: 2px; background: #f0ebe2; flex: 1; margin: 4px 0; min-height: 20px; }
+.phase-body { background: #fff; border: 1px solid #ede8e0; border-radius: 12px; padding: 18px 22px; flex: 1; }
+.phase-title { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+.phase-weeks { font-size: 12px; color: #aaa; margin-bottom: 10px; }
+.phase-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: 11px; background: #f5f1eb; border-radius: 6px; padding: 3px 10px; color: #555; }
+
+/* KPI */
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.kpi { background: #fff; border: 1px solid #ede8e0; border-radius: 12px; padding: 18px; text-align: center; }
+.kpi-val { font-size: 28px; font-weight: 800; color: #e8430a; }
+.kpi-label { font-size: 12px; color: #999; margin-top: 4px; }
+
+/* Risk */
+.risk { background: #fff; border: 1px solid #ede8e0; border-radius: 12px; padding: 18px 22px; margin-bottom: 12px; display: flex; gap: 16px; }
+.risk-badge { flex-shrink: 0; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 6px; height: fit-content; }
+.risk-high { background: #ffeaea; color: #b91c1c; }
+.risk-med { background: #fef4e0; color: #92400e; }
+.risk-low { background: #e8f5e8; color: #166534; }
+.risk-body {}
+.risk-title { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+.risk-fix { font-size: 12px; color: #666; }
+.risk-assume { font-size: 12px; color: #888; font-style: italic; margin-top: 3px; }
+
+/* Launch */
+.launch-step { background: #fff; border: 1px solid #ede8e0; border-radius: 12px; padding: 18px 22px; margin-bottom: 12px; display: flex; gap: 18px; align-items: flex-start; }
+.launch-num { width: 32px; height: 32px; background: #fff0e6; color: #e8430a; border-radius: 8px; font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.launch-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.launch-desc { font-size: 13px; color: #666; line-height: 1.6; }
+
+/* Monetization */
+.mono-card { background: #fff; border: 1px solid #ede8e0; border-radius: 12px; padding: 20px 24px; }
+.mono-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.mono-badge { font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 700; }
+.badge-now { background: #dcfce7; color: #166534; }
+.badge-later { background: #e8f0ff; color: #1a4db5; }
+.mono-desc { font-size: 13px; color: #666; line-height: 1.6; }
+.mono-example { font-size: 12px; color: #aaa; margin-top: 6px; font-style: italic; }
+
+/* Footer */
+.footer { margin-top: 56px; padding-top: 24px; border-top: 1px solid #ede8e0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; font-size: 12px; color: #bbb; }
+
+@media (max-width: 600px) {
+  .page { padding: 24px 16px; }
+  .cover { padding: 32px 24px; }
+  .cover h1 { font-size: 28px; }
+  .persona-row { grid-template-columns: 1fr; }
+  .phase { flex-direction: column; }
+}
+@media print {
+  body { background: #fff; }
+  .page { padding: 24px; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-tag">Product Requirements Document · v2.0 · March 2026</div>
+  <h1>RecipeVerse</h1>
+  <div class="cover-sub">"Instagram for food" — a social platform where home cooks and food creators share recipes, build audiences, and earn from their culinary creativity.</div>
+  <div class="cover-pills">
+    <span class="cover-pill">Web + Mobile</span>
+    <span class="cover-pill">AI-powered</span>
+    <span class="cover-pill">Creator monetization</span>
+    <span class="cover-pill">Voice-to-recipe</span>
+    <span class="cover-pill">Social import</span>
+  </div>
+  <div class="cover-meta">
+    <span>Version 2.0</span>
+    <span>Status: In planning</span>
+    <span>MVP target: 8 weeks</span>
+    <span>Full launch: 20 weeks</span>
+    <span>Audience: Founders · Designers · Developers</span>
+  </div>
+</div>
+
+<!-- TOC -->
+<div class="toc">
+  <div class="toc-title">Table of contents</div>
+  <div class="toc-grid">
+    <div class="toc-item"><span class="toc-num">01</span> Product vision</div>
+    <div class="toc-item"><span class="toc-num">02</span> Problem statement</div>
+    <div class="toc-item"><span class="toc-num">03</span> Target users</div>
+    <div class="toc-item"><span class="toc-num">04</span> User personas</div>
+    <div class="toc-item"><span class="toc-num">05</span> Core user journeys</div>
+    <div class="toc-item"><span class="toc-num">06</span> MVP scope</div>
+    <div class="toc-item"><span class="toc-num">07</span> Future scope</div>
+    <div class="toc-item"><span class="toc-num">08</span> Functional requirements</div>
+    <div class="toc-item"><span class="toc-num">09</span> Non-functional requirements</div>
+    <div class="toc-item"><span class="toc-num">10</span> Success metrics</div>
+    <div class="toc-item"><span class="toc-num">11</span> Risks & assumptions</div>
+    <div class="toc-item"><span class="toc-num">12</span> Launch strategy</div>
+  </div>
+</div>
+
+<!-- 01 PRODUCT VISION -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">1</div>
+    <div class="section-title">Product vision</div>
+    <div class="section-for">For: Everyone</div>
+  </div>
+
+  <div class="card-highlight">
+    <div class="card-title">Vision statement</div>
+    <div class="card-body" style="font-size:15px; color:#1a1a1a; line-height:1.8;">
+      "To become the world's home for food creators — a place where anyone, from a home cook in Lagos to a chef in Tokyo, can share their culture through food, build a real audience, and earn a living from their passion."
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">Mission</div>
+      <div class="card-body">Make it as easy as possible for anyone to share a recipe — whether they type it, record it with their voice, or import it from social media — and connect them with a community that loves food as much as they do.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">What success looks like in 3 years</div>
+      <div class="card-body">RecipeVerse is the first place food creators post. Millions of recipes from every culture live on the platform. Thousands of creators earn meaningful income. It is the go-to destination to discover, save, and cook new recipes.</div>
+    </div>
+  </div>
+
+  <h3>What makes RecipeVerse different</h3>
+  <table class="tbl">
+    <thead><tr><th>Competitor</th><th>What they do</th><th>What's missing</th></tr></thead>
+    <tbody>
+      <tr><td class="tbl-name">Instagram</td><td>Great for food photos and short videos</td><td>No recipe structure, no search by ingredient, no monetization for creators</td></tr>
+      <tr><td class="tbl-name">YouTube</td><td>Long-form cooking videos</td><td>Not social, no recipe cards, hard to discover new creators</td></tr>
+      <tr><td class="tbl-name">Cookpad</td><td>Recipe sharing community</td><td>Outdated UI, no video, no AI, weak monetization</td></tr>
+      <tr><td class="tbl-name">TikTok</td><td>Short cooking videos</td><td>No recipe structure, recipes buried in comments, no community depth</td></tr>
+      <tr><td class="tbl-name" style="color:#e8430a;">RecipeVerse</td><td>Social + structured recipes + AI input + monetization</td><td style="color:#16a34a; font-weight:600;">This is our complete solution</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 02 PROBLEM STATEMENT -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">2</div>
+    <div class="section-title">Problem statement</div>
+    <div class="section-for">For: Everyone</div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">🍳 For home cooks & creators</div>
+      <div class="card-body">There is no dedicated social platform built for food. Creators are forced to split their presence across Instagram (photos), YouTube (videos), and personal blogs (text). They spend more time managing platforms than creating content — and they earn little to nothing for their work.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">🔍 For recipe seekers</div>
+      <div class="card-body">Finding a reliable, well-structured recipe from a trusted creator is hard. Search results are cluttered with SEO-stuffed blogs. Recipes on Instagram are buried in captions. There's no single place to discover, save, and organize recipes you actually want to cook.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📝 The creation barrier</div>
+    <div class="card-body">Creating a well-structured recipe post is time-consuming. You need a title, ingredient list with exact quantities, numbered steps, cook time, servings, tags, and photos. Most home cooks give up before finishing. RecipeVerse solves this with voice recording and AI — speak your recipe and the platform formats it for you automatically.</div>
+  </div>
+
+  <div class="callout"><strong>The core insight:</strong> Food is the most universal human language. Every culture has recipes. Yet there is no platform built specifically for the food creator community. RecipeVerse is that platform.</div>
+</div>
+
+<!-- 03 TARGET USERS -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">3</div>
+    <div class="section-title">Target users</div>
+    <div class="section-for">For: Everyone</div>
+  </div>
+
+  <table class="tbl">
+    <thead><tr><th>User type</th><th>Who they are</th><th>What they need</th><th>MVP priority</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="tbl-name">🏠 Home cook</td>
+        <td>Cooks regularly at home, wants to share recipes with others</td>
+        <td>Easy recipe creation, community engagement, saves and likes</td>
+        <td><span class="tag t-red">Primary</span></td>
+      </tr>
+      <tr>
+        <td class="tbl-name">🎥 Food creator</td>
+        <td>Already posts food on Instagram/TikTok, wants a dedicated platform</td>
+        <td>Import from social, video upload, analytics, monetization</td>
+        <td><span class="tag t-red">Primary</span></td>
+      </tr>
+      <tr>
+        <td class="tbl-name">⭐ Recipe influencer</td>
+        <td>Has an existing food audience, wants deeper connection and income</td>
+        <td>Subscriptions, paid recipes, branded content tools</td>
+        <td><span class="tag t-orange">Secondary</span></td>
+      </tr>
+      <tr>
+        <td class="tbl-name">🔍 Recipe seeker</td>
+        <td>Wants to discover new recipes and save favorites</td>
+        <td>Great search, filtering, collections, trusted creators to follow</td>
+        <td><span class="tag t-red">Primary</span></td>
+      </tr>
+      <tr>
+        <td class="tbl-name">🌍 Cultural community</td>
+        <td>Groups preserving regional or traditional cooking</td>
+        <td>Community spaces, multilingual support, cultural tagging</td>
+        <td><span class="tag t-amber">Phase 2</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout"><strong>MVP focus:</strong> Home cooks and food creators aged 20–45 who are already active on Instagram or TikTok. They understand social platforms, are frustrated by the lack of recipe-specific features, and are most likely to become early adopters and advocates.</div>
+</div>
+
+<!-- 04 USER PERSONAS -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">4</div>
+    <div class="section-title">User personas</div>
+    <div class="section-for">For: Designers · Developers</div>
+  </div>
+  <p>These are fictional but realistic people based on our target audience. Design and build every feature with these people in mind.</p>
+
+  <div class="grid2">
+    <div class="persona">
+      <div class="persona-top">
+        <div class="persona-avatar pa-orange">👩‍🍳</div>
+        <div>
+          <div class="persona-name">Amara, 29</div>
+          <div class="persona-role">Home cook · Lagos, Nigeria</div>
+        </div>
+      </div>
+      <div class="card-body">Amara cooks West African food every day and documents her meals on Instagram Stories. Her followers always ask for recipes but she never has time to type them out properly.</div>
+      <div class="persona-row">
+        <div class="persona-block">
+          <div class="persona-block-title">Goals</div>
+          <div class="persona-block-text">Share her recipes easily. Build an audience who appreciates her culture's food.</div>
+        </div>
+        <div class="persona-block">
+          <div class="persona-block-title">Frustrations</div>
+          <div class="persona-block-text">Typing recipes takes too long. Instagram doesn't format ingredients properly.</div>
+        </div>
+      </div>
+      <div class="tags"><span class="tag t-orange">Voice upload</span><span class="tag t-teal">Social import</span><span class="tag t-blue">Community</span></div>
+    </div>
+
+    <div class="persona">
+      <div class="persona-top">
+        <div class="persona-avatar pa-blue">👨‍🍳</div>
+        <div>
+          <div class="persona-name">Marco, 34</div>
+          <div class="persona-role">Food creator · Milan, Italy</div>
+        </div>
+      </div>
+      <div class="card-body">Marco has 80k followers on Instagram and posts pasta recipes weekly. He spends hours on content but earns almost nothing. He wants a platform where his recipes are the product, not just a post.</div>
+      <div class="persona-row">
+        <div class="persona-block">
+          <div class="persona-block-title">Goals</div>
+          <div class="persona-block-text">Monetize his recipes. Grow a loyal subscriber base. Import existing content easily.</div>
+        </div>
+        <div class="persona-block">
+          <div class="persona-block-title">Frustrations</div>
+          <div class="persona-block-text">Instagram algorithm is unpredictable. No way to earn directly from recipes.</div>
+        </div>
+      </div>
+      <div class="tags"><span class="tag t-purple">Monetization</span><span class="tag t-orange">Analytics</span><span class="tag t-teal">Import</span></div>
+    </div>
+
+    <div class="persona">
+      <div class="persona-top">
+        <div class="persona-avatar pa-green">👩</div>
+        <div>
+          <div class="persona-name">Ji-Yeon, 26</div>
+          <div class="persona-role">Recipe seeker · Seoul, South Korea</div>
+        </div>
+      </div>
+      <div class="card-body">Ji-Yeon loves cooking but relies on searching Pinterest and YouTube for recipes. She saves dozens of recipes but loses track of them. She wants one app to discover, save, and organize everything.</div>
+      <div class="persona-row">
+        <div class="persona-block">
+          <div class="persona-block-title">Goals</div>
+          <div class="persona-block-text">Discover reliable recipes. Organize saves by category. Follow creators she trusts.</div>
+        </div>
+        <div class="persona-block">
+          <div class="persona-block-title">Frustrations</div>
+          <div class="persona-block-text">Recipes scattered everywhere. Hard to know which ones actually work. Too many ads.</div>
+        </div>
+      </div>
+      <div class="tags"><span class="tag t-blue">Search</span><span class="tag t-green">Collections</span><span class="tag t-amber">Ratings</span></div>
+    </div>
+
+    <div class="persona">
+      <div class="persona-top">
+        <div class="persona-avatar pa-purple">👴</div>
+        <div>
+          <div class="persona-name">David, 58</div>
+          <div class="persona-role">Home cook · Texas, USA</div>
+        </div>
+      </div>
+      <div class="card-body">David has decades of BBQ recipes in his head and a notebook. His grandkids want him to share them digitally but he's not tech-savvy. He needs the simplest possible way to get his recipes online.</div>
+      <div class="persona-row">
+        <div class="persona-block">
+          <div class="persona-block-title">Goals</div>
+          <div class="persona-block-text">Preserve family recipes. Share with family and community. Simple to use.</div>
+        </div>
+        <div class="persona-block">
+          <div class="persona-block-title">Frustrations</div>
+          <div class="persona-block-text">Most apps are too complicated. Doesn't want to type everything out.</div>
+        </div>
+      </div>
+      <div class="tags"><span class="tag t-orange">Voice upload</span><span class="tag t-gray">Simple UI</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- 05 USER JOURNEYS -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">5</div>
+    <div class="section-title">Core user journeys</div>
+    <div class="section-for">For: Designers · Developers</div>
+  </div>
+  <p>These are the most important flows in the app. Every journey must work smoothly for the app to succeed.</p>
+
+  <div class="journey">
+    <div class="journey-header"><span class="tag t-orange">Journey 1</span> New user signs up and discovers recipes</div>
+    <div class="journey-steps">
+      <div class="jstep"><div class="jstep-num">1</div><div class="jstep-label">Downloads app</div><div class="jstep-sub">or visits web</div></div>
+      <div class="jstep"><div class="jstep-num">2</div><div class="jstep-label">Signs up</div><div class="jstep-sub">Google or email</div></div>
+      <div class="jstep"><div class="jstep-num">3</div><div class="jstep-label">Picks cuisines</div><div class="jstep-sub">Onboarding step</div></div>
+      <div class="jstep"><div class="jstep-num">4</div><div class="jstep-label">Sees feed</div><div class="jstep-sub">Personalized recipes</div></div>
+      <div class="jstep"><div class="jstep-num">5</div><div class="jstep-label">Saves recipe</div><div class="jstep-sub">To collection</div></div>
+      <div class="jstep"><div class="jstep-num">6</div><div class="jstep-label">Follows creator</div><div class="jstep-sub">Profile page</div></div>
+    </div>
+  </div>
+
+  <div class="journey">
+    <div class="journey-header"><span class="tag t-purple">Journey 2</span> Creator uploads a recipe using voice</div>
+    <div class="journey-steps">
+      <div class="jstep"><div class="jstep-num">1</div><div class="jstep-label">Taps "Create"</div><div class="jstep-sub">+ button in nav</div></div>
+      <div class="jstep"><div class="jstep-num">2</div><div class="jstep-label">Chooses voice</div><div class="jstep-sub">Or type / import</div></div>
+      <div class="jstep"><div class="jstep-num">3</div><div class="jstep-label">Records recipe</div><div class="jstep-sub">Speaks naturally</div></div>
+      <div class="jstep"><div class="jstep-num">4</div><div class="jstep-label">AI processes</div><div class="jstep-sub">~5 seconds</div></div>
+      <div class="jstep"><div class="jstep-num">5</div><div class="jstep-label">Reviews & edits</div><div class="jstep-sub">All fields shown</div></div>
+      <div class="jstep"><div class="jstep-num">6</div><div class="jstep-label">Publishes</div><div class="jstep-sub">Goes live instantly</div></div>
+    </div>
+  </div>
+
+  <div class="journey">
+    <div class="journey-header"><span class="tag t-teal">Journey 3</span> Creator imports a recipe from Instagram or YouTube</div>
+    <div class="journey-steps">
+      <div class="jstep"><div class="jstep-num">1</div><div class="jstep-label">Taps "Import"</div><div class="jstep-sub">In create flow</div></div>
+      <div class="jstep"><div class="jstep-num">2</div><div class="jstep-label">Pastes URL</div><div class="jstep-sub">IG / YT / FB</div></div>
+      <div class="jstep"><div class="jstep-num">3</div><div class="jstep-label">AI fetches</div><div class="jstep-sub">Video + caption</div></div>
+      <div class="jstep"><div class="jstep-num">4</div><div class="jstep-label">AI structures</div><div class="jstep-sub">Fills all fields</div></div>
+      <div class="jstep"><div class="jstep-num">5</div><div class="jstep-label">Reviews & edits</div><div class="jstep-sub">Confirms accuracy</div></div>
+      <div class="jstep"><div class="jstep-num">6</div><div class="jstep-label">Publishes</div><div class="jstep-sub">With credit link</div></div>
+    </div>
+  </div>
+
+  <div class="journey">
+    <div class="journey-header"><span class="tag t-blue">Journey 4</span> User searches for a recipe and cooks it</div>
+    <div class="journey-steps">
+      <div class="jstep"><div class="jstep-num">1</div><div class="jstep-label">Opens search</div><div class="jstep-sub">Types ingredient</div></div>
+      <div class="jstep"><div class="jstep-num">2</div><div class="jstep-label">Applies filters</div><div class="jstep-sub">Diet · time · rating</div></div>
+      <div class="jstep"><div class="jstep-num">3</div><div class="jstep-label">Opens recipe</div><div class="jstep-sub">Detail page</div></div>
+      <div class="jstep"><div class="jstep-num">4</div><div class="jstep-label">Reads steps</div><div class="jstep-sub">Step-by-step view</div></div>
+      <div class="jstep"><div class="jstep-num">5</div><div class="jstep-label">Leaves review</div><div class="jstep-sub">Rating + comment</div></div>
+      <div class="jstep"><div class="jstep-num">6</div><div class="jstep-label">Saves to list</div><div class="jstep-sub">"Made this!"</div></div>
+    </div>
+  </div>
+
+  <div class="journey">
+    <div class="journey-header"><span class="tag t-pink">Journey 5</span> Creator earns money (Phase 2)</div>
+    <div class="journey-steps">
+      <div class="jstep"><div class="jstep-num">1</div><div class="jstep-label">Sets up payout</div><div class="jstep-sub">Stripe connect</div></div>
+      <div class="jstep"><div class="jstep-num">2</div><div class="jstep-label">Enables tips</div><div class="jstep-sub">Or subscription</div></div>
+      <div class="jstep"><div class="jstep-num">3</div><div class="jstep-label">Fan views recipe</div><div class="jstep-sub">Loves the dish</div></div>
+      <div class="jstep"><div class="jstep-num">4</div><div class="jstep-label">Fan tips $3</div><div class="jstep-sub">One tap</div></div>
+      <div class="jstep"><div class="jstep-num">5</div><div class="jstep-label">Creator earns</div><div class="jstep-sub">Minus 10% fee</div></div>
+      <div class="jstep"><div class="jstep-num">6</div><div class="jstep-label">Withdraws</div><div class="jstep-sub">To bank account</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 06 MVP SCOPE -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">6</div>
+    <div class="section-title">MVP scope</div>
+    <div class="section-for">For: Developers · Founders</div>
+  </div>
+  <p>The MVP (Minimum Viable Product) is the smallest version of RecipeVerse that is still useful and valuable. Build only this first. Resist the urge to add more.</p>
+
+  <div class="callout-blue"><strong>Rule:</strong> If a feature is not in this list, it does not get built in the first 8 weeks. Every extra feature delays launch.</div>
+
+  <table class="tbl">
+    <thead><tr><th>Feature</th><th>Description</th><th>Priority</th></tr></thead>
+    <tbody>
+      <tr><td class="tbl-name">User auth & profiles</td><td>Sign up / login via email or Google. Profile with name, bio, avatar, follower count, and recipe list.</td><td><span class="tag t-red">P0 — must</span></td></tr>
+      <tr><td class="tbl-name">Recipe creation (typed)</td><td>Create recipe with title, description, ingredients, steps, cook time, servings, difficulty, and cuisine tags.</td><td><span class="tag t-red">P0 — must</span></td></tr>
+      <tr><td class="tbl-name">Voice-to-recipe (AI)</td><td>Record voice → Whisper transcribes → AI structures into all recipe fields → user reviews → publishes.</td><td><span class="tag t-red">P0 — must</span></td></tr>
+      <tr><td class="tbl-name">One-click social import</td><td>Paste Instagram, YouTube, or Facebook URL → AI extracts and structures recipe → user reviews → publishes.</td><td><span class="tag t-red">P0 — must</span></td></tr>
+      <tr><td class="tbl-name">Photo & video upload</td><td>Upload cover photo or short video. Upload photos per step. Supported: JPG, PNG, MP4.</td><td><span class="tag t-red">P0 — must</span></td></tr>
+      <tr><td class="tbl-name">Home feed</td><td>Personalized feed of recipes from followed creators. Fallback to trending if no follows yet.</td><td><span class="tag t-red">P0 — must</span></td></tr>
+      <tr><td class="tbl-name">Explore page</td><td>Discover trending, new, and category-filtered recipes. Not personalized — open to all.</td><td><span class="tag t-red">P0 — must</span></td></tr>
+      <tr><td class="tbl-name">Follow system</td><td>Follow and unfollow users. Feed is built from followed creators.</td><td><span class="tag t-red">P0 — must</span></td></tr>
+      <tr><td class="tbl-name">Likes & saves</td><td>Like any recipe. Save to personal named collections (e.g. "Weekend dinners").</td><td><span class="tag t-red">P0 — must</span></td></tr>
+      <tr><td class="tbl-name">Comments & ratings</td><td>Comment with threaded replies. Leave a 1–5 star rating with written review.</td><td><span class="tag t-red">P0 — must</span></td></tr>
+      <tr><td class="tbl-name">Search & filters</td><td>Search by title, ingredient, tag, or creator. Filter by cuisine, dietary, cook time, difficulty, rating.</td><td><span class="tag t-red">P0 — must</span></td></tr>
+      <tr><td class="tbl-name">In-app notifications</td><td>Alerts for: new followers, likes, comments, and new posts from followed creators.</td><td><span class="tag t-amber">P1 — should</span></td></tr>
+      <tr><td class="tbl-name">Recipe draft mode</td><td>Save a recipe as draft before publishing. Visible only to the creator.</td><td><span class="tag t-amber">P1 — should</span></td></tr>
+      <tr><td class="tbl-name">Report / flag content</td><td>Users can flag inappropriate recipes or comments for review.</td><td><span class="tag t-amber">P1 — should</span></td></tr>
+    </tbody>
+  </table>
+
+  <h3>What is NOT in the MVP</h3>
+  <div class="card">
+    <div class="card-body">The following features are explicitly out of scope for MVP: monetization (tips, subscriptions), mobile app (web only first), push notifications, meal planner, live cooking, video reels/shorts, brand marketplace, AI suggestions, multilingual support, and creator analytics. These will be built in Phase 2 and 3.</div>
+    <div class="tags" style="margin-top:10px;"><span class="tag t-gray">No monetization</span><span class="tag t-gray">No mobile app yet</span><span class="tag t-gray">No live streaming</span><span class="tag t-gray">No meal planner</span></div>
+  </div>
+</div>
+
+<!-- 07 FUTURE SCOPE -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">7</div>
+    <div class="section-title">Future scope</div>
+    <div class="section-for">For: Founders · Designers</div>
+  </div>
+  <p>Build these after the MVP is live, validated, and has real users. Do not build them early.</p>
+
+  <div class="phase">
+    <div class="phase-line"><div class="phase-circle ph1">2</div><div class="phase-connector"></div></div>
+    <div class="phase-body">
+      <div class="phase-title">Phase 2 — Community & monetization (Weeks 9–14)</div>
+      <div class="phase-weeks">Goal: make it social and make creators money</div>
+      <div class="phase-chips">
+        <span class="chip">Mobile app (Expo)</span><span class="chip">Push notifications</span><span class="chip">Creator tips</span><span class="chip">Paid recipes</span><span class="chip">Creator subscriptions</span><span class="chip">Collections / cookbooks</span><span class="chip">Video reels / shorts</span><span class="chip">Creator analytics</span><span class="chip">Activity feed</span><span class="chip">"Made this!" feature</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-line"><div class="phase-circle ph2">3</div></div>
+    <div class="phase-body">
+      <div class="phase-title">Phase 3 — Scale & differentiation (Weeks 15–20)</div>
+      <div class="phase-weeks">Goal: become indispensable, expand reach</div>
+      <div class="phase-chips">
+        <span class="chip">Meal planner</span><span class="chip">Shopping list</span><span class="chip">Brand marketplace</span><span class="chip">Live cooking</span><span class="chip">AI ingredient suggestions</span><span class="chip">AI substitutions</span><span class="chip">Multilingual support</span><span class="chip">SEO optimization</span><span class="chip">RecipeVerse Pro</span><span class="chip">Community spaces</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 08 FUNCTIONAL REQUIREMENTS -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">8</div>
+    <div class="section-title">Functional requirements</div>
+    <div class="section-for">For: Developers · Designers</div>
+  </div>
+  <p>These describe exactly what the system must be able to do. Each requirement has an ID, description, and acceptance criteria (the checklist a developer uses to confirm it's done correctly).</p>
+
+  <div class="req-block">
+    <div class="req-id">FR-01 · User authentication</div>
+    <div class="req-title">Users must be able to create an account and log in securely</div>
+    <div class="req-desc">Support sign-up and login via Google OAuth and email/password. Users must verify their email before posting. Passwords must be hashed and never stored in plain text. Session tokens must expire after 30 days of inactivity.</div>
+    <div class="req-ac">
+      <div class="req-ac-title">Acceptance criteria</div>
+      <ul class="req-ac-list">
+        <li>User can sign up with Google in under 10 seconds</li>
+        <li>User can sign up with email and receives a verification email</li>
+        <li>Unverified users can browse but cannot post</li>
+        <li>Incorrect password shows a clear error message</li>
+        <li>User can reset password via email</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="req-block">
+    <div class="req-id">FR-02 · Recipe creation (typed)</div>
+    <div class="req-title">Users must be able to create a structured recipe manually</div>
+    <div class="req-desc">A recipe must include: title (required), description, at least one ingredient with name and quantity, at least one step, and a cuisine tag. Cover image is optional at creation but encouraged. Recipes can be saved as drafts or published immediately.</div>
+    <div class="req-ac">
+      <div class="req-ac-title">Acceptance criteria</div>
+      <ul class="req-ac-list">
+        <li>Form validates required fields before allowing publish</li>
+        <li>Ingredients can be added, reordered, and deleted</li>
+        <li>Steps can be added, reordered, and deleted</li>
+        <li>Draft saves automatically every 30 seconds</li>
+        <li>Published recipe appears in creator's profile and feed immediately</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="req-block">
+    <div class="req-id">FR-03 · Voice-to-recipe AI</div>
+    <div class="req-title">Users must be able to record a recipe by speaking and have it auto-structured</div>
+    <div class="req-desc">User taps the microphone button and speaks their recipe naturally. Audio is sent to OpenAI Whisper for transcription. The transcript is then sent to the AI (Claude/GPT-4o) with a structured prompt to extract: title, ingredients (with quantity and unit), steps (numbered), cook time, servings, difficulty, and notes. All fields are displayed in an editable review screen before publishing.</div>
+    <div class="req-ac">
+      <div class="req-ac-title">Acceptance criteria</div>
+      <ul class="req-ac-list">
+        <li>Recording starts and stops with a single tap</li>
+        <li>Processing and field population completes in under 10 seconds</li>
+        <li>All extracted fields are editable before publishing</li>
+        <li>If AI confidence is low, user is shown a warning to review carefully</li>
+        <li>Works on web (MediaRecorder API) and mobile (expo-av)</li>
+        <li>Minimum recording length: 15 seconds. Maximum: 10 minutes.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="req-block">
+    <div class="req-id">FR-04 · One-click social import</div>
+    <div class="req-title">Users must be able to import a recipe from Instagram, YouTube, or Facebook by pasting a URL</div>
+    <div class="req-desc">User pastes a public URL from Instagram, YouTube, or Facebook. The system fetches the page content (caption, description, video transcript if available) using a scraping/API service. The AI then extracts recipe data and populates all fields. User reviews before publishing. A "Originally posted on [platform]" credit link is auto-added.</div>
+    <div class="req-ac">
+      <div class="req-ac-title">Acceptance criteria</div>
+      <ul class="req-ac-list">
+        <li>Supports URLs from Instagram, YouTube, and Facebook</li>
+        <li>Shows a loading state while fetching and processing</li>
+        <li>All extracted fields are editable before publishing</li>
+        <li>If URL is private or unreachable, shows a clear error message</li>
+        <li>Original source credit link is always included</li>
+        <li>User must confirm they have rights to the content</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="req-block">
+    <div class="req-id">FR-05 · Feed & discovery</div>
+    <div class="req-title">Users must see a personalized home feed and a general explore page</div>
+    <div class="req-desc">Home feed shows the latest recipes from followed creators, sorted by recency. New users with no follows see trending recipes. Explore page shows all public recipes filterable by cuisine, dietary preference, cook time, difficulty, and sort order (trending, newest, top rated).</div>
+    <div class="req-ac">
+      <div class="req-ac-title">Acceptance criteria</div>
+      <ul class="req-ac-list">
+        <li>Feed loads within 2 seconds on a standard connection</li>
+        <li>Infinite scroll loads 20 recipes at a time</li>
+        <li>New users see trending recipes, not an empty feed</li>
+        <li>Explore filters can be combined (e.g. Italian + Vegetarian + Under 30 min)</li>
+        <li>Recipes from blocked users are never shown</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="req-block">
+    <div class="req-id">FR-06 · Search</div>
+    <div class="req-title">Users must be able to search for recipes and creators</div>
+    <div class="req-desc">Full-text search across recipe titles, ingredient names, tags, and creator usernames. Search results are ranked by relevance and can be filtered.</div>
+    <div class="req-ac">
+      <div class="req-ac-title">Acceptance criteria</div>
+      <ul class="req-ac-list">
+        <li>Search results appear in under 1 second</li>
+        <li>Searching "chicken" returns recipes containing chicken as an ingredient</li>
+        <li>Searching "@marco" returns creator profiles</li>
+        <li>Empty results show helpful suggestions, not a blank page</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="req-block">
+    <div class="req-id">FR-07 · Social interactions</div>
+    <div class="req-title">Users must be able to like, save, comment, rate, and follow</div>
+    <div class="req-desc">Like: toggle like on any recipe. Save: add recipe to a named collection. Comment: post a text comment with optional photo. Rate: leave 1–5 stars with optional written review. Follow: follow/unfollow any public user. All actions are reflected in real time.</div>
+    <div class="req-ac">
+      <div class="req-ac-title">Acceptance criteria</div>
+      <ul class="req-ac-list">
+        <li>Like count updates instantly without page refresh</li>
+        <li>User can create multiple named collections</li>
+        <li>Comments support threaded replies up to 2 levels deep</li>
+        <li>Only one rating per user per recipe (can be updated)</li>
+        <li>Follow action triggers a notification to the followed user</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="req-block">
+    <div class="req-id">FR-08 · Notifications</div>
+    <div class="req-title">Users must receive in-app notifications for key activity</div>
+    <div class="req-desc">Trigger notifications for: new follower, like on your recipe, comment on your recipe, reply to your comment, and new recipe from someone you follow.</div>
+    <div class="req-ac">
+      <div class="req-ac-title">Acceptance criteria</div>
+      <ul class="req-ac-list">
+        <li>Notification bell shows unread count badge</li>
+        <li>Clicking a notification navigates to the relevant content</li>
+        <li>User can mark all as read</li>
+        <li>User can turn off individual notification types in settings</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- 09 NON-FUNCTIONAL REQUIREMENTS -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">9</div>
+    <div class="section-title">Non-functional requirements</div>
+    <div class="section-for">For: Developers</div>
+  </div>
+  <p>These are not features — they are the quality standards the app must meet. They apply to every feature that gets built.</p>
+
+  <div class="nfr-grid">
+    <div class="nfr">
+      <div class="nfr-icon">⚡</div>
+      <div class="nfr-title">Performance</div>
+      <div class="nfr-items">
+        Pages load in under 2 seconds on a 4G connection.<br>
+        Feed renders first 5 recipes in under 1 second.<br>
+        Image uploads complete in under 5 seconds for files under 10MB.<br>
+        API responses under 500ms for 95% of requests.
+      </div>
+    </div>
+    <div class="nfr">
+      <div class="nfr-icon">📱</div>
+      <div class="nfr-title">Responsiveness</div>
+      <div class="nfr-items">
+        Works on all screen sizes: mobile (375px+), tablet, desktop.<br>
+        Touch targets minimum 44×44px on mobile.<br>
+        No horizontal scrolling on mobile.<br>
+        Tested on Chrome, Safari, Firefox, and Edge.
+      </div>
+    </div>
+    <div class="nfr">
+      <div class="nfr-icon">🔐</div>
+      <div class="nfr-title">Security</div>
+      <div class="nfr-items">
+        All data transmitted over HTTPS.<br>
+        Passwords hashed with bcrypt (min 12 rounds).<br>
+        Auth tokens expire after 30 days of inactivity.<br>
+        User data never sold or shared with third parties.<br>
+        GDPR & CCPA compliant from day one.
+      </div>
+    </div>
+    <div class="nfr">
+      <div class="nfr-icon">♿</div>
+      <div class="nfr-title">Accessibility</div>
+      <div class="nfr-items">
+        WCAG 2.1 AA compliance target.<br>
+        All images have alt text.<br>
+        App is usable with keyboard only.<br>
+        Color contrast ratio minimum 4.5:1.<br>
+        Screen reader compatible.
+      </div>
+    </div>
+    <div class="nfr">
+      <div class="nfr-icon">📈</div>
+      <div class="nfr-title">Scalability</div>
+      <div class="nfr-items">
+        Database designed to handle 1M+ recipes.<br>
+        Images served via CDN, not direct server.<br>
+        Stateless API — can run multiple instances.<br>
+        Supabase auto-scales with usage.
+      </div>
+    </div>
+    <div class="nfr">
+      <div class="nfr-icon">🛡️</div>
+      <div class="nfr-title">Reliability</div>
+      <div class="nfr-items">
+        99.5% uptime target (MVP), 99.9% post-launch.<br>
+        Graceful error messages — never show raw errors to users.<br>
+        Auto-save drafts every 30 seconds.<br>
+        Failed uploads retry automatically up to 3 times.
+      </div>
+    </div>
+    <div class="nfr">
+      <div class="nfr-icon">🌐</div>
+      <div class="nfr-title">SEO (web)</div>
+      <div class="nfr-items">
+        Recipe pages server-side rendered for search engines.<br>
+        Recipe schema markup (schema.org/Recipe).<br>
+        Open Graph tags on every recipe page.<br>
+        Sitemap auto-generated for all public recipes.
+      </div>
+    </div>
+    <div class="nfr">
+      <div class="nfr-icon">🔒</div>
+      <div class="nfr-title">Privacy</div>
+      <div class="nfr-items">
+        Users can delete their account and all data.<br>
+        Users can download their data (GDPR right).<br>
+        Private recipes visible only to creator.<br>
+        No tracking pixels or third-party ad scripts.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 10 SUCCESS METRICS -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">10</div>
+    <div class="section-title">Success metrics</div>
+    <div class="section-for">For: Founders</div>
+  </div>
+  <p>These numbers tell you if RecipeVerse is working. Check them weekly. If a metric is below target, treat it as a product problem to solve — not a marketing problem.</p>
+
+  <h3>Month 1 targets (first 30 days after launch)</h3>
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-val">1K</div><div class="kpi-label">Registered users</div></div>
+    <div class="kpi"><div class="kpi-val">200</div><div class="kpi-label">Recipes published</div></div>
+    <div class="kpi"><div class="kpi-val">25%</div><div class="kpi-label">Week 2 retention</div></div>
+    <div class="kpi"><div class="kpi-val">20%</div><div class="kpi-label">Voice feature usage</div></div>
+  </div>
+
+  <h3>Month 3 targets</h3>
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-val">10K</div><div class="kpi-label">Registered users</div></div>
+    <div class="kpi"><div class="kpi-val">1K</div><div class="kpi-label">Recipes published</div></div>
+    <div class="kpi"><div class="kpi-val">35%</div><div class="kpi-label">Weekly retention</div></div>
+    <div class="kpi"><div class="kpi-val">30%</div><div class="kpi-label">Voice feature usage</div></div>
+  </div>
+
+  <h3>Key metrics & what they mean</h3>
+  <table class="tbl">
+    <thead><tr><th>Metric</th><th>What it tells you</th><th>Good benchmark</th><th>Warning sign</th></tr></thead>
+    <tbody>
+      <tr><td class="tbl-name">DAU / MAU ratio</td><td>How sticky the app is. Higher = daily habit.</td><td>Above 20%</td><td>Below 10% = users not coming back</td></tr>
+      <tr><td class="tbl-name">Recipe creation rate</td><td>Are creators actually posting?</td><td>2+ recipes/creator/month</td><td>Below 1 = creators disengaged</td></tr>
+      <tr><td class="tbl-name">Voice feature adoption</td><td>Is our signature AI feature being used?</td><td>30%+ of uploads</td><td>Below 15% = UX problem with voice flow</td></tr>
+      <tr><td class="tbl-name">Save rate</td><td>Is content valuable enough to save?</td><td>15%+ of recipe views</td><td>Below 5% = content quality issue</td></tr>
+      <tr><td class="tbl-name">Follow conversion</td><td>Profile visits that result in a follow</td><td>25%+</td><td>Below 10% = profiles not compelling</td></tr>
+      <tr><td class="tbl-name">Search success rate</td><td>Searches that result in a recipe view</td><td>70%+</td><td>Below 50% = search relevance problem</td></tr>
+      <tr><td class="tbl-name">Import completion rate</td><td>Started imports that successfully publish</td><td>60%+</td><td>Below 40% = AI accuracy issue</td></tr>
+      <tr><td class="tbl-name">Creator revenue (Phase 2)</td><td>Are creators earning meaningful money?</td><td>Top 10% earn $50+/month</td><td>No earning = creators will leave</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 11 RISKS & ASSUMPTIONS -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">11</div>
+    <div class="section-title">Risks & assumptions</div>
+    <div class="section-for">For: Founders · Developers</div>
+  </div>
+
+  <h3>Key risks</h3>
+
+  <div class="risk">
+    <span class="risk-badge risk-high">High</span>
+    <div class="risk-body">
+      <div class="risk-title">Empty platform at launch ("cold start" problem)</div>
+      <div class="risk-fix">Mitigation: Recruit 50–100 food creators before launch day. Pre-seed with 500+ quality recipes. Partner with food bloggers for early content. Launch with a "Founding Creator" badge program.</div>
+    </div>
+  </div>
+
+  <div class="risk">
+    <span class="risk-badge risk-high">High</span>
+    <div class="risk-body">
+      <div class="risk-title">Voice AI inaccuracy with accents, dialects, or unusual ingredients</div>
+      <div class="risk-fix">Mitigation: Always show a full editable review screen before publish. Highlight low-confidence fields in yellow. Continuously improve the AI prompt based on real user corrections.</div>
+    </div>
+  </div>
+
+  <div class="risk">
+    <span class="risk-badge risk-med">Medium</span>
+    <div class="risk-body">
+      <div class="risk-title">Instagram/Facebook API restrictions block social import</div>
+      <div class="risk-fix">Mitigation: Use third-party scraping services (Apify, RapidAPI) as primary method. Build fallback: user can paste caption text manually if URL fails. Monitor platform policy changes.</div>
+    </div>
+  </div>
+
+  <div class="risk">
+    <span class="risk-badge risk-med">Medium</span>
+    <div class="risk-body">
+      <div class="risk-title">Creators leave if they don't see audience growth</div>
+      <div class="risk-fix">Mitigation: Show creators their analytics from day one (views, saves, followers). Feature top creators on the explore page. Launch monetization (tips) as early as possible in Phase 2.</div>
+    </div>
+  </div>
+
+  <div class="risk">
+    <span class="risk-badge risk-med">Medium</span>
+    <div class="risk-body">
+      <div class="risk-title">Competition from Instagram, TikTok adding recipe features</div>
+      <div class="risk-fix">Mitigation: Go deep on what they can never build: structured recipe format, ingredient search, AI tools, creator monetization, recipe-first community. Become the best vertical platform, not a general social app.</div>
+    </div>
+  </div>
+
+  <div class="risk">
+    <span class="risk-badge risk-low">Low</span>
+    <div class="risk-body">
+      <div class="risk-title">Copyright issues from social import feature</div>
+      <div class="risk-fix">Mitigation: Require users to confirm ownership rights before importing. Add source credit links automatically. Build a DMCA takedown process before launch.</div>
+    </div>
+  </div>
+
+  <div class="risk">
+    <span class="risk-badge risk-low">Low</span>
+    <div class="risk-body">
+      <div class="risk-title">AI costs spike unexpectedly at scale</div>
+      <div class="risk-fix">Mitigation: At scale this is a good problem. Rate-limit free users (e.g. 5 voice uploads/month). Offer unlimited AI features as a Pro plan perk. Cache common AI responses.</div>
+    </div>
+  </div>
+
+  <h3>Key assumptions</h3>
+  <table class="tbl">
+    <thead><tr><th>Assumption</th><th>How we'll validate it</th></tr></thead>
+    <tbody>
+      <tr><td>Food creators are frustrated enough with existing platforms to try a new one</td><td>Interview 20 food creators before building. Ask about their current pain points.</td></tr>
+      <tr><td>Voice input meaningfully reduces the barrier to recipe creation</td><td>A/B test voice vs typed upload. Measure completion rates for each.</td></tr>
+      <tr><td>Users will follow creators and return to see new recipes</td><td>Measure follow conversion rate and week-2 retention in first month.</td></tr>
+      <tr><td>Creators will stay if there is a path to earning money</td><td>Survey creators at 60 days. Ask: "What would make you post more?"</td></tr>
+      <tr><td>The AI can structure voice recordings accurately enough for users to trust it</td><td>Track edit rate on AI-generated fields. High edit rate = low trust.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 12 LAUNCH STRATEGY -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">12</div>
+    <div class="section-title">Suggested launch strategy</div>
+    <div class="section-for">For: Founders</div>
+  </div>
+  <p>A great product with a bad launch fails. A good product with a smart launch can win. Here is a practical, startup-friendly launch plan.</p>
+
+  <div class="launch-step">
+    <div class="launch-num">1</div>
+    <div>
+      <div class="launch-title">Pre-launch: Build your founding creator community (Weeks 1–6)</div>
+      <div class="launch-desc">Before a single line of product code is written, find 50–100 food creators who will seed the platform with content. Reach out on Instagram and TikTok to creators with 1k–50k followers. Offer them a "Founding Creator" badge, early access, and a promise of being featured at launch. Their content is what early users will see first.</div>
+    </div>
+  </div>
+
+  <div class="launch-step">
+    <div class="launch-num">2</div>
+    <div>
+      <div class="launch-title">Waitlist: Build anticipation before launch (Weeks 4–8)</div>
+      <div class="launch-desc">Create a simple landing page with a waitlist sign-up. Share it in food communities on Reddit (r/Cooking, r/FoodPorn), Facebook cooking groups, and food-focused Discord servers. Aim for 2,000+ signups before launch day. This gives you an instant audience the moment the app goes live.</div>
+    </div>
+  </div>
+
+  <div class="launch-step">
+    <div class="launch-num">3</div>
+    <div>
+      <div class="launch-title">Closed beta: Test with real users (Week 8)</div>
+      <div class="launch-desc">Invite the first 200 people from your waitlist for a 1-week closed beta. Watch how they use the app. What do they get stuck on? Do they complete recipe uploads? Do they follow other users? Fix the biggest problems before opening to everyone.</div>
+    </div>
+  </div>
+
+  <div class="launch-step">
+    <div class="launch-num">4</div>
+    <div>
+      <div class="launch-title">Public launch: Make noise on launch day (Week 9)</div>
+      <div class="launch-desc">Post on Product Hunt. Have your founding creators post "I just shared my first recipe on RecipeVerse" on their channels simultaneously. Post in food communities. Reach out to food journalists and bloggers. The goal: 1,000 sign-ups in the first 48 hours. One well-placed post from a creator with 50k followers can drive this alone.</div>
+    </div>
+  </div>
+
+  <div class="launch-step">
+    <div class="launch-num">5</div>
+    <div>
+      <div class="launch-title">Growth loop: Turn users into recruiters (Ongoing)</div>
+      <div class="launch-desc">Build a share mechanism into every recipe. Every published recipe has a shareable link with a RecipeVerse watermark. When people share recipes on WhatsApp, Instagram Stories, or Twitter, they market RecipeVerse for free. Every view of a shared recipe is a potential new user. This is the viral loop that drives organic growth.</div>
+    </div>
+  </div>
+
+  <div class="launch-step">
+    <div class="launch-num">6</div>
+    <div>
+      <div class="launch-title">Retention: Keep users coming back (Months 2–3)</div>
+      <div class="launch-desc">The biggest risk after launch is that users sign up and never return. Focus relentlessly on week-2 retention. Send a weekly email digest: "5 new recipes from creators you follow." Feature a "Recipe of the Week" on the explore page. Give creators tools to grow: analytics, featured spots, and eventually the ability to earn — because creators who are growing never leave.</div>
+    </div>
+  </div>
+
+  <div class="callout-green"><strong>One thing to remember:</strong> Your first 100 users are the most important. Talk to every single one of them. Ask what they love, what's broken, and what's missing. The best product improvements in your first 3 months will come from conversations, not analytics.</div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <span>RecipeVerse — Product Requirements Document v2.0</span>
+  <span>Confidential · March 2026 · For internal use only</span>
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>RecipeVerse — Tech Stack</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8f6f2; color: #1a1a1a; line-height: 1.7; }
+.page { max-width: 940px; margin: 0 auto; padding: 40px 28px; }
+
+.cover { background: linear-gradient(135deg, #e8430a, #f97316, #fbbf24); border-radius: 18px; padding: 40px; color: #fff; margin-bottom: 36px; }
+.cover h1 { font-size: 34px; font-weight: 800; margin-bottom: 6px; }
+.cover p { font-size: 15px; opacity: 0.88; max-width: 520px; line-height: 1.6; margin-bottom: 18px; }
+.pills { display: flex; flex-wrap: wrap; gap: 7px; }
+.pill { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 3px 12px; font-size: 12px; }
+
+.sec { margin-bottom: 44px; }
+.sec-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: #bbb; padding-bottom: 10px; border-bottom: 1px solid #f0ebe2; margin-bottom: 18px; }
+
+/* Category blocks */
+.cat { background: #fff; border: 1px solid #ede8e0; border-radius: 16px; overflow: hidden; margin-bottom: 20px; }
+.cat-head { padding: 16px 22px; border-bottom: 1px solid #f0ebe2; display: flex; align-items: center; gap: 12px; }
+.cat-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.ic-o { background: #fff0e6; } .ic-b { background: #eff6ff; } .ic-g { background: #f0fdf4; }
+.ic-p { background: #f5f3ff; } .ic-t { background: #f0fdfa; } .ic-pk { background: #fdf2f8; }
+.ic-a { background: #fffbeb; } .ic-gr { background: #f9fafb; }
+.cat-title { font-size: 16px; font-weight: 800; }
+.cat-sub { font-size: 13px; color: #666; }
+
+.options { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+.opt { padding: 16px 20px; border-right: 1px solid #f8f4ef; border-top: 1px solid #f8f4ef; }
+.opt:last-child { border-right: none; }
+.opt-name { font-size: 14px; font-weight: 700; margin-bottom: 3px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.cost { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 10px; }
+.cfree { background: #dcfce7; color: #166534; }
+.clow { background: #fef9c3; color: #854d0e; }
+.cmed { background: #fed7aa; color: #9a3412; }
+.pros, .cons { list-style: none; margin-top: 6px; }
+.pros li, .cons li { font-size: 12px; padding: 2px 0; display: flex; gap: 5px; line-height: 1.4; }
+.pros li::before { content: "✓"; color: #16a34a; font-weight: 700; flex-shrink: 0; }
+.cons li::before { content: "–"; color: #aaa; flex-shrink: 0; }
+.cons li { color: #888; }
+
+.winner { background: linear-gradient(135deg, #e8430a, #f97316); color: #fff; padding: 13px 22px; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.wbadge { background: rgba(255,255,255,0.25); border: 1px solid rgba(255,255,255,0.4); border-radius: 20px; padding: 2px 12px; font-size: 11px; }
+.wreason { font-weight: 400; font-size: 12px; opacity: 0.85; }
+
+/* Final stack */
+.stack { background: #fff; border: 1px solid #ede8e0; border-radius: 16px; overflow: hidden; margin-bottom: 20px; }
+.stack-head { background: #1a1a1a; padding: 18px 24px; color: #fff; }
+.stack-head h2 { font-size: 17px; font-weight: 800; }
+.stack-head p { font-size: 13px; opacity: 0.6; margin-top: 2px; }
+.srow { display: flex; border-bottom: 1px solid #f5f1eb; }
+.srow:last-child { border-bottom: none; }
+.slayer { min-width: 150px; padding: 14px 18px; font-size: 13px; font-weight: 700; color: #777; background: #faf8f5; border-right: 1px solid #f5f1eb; display: flex; align-items: center; }
+.schoice { padding: 14px 18px; flex: 1; }
+.stool { font-size: 15px; font-weight: 800; color: #e8430a; margin-bottom: 3px; display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+.stag { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
+.st-free { background: #dcfce7; color: #166534; }
+.st-ai { background: #f5f3ff; color: #5b21b6; }
+.st-pay { background: #fef9c3; color: #854d0e; }
+.swhy { font-size: 13px; color: #555; line-height: 1.6; }
+
+/* Cost table */
+.ctbl { width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid #ede8e0; margin-bottom: 16px; font-size: 13px; }
+.ctbl th { text-align: left; padding: 10px 15px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; color: #999; background: #faf8f5; border-bottom: 1px solid #ede8e0; }
+.ctbl td { padding: 10px 15px; border-bottom: 1px solid #f5f1eb; color: #444; }
+.ctbl tr:last-child td { border-bottom: none; background: #faf8f5; font-weight: 700; }
+.grn { color: #16a34a; font-weight: 700; }
+.mn { font-family: monospace; color: #e8430a; }
+
+/* Callouts */
+.note { border-left: 3px solid #e8430a; background: #fff8f5; border-radius: 0 10px 10px 0; padding: 13px 17px; margin: 14px 0; font-size: 13px; color: #555; line-height: 1.7; }
+.note strong { color: #e8430a; }
+.note-g { border-left-color: #16a34a; background: #f0fdf4; }
+
+/* Scale path */
+.phases { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0; border: 1px solid #ede8e0; border-radius: 14px; overflow: hidden; margin-bottom: 16px; }
+.ph { }
+.ph-head { padding: 12px 16px; font-size: 12px; font-weight: 700; color: #fff; }
+.ph1h { background: #1a1a1a; } .ph2h { background: #5035b0; } .ph3h { background: #e8430a; }
+.ph-body { background: #fff; border-right: 1px solid #ede8e0; padding: 14px 16px; }
+.ph:last-child .ph-body { border-right: none; }
+.ph-items { font-size: 12px; color: #555; line-height: 2; }
+.ph-items span { display: block; }
+.ph-total { font-size: 12px; font-weight: 700; margin-top: 8px; padding-top: 8px; border-top: 1px solid #f0ebe2; }
+
+.footer { margin-top: 48px; padding-top: 20px; border-top: 1px solid #ede8e0; display: flex; justify-content: space-between; font-size: 12px; color: #bbb; flex-wrap: wrap; gap: 6px; }
+
+@media (max-width: 640px) {
+  .page { padding: 24px 16px; }
+  .cover { padding: 28px 20px; } .cover h1 { font-size: 26px; }
+  .options { grid-template-columns: 1fr; }
+  .srow { flex-direction: column; }
+  .slayer { min-width: unset; border-right: none; border-bottom: 1px solid #f5f1eb; }
+  .phases { grid-template-columns: 1fr; }
+}
+@media print { body { background: #fff; } }
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="cover">
+  <h1>RecipeVerse Tech Stack</h1>
+  <p>Every major technology category compared side by side — with one clear winner per category, explained in plain English. Budget-first, scalable later.</p>
+  <div class="pills">
+    <span class="pill">8 categories</span>
+    <span class="pill">3 options each</span>
+    <span class="pill">MVP: ~$10–30/mo</span>
+    <span class="pill">Scales to 100k+ users</span>
+  </div>
+</div>
+
+<!-- ── 01 FRONTEND ── -->
+<div class="sec">
+<div class="sec-label">01 — Frontend framework · what users see and interact with</div>
+<div class="cat">
+  <div class="cat-head">
+    <div class="cat-icon ic-b">🖥️</div>
+    <div><div class="cat-title">Frontend framework</div><div class="cat-sub">Builds every screen — feed, recipe detail, profiles, create flow</div></div>
+  </div>
+  <div class="options">
+    <div class="opt">
+      <div class="opt-name">Next.js 14 <span class="cost cfree">Free</span></div>
+      <ul class="pros"><li>Industry standard — most used in 2026</li><li>Built-in SEO so recipes rank on Google</li><li>Works as frontend AND backend in one</li><li>One-click deploy to Vercel</li><li>Massive community + component libraries</li></ul>
+      <ul class="cons"><li>App Router has a learning curve</li></ul>
+    </div>
+    <div class="opt">
+      <div class="opt-name">SvelteKit <span class="cost cfree">Free</span></div>
+      <ul class="pros"><li>Faster performance than React</li><li>Cleaner, simpler syntax</li><li>Smaller bundle sizes</li></ul>
+      <ul class="cons"><li>Much smaller community</li><li>Fewer UI libraries available</li><li>Harder to hire developers</li></ul>
+    </div>
+    <div class="opt">
+      <div class="opt-name">React + Vite <span class="cost cfree">Free</span></div>
+      <ul class="pros"><li>Fast dev server</li><li>Simple setup</li><li>Full React ecosystem</li></ul>
+      <ul class="cons"><li>No SEO out of the box</li><li>No server-side rendering</li><li>Recipes won't rank on Google</li></ul>
+    </div>
+  </div>
+  <div class="winner">🏆 Winner: <span class="wbadge">Next.js 14</span> <span class="wreason">— SEO for recipe pages + full-stack in one codebase + massive ecosystem</span></div>
+</div>
+
+<!-- ── 02 BACKEND ── -->
+<div class="sec-label">02 — Backend / API · handles all logic, data, and AI calls</div>
+<div class="cat">
+  <div class="cat-head">
+    <div class="cat-icon ic-o">⚙️</div>
+    <div><div class="cat-title">Backend / API layer</div><div class="cat-sub">Saves recipes, handles auth, calls AI, manages social actions</div></div>
+  </div>
+  <div class="options">
+    <div class="opt">
+      <div class="opt-name">tRPC v11 <span class="cost cfree">Free</span></div>
+      <ul class="pros"><li>End-to-end type safety — bugs caught early</li><li>Lives inside Next.js — one codebase</li><li>No need to write API docs</li><li>Frontend + backend share types automatically</li></ul>
+      <ul class="cons"><li>TypeScript only (not plain JS)</li></ul>
+    </div>
+    <div class="opt">
+      <div class="opt-name">Next.js API Routes <span class="cost cfree">Free</span></div>
+      <ul class="pros"><li>Built into Next.js — zero setup</li><li>Familiar REST pattern</li><li>Can become public API later</li></ul>
+      <ul class="cons"><li>No type safety between layers</li><li>More boilerplate to write</li><li>Easy to introduce bugs</li></ul>
+    </div>
+    <div class="opt">
+      <div class="opt-name">Separate Node/Express <span class="cost cfree">Free</span></div>
+      <ul class="pros"><li>Full flexibility</li><li>Can scale independently</li></ul>
+      <ul class="cons"><li>Two codebases to manage</li><li>Weeks of extra setup</li><li>Overkill for MVP</li></ul>
+    </div>
+  </div>
+  <div class="winner">🏆 Winner: <span class="wbadge">tRPC v11 inside Next.js</span> <span class="wreason">— type safety + one codebase + fastest to build</span></div>
+</div>
+
+<!-- ── 03 DATABASE ── -->
+<div class="sec-label">03 — Database · stores all users, recipes, comments, likes, follows</div>
+<div class="cat">
+  <div class="cat-head">
+    <div class="cat-icon ic-g">🗄️</div>
+    <div><div class="cat-title">Database</div><div class="cat-sub">Permanent storage for all platform data</div></div>
+  </div>
+  <div class="options">
+    <div class="opt">
+      <div class="opt-name">Supabase <span class="cost cfree">Free tier</span></div>
+      <ul class="pros"><li>Free: 500MB DB + real-time subscriptions</li><li>PostgreSQL — most powerful open-source DB</li><li>Built-in auth, storage, and dashboard</li><li>Real-time feed updates included</li></ul>
+      <ul class="cons"><li>Free tier pauses after 1 week inactivity</li></ul>
+    </div>
+    <div class="opt">
+      <div class="opt-name">PlanetScale <span class="cost clow">~$29/mo</span></div>
+      <ul class="pros"><li>Excellent scaling</li><li>Zero-downtime schema changes</li><li>Great developer experience</li></ul>
+      <ul class="cons"><li>No free tier anymore</li><li>MySQL lacks PostgreSQL features</li><li>Costs money from day one</li></ul>
+    </div>
+    <div class="opt">
+      <div class="opt-name">Firebase Firestore <span class="cost cfree">Free tier</span></div>
+      <ul class="pros"><li>Real-time by default</li><li>No SQL needed</li><li>Google-backed reliability</li></ul>
+      <ul class="cons"><li>NoSQL — bad for social relationships</li><li>Complex queries get expensive</li><li>Hard to migrate later</li></ul>
+    </div>
+  </div>
+  <div class="winner">🏆 Winner: <span class="wbadge">Supabase (PostgreSQL) + Drizzle ORM</span> <span class="wreason">— free tier + real-time + best relational DB for social apps</span></div>
+</div>
+
+<!-- ── 04 AUTH ── -->
+<div class="sec-label">04 — Authentication · signup, login, Google OAuth, sessions</div>
+<div class="cat">
+  <div class="cat-head">
+    <div class="cat-icon ic-p">🔐</div>
+    <div><div class="cat-title">Authentication</div><div class="cat-sub">Handles all login flows securely — don't build this yourself</div></div>
+  </div>
+  <div class="options">
+    <div class="opt">
+      <div class="opt-name">Clerk <span class="cost cfree">Free up to 10k MAU</span></div>
+      <ul class="pros"><li>Beautiful pre-built login UI</li><li>Google, Apple, email, phone all included</li><li>Perfect Next.js App Router integration</li><li>User dashboard included</li><li>Free for first 10,000 monthly users</li></ul>
+      <ul class="cons"><li>Paid after 10k users (~$25/mo per 1k)</li></ul>
+    </div>
+    <div class="opt">
+      <div class="opt-name">NextAuth.js <span class="cost cfree">Free / open-source</span></div>
+      <ul class="pros"><li>Free forever</li><li>Deep Next.js integration</li><li>Full control over flow</li></ul>
+      <ul class="cons"><li>More setup required</li><li>You build all login screens</li><li>Auth v5 still has rough edges</li></ul>
+    </div>
+    <div class="opt">
+      <div class="opt-name">Supabase Auth <span class="cost cfree">Free (included)</span></div>
+      <ul class="pros"><li>Already included with Supabase</li><li>Tight DB integration</li><li>Email + Google supported</li></ul>
+      <ul class="cons"><li>Less polished than Clerk</li><li>More manual setup for social login</li></ul>
+    </div>
+  </div>
+  <div class="winner">🏆 Winner: <span class="wbadge">Clerk</span> <span class="wreason">— best developer experience + free for 10k users + zero auth bugs</span></div>
+</div>
+
+<!-- ── 05 MEDIA ── -->
+<div class="sec-label">05 — Media storage · photos and videos uploaded by creators</div>
+<div class="cat">
+  <div class="cat-head">
+    <div class="cat-icon ic-pk">📸</div>
+    <div><div class="cat-title">Media storage</div><div class="cat-sub">Stores and serves all creator photos and recipe videos</div></div>
+  </div>
+  <div class="options">
+    <div class="opt">
+      <div class="opt-name">Uploadthing <span class="cost cfree">Free tier</span></div>
+      <ul class="pros"><li>Built for Next.js — 20-minute setup</li><li>Free: 2GB storage + 10GB bandwidth</li><li>Handles large video uploads reliably</li><li>Type-safe file uploads</li></ul>
+      <ul class="cons"><li>Fewer image transforms than Cloudinary</li><li>Newer — less proven at huge scale</li></ul>
+    </div>
+    <div class="opt">
+      <div class="opt-name">Cloudinary <span class="cost cfree">Free tier</span></div>
+      <ul class="pros"><li>Industry standard — used by millions</li><li>Powerful image/video transforms</li><li>Free: 25GB storage + 25GB bandwidth</li><li>Auto WebP optimisation</li></ul>
+      <ul class="cons"><li>More complex setup</li><li>Paid plans expensive with heavy video</li></ul>
+    </div>
+    <div class="opt">
+      <div class="opt-name">AWS S3 + CloudFront <span class="cost clow">Pay-as-you-go</span></div>
+      <ul class="pros"><li>Infinitely scalable</li><li>Very cheap at scale</li><li>Full control</li></ul>
+      <ul class="cons"><li>Hours of complex setup</li><li>IAM permissions are a security trap</li><li>Way overkill for MVP</li></ul>
+    </div>
+  </div>
+  <div class="winner">🏆 Winner: <span class="wbadge">Uploadthing → upgrade to Cloudinary later</span> <span class="wreason">— fastest setup + free tier + built for Next.js</span></div>
+</div>
+
+<!-- ── 06 SEARCH ── -->
+<div class="sec-label">06 — Search · find recipes by title, ingredient, cuisine, creator</div>
+<div class="cat">
+  <div class="cat-head">
+    <div class="cat-icon ic-t">🔍</div>
+    <div><div class="cat-title">Search</div><div class="cat-sub">Powers recipe and creator search across the platform</div></div>
+  </div>
+  <div class="options">
+    <div class="opt">
+      <div class="opt-name">PostgreSQL Full-Text <span class="cost cfree">Free (built-in)</span></div>
+      <ul class="pros"><li>Already in your Supabase DB — zero cost</li><li>Handles title, ingredient, and tag search</li><li>Good enough for 500k+ recipes</li><li>No extra service to manage</li></ul>
+      <ul class="cons"><li>No typo tolerance ("chicen" ≠ "chicken")</li><li>Less smart relevance ranking</li></ul>
+    </div>
+    <div class="opt">
+      <div class="opt-name">Algolia <span class="cost cfree">Free up to 10k records</span></div>
+      <ul class="pros"><li>Best-in-class search quality</li><li>Typo-tolerant + instant results</li><li>Used by Airbnb, Stripe</li></ul>
+      <ul class="cons"><li>Gets expensive after free tier</li><li>Extra service to sync and manage</li><li>Overkill for MVP</li></ul>
+    </div>
+    <div class="opt">
+      <div class="opt-name">Typesense <span class="cost cfree">Free self-hosted</span></div>
+      <ul class="pros"><li>Open-source Algolia alternative</li><li>Typo-tolerant and fast</li><li>Cheaper at scale</li></ul>
+      <ul class="cons"><li>Extra DevOps to manage</li><li>Smaller community</li><li>Added complexity for MVP</li></ul>
+    </div>
+  </div>
+  <div class="winner">🏆 Winner: <span class="wbadge">PostgreSQL Full-Text now → Algolia when you hit 100k+ recipes</span> <span class="wreason">— free + already in your stack + no extra service</span></div>
+</div>
+
+<!-- ── 07 AI ── -->
+<div class="sec-label">07 — AI & speech-to-text · the voice-to-recipe feature</div>
+<div class="cat">
+  <div class="cat-head">
+    <div class="cat-icon ic-a">🎙️</div>
+    <div><div class="cat-title">Speech-to-text (voice → raw transcript)</div><div class="cat-sub">Converts the user's audio recording into plain text</div></div>
+  </div>
+  <div class="options">
+    <div class="opt">
+      <div class="opt-name">OpenAI Whisper <span class="cost clow">$0.006/min</span></div>
+      <ul class="pros"><li>Most accurate available in 2026</li><li>Handles all accents + 50+ languages</li><li>3-min recipe costs ~$0.018</li><li>Simple single-request API</li></ul>
+      <ul class="cons"><li>Small per-minute cost</li><li>No real-time streaming (file must be complete)</li></ul>
+    </div>
+    <div class="opt">
+      <div class="opt-name">Google Speech-to-Text <span class="cost cfree">60 min free/mo</span></div>
+      <ul class="pros"><li>Free first 60 min/month</li><li>Real-time streaming available</li><li>125+ languages</li></ul>
+      <ul class="cons"><li>Slightly less accurate than Whisper</li><li>More complex setup</li><li>Pricing gets complex at scale</li></ul>
+    </div>
+    <div class="opt">
+      <div class="opt-name">Deepgram <span class="cost cfree">$200 free credit</span></div>
+      <ul class="pros"><li>Very fast, low latency</li><li>Real-time available</li><li>$200 free to start</li></ul>
+      <ul class="cons"><li>Smaller community</li><li>Less accurate on food terminology</li></ul>
+    </div>
+  </div>
+  <div class="winner">🏆 Winner (speech): <span class="wbadge">OpenAI Whisper</span> <span class="wreason">— most accurate + handles all accents + pennies per recipe</span></div>
+</div>
+
+<div class="cat" style="margin-top: 14px;">
+  <div class="cat-head">
+    <div class="cat-icon ic-p">🧠</div>
+    <div><div class="cat-title">AI structuring (transcript → recipe fields)</div><div class="cat-sub">Reads raw text and extracts title, ingredients, steps, cook time, servings</div></div>
+  </div>
+  <div class="options">
+    <div class="opt">
+      <div class="opt-name">Claude API <span class="cost clow">~$0.003/recipe</span></div>
+      <ul class="pros"><li>Best at following precise JSON instructions</li><li>Most reliable structured output</li><li>Handles long recipes easily</li><li>claude-sonnet-4-6 is fast + affordable</li></ul>
+      <ul class="cons"><li>Small per-use cost</li></ul>
+    </div>
+    <div class="opt">
+      <div class="opt-name">GPT-4o mini <span class="cost clow">~$0.002/recipe</span></div>
+      <ul class="pros"><li>Very cheap</li><li>Good JSON mode</li><li>Fast response</li><li>Same OpenAI account as Whisper</li></ul>
+      <ul class="cons"><li>Slightly less precise than Claude</li><li>Consolidating both Whisper + GPT on one bill</li></ul>
+    </div>
+    <div class="opt">
+      <div class="opt-name">Gemini Flash <span class="cost cfree">Free tier</span></div>
+      <ul class="pros"><li>Free up to generous limits</li><li>Fast inference</li><li>Can handle audio natively (future)</li></ul>
+      <ul class="cons"><li>Less reliable structured JSON output</li><li>API less mature</li><li>Inconsistent recipe extraction</li></ul>
+    </div>
+  </div>
+  <div class="winner">🏆 Winner (AI): <span class="wbadge">Claude API (claude-sonnet-4-6)</span> <span class="wreason">— best structured output + most reliable JSON + great instruction-following</span></div>
+</div>
+
+<!-- ── 08 HOSTING ── -->
+<div class="sec-label">08 — Hosting & deployment · where the app lives on the internet</div>
+<div class="cat">
+  <div class="cat-head">
+    <div class="cat-icon ic-gr">☁️</div>
+    <div><div class="cat-title">Hosting & deployment</div><div class="cat-sub">Push code → app goes live. Handles traffic, SSL, global CDN.</div></div>
+  </div>
+  <div class="options">
+    <div class="opt">
+      <div class="opt-name">Vercel <span class="cost cfree">Free hobby tier</span></div>
+      <ul class="pros"><li>Made by the Next.js team — perfect match</li><li>Push to GitHub → live in 30 seconds</li><li>Free SSL, CDN, analytics included</li><li>Preview URLs for every PR</li><li>Zero server management</li></ul>
+      <ul class="cons"><li>Pro plan needed for teams ($20/mo)</li><li>Long-running functions have limits on free</li></ul>
+    </div>
+    <div class="opt">
+      <div class="opt-name">Railway <span class="cost clow">~$5/mo</span></div>
+      <ul class="pros"><li>Good for non-Next.js backends</li><li>Simple pricing</li><li>Docker support</li></ul>
+      <ul class="cons"><li>Not optimised for Next.js</li><li>Costs from day one</li><li>Less global CDN</li></ul>
+    </div>
+    <div class="opt">
+      <div class="opt-name">AWS / GCP / Azure <span class="cost cmed">Complex</span></div>
+      <ul class="pros"><li>Infinitely scalable</li><li>Full infrastructure control</li><li>Industry standard at scale</li></ul>
+      <ul class="cons"><li>Weeks of configuration</li><li>Requires DevOps expertise</li><li>Easy to accidentally overspend</li><li>Total overkill for startup MVP</li></ul>
+    </div>
+  </div>
+  <div class="winner">🏆 Winner: <span class="wbadge">Vercel</span> <span class="wreason">— made for Next.js + zero config + free tier + global edge network</span></div>
+</div>
+</div>
+
+<!-- FINAL STACK -->
+<div class="sec">
+<div class="sec-label">09 — The recommended MVP stack · one table, everything decided</div>
+<div class="stack">
+  <div class="stack-head">
+    <h2>RecipeVerse — complete recommended stack</h2>
+    <p>Every tool chosen for budget, speed to build, and clear upgrade path</p>
+  </div>
+  <div class="srow"><div class="slayer">Frontend</div><div class="schoice"><div class="stool">Next.js 14 + React 19 + Tailwind CSS v4 <span class="stag st-free">Free</span></div><div class="swhy">Builds all screens. Recipe pages rank on Google (free organic traffic). Tailwind makes UI fast to build. React 19 is the most hireable skill on earth.</div></div></div>
+  <div class="srow"><div class="slayer">Backend</div><div class="schoice"><div class="stool">tRPC v11 inside Next.js <span class="stag st-free">Free</span></div><div class="swhy">Same codebase as frontend. Type-safe from database to UI — bugs caught before users see them. No REST boilerplate to write.</div></div></div>
+  <div class="srow"><div class="slayer">Database</div><div class="schoice"><div class="stool">Supabase (PostgreSQL) + Drizzle ORM <span class="stag st-free">Free tier</span></div><div class="swhy">Free PostgreSQL database with real-time subscriptions for the live feed. Drizzle writes queries in TypeScript. Dashboard to view all data visually. Free up to 500MB.</div></div></div>
+  <div class="srow"><div class="slayer">Auth</div><div class="schoice"><div class="stool">Clerk <span class="stag st-free">Free up to 10k users</span></div><div class="swhy">Google login, email signup, password reset — all built in. Pre-built UI. Saves 2–3 weeks of development. Free for the first 10,000 monthly active users.</div></div></div>
+  <div class="srow"><div class="slayer">Media</div><div class="schoice"><div class="stool">Uploadthing <span class="stag st-free">Free tier</span></div><div class="swhy">Built for Next.js. Set up in 20 minutes. Handles photo and video reliably. Free: 2GB storage + 10GB bandwidth. Upgrade to Cloudinary when you need advanced image transforms.</div></div></div>
+  <div class="srow"><div class="slayer">Search</div><div class="schoice"><div class="stool">PostgreSQL Full-Text Search <span class="stag st-free">Free (built-in)</span></div><div class="swhy">Already in Supabase — zero extra cost. Searches recipe titles, ingredients, and tags. Handles up to 500k+ recipes. Upgrade to Algolia only when search quality becomes a complaint.</div></div></div>
+  <div class="srow"><div class="slayer">Voice AI</div><div class="schoice"><div class="stool">Whisper API + Claude API <span class="stag st-pay">~$0.022 / recipe</span></div><div class="swhy">Whisper transcribes the audio ($0.018). Claude structures it into recipe fields ($0.004). Total: 2.2 cents per voice upload. At 1,000 uploads/month = $22. Essentially free at MVP scale.</div></div></div>
+  <div class="srow"><div class="slayer">Hosting</div><div class="schoice"><div class="stool">Vercel <span class="stag st-free">Free tier</span></div><div class="swhy">Push to GitHub and it's live. Free SSL, global CDN, preview URLs. Zero server management. Upgrade to Pro ($20/mo) only when you add team members.</div></div></div>
+  <div class="srow"><div class="slayer">Mobile (Phase 2)</div><div class="schoice"><div class="stool">React Native + Expo SDK 52 <span class="stag st-free">Free</span></div><div class="swhy">Do NOT build this for MVP. A mobile-responsive web app covers early users. Add native iOS + Android in Phase 2 once the web product is validated.</div></div></div>
+</div>
+</div>
+
+<!-- COST -->
+<div class="sec">
+<div class="sec-label">10 — Monthly cost breakdown</div>
+<table class="ctbl">
+  <thead><tr><th>Service</th><th>Free tier covers</th><th>MVP cost/month</th><th>At 50k users</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Vercel</strong></td><td>Unlimited hobby projects</td><td class="grn">$0</td><td>$20</td></tr>
+    <tr><td><strong>Supabase</strong></td><td>500MB DB + 50k MAU</td><td class="grn">$0</td><td>$25</td></tr>
+    <tr><td><strong>Clerk</strong></td><td>10,000 monthly active users</td><td class="grn">$0</td><td>~$100</td></tr>
+    <tr><td><strong>Uploadthing</strong></td><td>2GB storage + 10GB bandwidth</td><td class="grn">$0</td><td>~$30</td></tr>
+    <tr><td><strong>Whisper API</strong></td><td>Pay as you go from $0</td><td class="mn">~$5–20</td><td>~$200</td></tr>
+    <tr><td><strong>Claude API</strong></td><td>Pay as you go from $0</td><td class="mn">~$2–8</td><td>~$50</td></tr>
+    <tr><td><strong>Domain</strong></td><td>—</td><td class="mn">~$1</td><td>$1</td></tr>
+    <tr><td><strong>Total</strong></td><td></td><td style="color:#16a34a; font-size:15px;">~$10–30/mo</td><td>~$426/mo</td></tr>
+  </tbody>
+</table>
+<div class="note note-g">You can build and run RecipeVerse for under $30 a month. The AI costs only kick in when people actually use the voice feature — so you pay more only when the product is being used more. At 50,000 users you're paying $426/month, which a platform that size should easily cover with revenue.</div>
+</div>
+
+<!-- SCALE PATH -->
+<div class="sec">
+<div class="sec-label">11 — How this stack grows with you</div>
+<div class="phases">
+  <div class="ph">
+    <div class="ph-head ph1h">Phase 1 — MVP (Month 0–3)</div>
+    <div class="ph-body">
+      <div class="ph-items">
+        <span>Next.js on Vercel free</span>
+        <span>Supabase free tier</span>
+        <span>Clerk free (under 10k)</span>
+        <span>Uploadthing free tier</span>
+        <span>Postgres built-in search</span>
+        <span>Whisper + Claude pay-as-go</span>
+      </div>
+      <div class="ph-total" style="color:#1a1a1a;">~$10–30/mo</div>
+    </div>
+  </div>
+  <div class="ph">
+    <div class="ph-head ph2h">Phase 2 — Growth (Month 4–12)</div>
+    <div class="ph-body">
+      <div class="ph-items">
+        <span>Vercel Pro ($20/mo)</span>
+        <span>Supabase Pro ($25/mo)</span>
+        <span>Clerk scales with users</span>
+        <span>Upgrade to Cloudinary</span>
+        <span>Add Algolia for search</span>
+        <span>Launch mobile app (Expo)</span>
+      </div>
+      <div class="ph-total" style="color:#5035b0;">~$200–500/mo</div>
+    </div>
+  </div>
+  <div class="ph">
+    <div class="ph-head ph3h">Phase 3 — Scale (Year 2+)</div>
+    <div class="ph-body">
+      <div class="ph-items">
+        <span>Dedicated Postgres instance</span>
+        <span>Redis for feed caching</span>
+        <span>CDN for video delivery</span>
+        <span>Self-host Typesense</span>
+        <span>Background jobs (Inngest)</span>
+        <span>Real-time with Supabase channels</span>
+      </div>
+      <div class="ph-total" style="color:#e8430a;">~$1k–5k/mo</div>
+    </div>
+  </div>
+</div>
+<div class="note"><strong>The key principle:</strong> Every tool has a clear upgrade path. You never hit a wall where you throw everything away. Supabase → dedicated Postgres. Uploadthing → Cloudinary. Postgres search → Algolia. Upgrade each piece only when you actually need to — not before.</div>
+</div>
+
+<div class="footer">
+  <span>RecipeVerse — Tech Stack Recommendation v1.0</span>
+  <span>March 2026 · Confidential</span>
+</div>
+
+</div>
+</body>
+</html>
